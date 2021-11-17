@@ -44,13 +44,13 @@ Begin VB.Form frmHerrero
       BackColor       =   &H00000000&
       BorderStyle     =   0  'None
       FillStyle       =   0  'Solid
-      Height          =   480
+      Height          =   465
       Index           =   1
       Left            =   5430
-      ScaleHeight     =   480
+      ScaleHeight     =   465
       ScaleWidth      =   480
       TabIndex        =   13
-      Top             =   1545
+      Top             =   1560
       Visible         =   0   'False
       Width           =   480
    End
@@ -59,13 +59,13 @@ Begin VB.Form frmHerrero
       BackColor       =   &H00000000&
       BorderStyle     =   0  'None
       FillStyle       =   0  'Solid
-      Height          =   480
+      Height          =   465
       Index           =   2
       Left            =   5400
-      ScaleHeight     =   480
+      ScaleHeight     =   465
       ScaleWidth      =   480
       TabIndex        =   12
-      Top             =   2340
+      Top             =   2355
       Visible         =   0   'False
       Width           =   480
    End
@@ -74,13 +74,13 @@ Begin VB.Form frmHerrero
       BackColor       =   &H00000000&
       BorderStyle     =   0  'None
       FillStyle       =   0  'Solid
-      Height          =   480
+      Height          =   465
       Index           =   3
       Left            =   5430
-      ScaleHeight     =   480
+      ScaleHeight     =   465
       ScaleWidth      =   480
       TabIndex        =   11
-      Top             =   3135
+      Top             =   3150
       Visible         =   0   'False
       Width           =   480
    End
@@ -89,13 +89,13 @@ Begin VB.Form frmHerrero
       BackColor       =   &H00000000&
       BorderStyle     =   0  'None
       FillStyle       =   0  'Solid
-      Height          =   480
+      Height          =   465
       Index           =   4
       Left            =   5430
-      ScaleHeight     =   480
+      ScaleHeight     =   465
       ScaleWidth      =   480
       TabIndex        =   10
-      Top             =   3930
+      Top             =   3945
       Visible         =   0   'False
       Width           =   480
    End
@@ -123,13 +123,13 @@ Begin VB.Form frmHerrero
       BackColor       =   &H00000000&
       BorderStyle     =   0  'None
       FillStyle       =   0  'Solid
-      Height          =   480
+      Height          =   465
       Index           =   4
       Left            =   870
-      ScaleHeight     =   480
+      ScaleHeight     =   465
       ScaleWidth      =   480
       TabIndex        =   9
-      Top             =   3930
+      Top             =   3945
       Visible         =   0   'False
       Width           =   480
    End
@@ -138,12 +138,12 @@ Begin VB.Form frmHerrero
       BackColor       =   &H00000000&
       BorderStyle     =   0  'None
       FillStyle       =   0  'Solid
-      Height          =   480
+      Height          =   465
       Left            =   1710
-      ScaleHeight     =   480
+      ScaleHeight     =   465
       ScaleWidth      =   1440
       TabIndex        =   8
-      Top             =   3930
+      Top             =   3945
       Visible         =   0   'False
       Width           =   1440
    End
@@ -152,13 +152,13 @@ Begin VB.Form frmHerrero
       BackColor       =   &H00000000&
       BorderStyle     =   0  'None
       FillStyle       =   0  'Solid
-      Height          =   480
+      Height          =   465
       Index           =   3
       Left            =   870
-      ScaleHeight     =   480
+      ScaleHeight     =   465
       ScaleWidth      =   480
       TabIndex        =   7
-      Top             =   3135
+      Top             =   3150
       Visible         =   0   'False
       Width           =   480
    End
@@ -167,12 +167,12 @@ Begin VB.Form frmHerrero
       BackColor       =   &H00000000&
       BorderStyle     =   0  'None
       FillStyle       =   0  'Solid
-      Height          =   480
+      Height          =   465
       Left            =   1710
-      ScaleHeight     =   480
+      ScaleHeight     =   465
       ScaleWidth      =   1440
       TabIndex        =   6
-      Top             =   3135
+      Top             =   3150
       Visible         =   0   'False
       Width           =   1440
    End
@@ -181,13 +181,13 @@ Begin VB.Form frmHerrero
       BackColor       =   &H00000000&
       BorderStyle     =   0  'None
       FillStyle       =   0  'Solid
-      Height          =   480
+      Height          =   465
       Index           =   2
       Left            =   870
-      ScaleHeight     =   480
+      ScaleHeight     =   465
       ScaleWidth      =   480
       TabIndex        =   5
-      Top             =   2340
+      Top             =   2355
       Visible         =   0   'False
       Width           =   480
    End
@@ -196,12 +196,12 @@ Begin VB.Form frmHerrero
       BackColor       =   &H00000000&
       BorderStyle     =   0  'None
       FillStyle       =   0  'Solid
-      Height          =   480
+      Height          =   465
       Left            =   1710
-      ScaleHeight     =   480
+      ScaleHeight     =   465
       ScaleWidth      =   1440
       TabIndex        =   4
-      Top             =   2340
+      Top             =   2355
       Visible         =   0   'False
       Width           =   1440
    End
@@ -218,12 +218,12 @@ Begin VB.Form frmHerrero
       BackColor       =   &H00000000&
       BorderStyle     =   0  'None
       FillStyle       =   0  'Solid
-      Height          =   480
+      Height          =   465
       Left            =   1710
-      ScaleHeight     =   480
+      ScaleHeight     =   465
       ScaleWidth      =   1440
       TabIndex        =   3
-      Top             =   1545
+      Top             =   1560
       Visible         =   0   'False
       Width           =   1440
    End
@@ -232,13 +232,13 @@ Begin VB.Form frmHerrero
       BackColor       =   &H00000000&
       BorderStyle     =   0  'None
       FillStyle       =   0  'Solid
-      Height          =   480
+      Height          =   465
       Index           =   1
       Left            =   870
-      ScaleHeight     =   480
+      ScaleHeight     =   465
       ScaleWidth      =   480
       TabIndex        =   2
-      Top             =   1545
+      Top             =   1560
       Visible         =   0   'False
       Width           =   480
    End
@@ -489,7 +489,7 @@ Private UltimaPestania As Byte
 Private cPicCerrar As clsGraphicalButton
 Private cPicConstruir(0 To 3) As clsGraphicalButton
 Private cPicMejorar(0 To 3) As clsGraphicalButton
-Public LastButtonPressed As clsGraphicalButton
+Public LastPressed As clsGraphicalButton
 
 Private Cargando As Boolean
 
@@ -529,7 +529,7 @@ Private Sub CargarImagenes()
     Set cPicMejorar(2) = New clsGraphicalButton
     Set cPicMejorar(3) = New clsGraphicalButton
 
-    Set LastButtonPressed = New clsGraphicalButton
+    Set LastPressed = New clsGraphicalButton
     
     Call cPicCerrar.Initialize(imgCerrar, ImgPath & "BotonCerrarHerreria.jpg", ImgPath & "BotonCerrarRolloverHerreria.jpg", ImgPath & "BotonCerrarClickHerreria.jpg", Me)
     Call cPicConstruir(0).Initialize(picConstruir0, ImgPath & "BotonConstruirHerreria.jpg", ImgPath & "BotonConstruirRolloverHerreria.jpg", ImgPath & "BotonConstruirClickHerreria.jpg", Me)
@@ -562,7 +562,7 @@ Private Sub ConstruirItem(ByVal Index As Integer)
         
             If UsarMacro Then
                 CantItemsCiclo = Val(cboItemsCiclo.Text)
-                MacroBltIndex = ArmasHerrero(ItemIndex).objIndex
+                MacroBltIndex = ArmasHerrero(ItemIndex).OBJIndex
                 frmMain.ActivarMacroTrabajo
             Else
                 ' Que cosntruya el maximo, total si sobra no importa, valida el server
@@ -570,13 +570,13 @@ Private Sub ConstruirItem(ByVal Index As Integer)
             End If
             
             Call WriteInitCrafting(Val(txtCantItems.Text), CantItemsCiclo)
-            Call WriteCraftBlacksmith(ArmasHerrero(ItemIndex).objIndex)
+            Call WriteCraftBlacksmith(ArmasHerrero(ItemIndex).OBJIndex)
             
         Case ePestania.ieArmaduras
         
             If UsarMacro Then
                 CantItemsCiclo = Val(cboItemsCiclo.Text)
-                MacroBltIndex = ArmadurasHerrero(ItemIndex).objIndex
+                MacroBltIndex = ArmadurasHerrero(ItemIndex).OBJIndex
                 frmMain.ActivarMacroTrabajo
              Else
                 ' Que cosntruya el maximo, total si sobra no importa, valida el server
@@ -584,10 +584,10 @@ Private Sub ConstruirItem(ByVal Index As Integer)
             End If
             
             Call WriteInitCrafting(Val(txtCantItems.Text), CantItemsCiclo)
-            Call WriteCraftBlacksmith(ArmadurasHerrero(ItemIndex).objIndex)
+            Call WriteCraftBlacksmith(ArmadurasHerrero(ItemIndex).OBJIndex)
         
         Case ePestania.ieMejorar
-            Call WriteItemUpgrade(HerreroMejorar(ItemIndex).objIndex)
+            Call WriteItemUpgrade(HerreroMejorar(ItemIndex).OBJIndex)
     End Select
     
     Unload Me
@@ -610,9 +610,8 @@ Private Sub Form_Load()
     
     Cargando = True
     
-    MaxConstItem = CInt((UserLvl - 2) * 0.2)
+    MaxConstItem = CInt((UserLvl - 4) / 5)
     MaxConstItem = IIf(MaxConstItem < 1, 1, MaxConstItem)
-    MaxConstItem = IIf(UserClase = eClass.Worker, MaxConstItem, 1)
     
     For i = 1 To MaxConstItem
         cboItemsCiclo.AddItem i
@@ -677,15 +676,15 @@ Private Sub RenderItem(ByRef Pic As PictureBox, ByVal GrhIndex As Long)
         SR.Left = .sX
         SR.Top = .sY
         SR.Right = SR.Left + .pixelWidth
-        SR.bottom = SR.Top + .pixelHeight
+        SR.Bottom = SR.Top + .pixelHeight
     End With
     
     DR.Left = 0
     DR.Top = 0
     DR.Right = 32
-    DR.bottom = 32
+    DR.Bottom = 32
     
-    Call DrawGrhtoHdc(Pic.hDC, GrhIndex, SR, DR)
+    Call DrawGrhtoHdc(Pic.hdc, GrhIndex, SR, DR)
     Pic.Refresh
 End Sub
 
@@ -746,17 +745,7 @@ Next i
 End Sub
 
 Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    LastButtonPressed.ToggleToNormal
-End Sub
-
-Private Sub Form_Unload(Cancel As Integer)
-    Dim i As Long
-    
-    For i = 1 To MAX_LIST_ITEMS
-        Set InvLingosHerreria(i) = Nothing
-    Next i
-    
-    MirandoHerreria = False
+    LastPressed.ToggleToNormal
 End Sub
 
 Private Sub imgCerrar_Click()
@@ -794,19 +783,19 @@ Private Sub picConstruir3_Click()
 End Sub
 
 Private Sub picLingotes0_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    LastButtonPressed.ToggleToNormal
+    LastPressed.ToggleToNormal
 End Sub
 
 Private Sub picLingotes1_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    LastButtonPressed.ToggleToNormal
+    LastPressed.ToggleToNormal
 End Sub
 
 Private Sub picLingotes2_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    LastButtonPressed.ToggleToNormal
+    LastPressed.ToggleToNormal
 End Sub
 
 Private Sub picLingotes3_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    LastButtonPressed.ToggleToNormal
+    LastPressed.ToggleToNormal
 End Sub
 
 Private Sub picMejorar0_Click()

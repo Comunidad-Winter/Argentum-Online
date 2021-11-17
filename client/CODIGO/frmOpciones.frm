@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "Mscomctl.ocx"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.ocx"
 Begin VB.Form frmOpciones 
    BackColor       =   &H8000000A&
    BorderStyle     =   0  'None
@@ -265,7 +265,7 @@ Private cBotonSoporte As clsGraphicalButton
 Private cBotonTutorial As clsGraphicalButton
 Private cBotonSalir As clsGraphicalButton
 
-Public LastButtonPressed As clsGraphicalButton
+Public LastPressed As clsGraphicalButton
 
 Private picCheckBox As Picture
 
@@ -276,7 +276,7 @@ Private bSoundEffectsActivated As Boolean
 Private loading As Boolean
 
 Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    LastButtonPressed.ToggleToNormal
+    LastPressed.ToggleToNormal
 End Sub
 
 Private Sub imgCambiarPasswd_Click()
@@ -464,7 +464,7 @@ Private Sub imgSoporte_Click()
 End Sub
 
 Private Sub imgTutorial_Click()
-    frmTutorial.Show vbModeless
+    frmTutorial.Show
 End Sub
 
 Private Sub Form_Load()
@@ -495,7 +495,7 @@ Private Sub LoadButtons()
     Set cBotonTutorial = New clsGraphicalButton
     Set cBotonSalir = New clsGraphicalButton
     
-    Set LastButtonPressed = New clsGraphicalButton
+    Set LastPressed = New clsGraphicalButton
     
     Call cBotonConfigTeclas.Initialize(imgConfigTeclas, GrhPath & "BotonConfigurarTeclas.jpg", _
                                     GrhPath & "BotonConfigurarTeclasRollover.jpg", _

@@ -107,7 +107,7 @@ Private clsFormulario As clsFormMovementManager
 
 Private cBotonCerrar As clsGraphicalButton
 
-Public LastButtonPressed As clsGraphicalButton
+Public LastPressed As clsGraphicalButton
 
 Private Const MAX_GM_MSG = 300
 
@@ -123,16 +123,15 @@ End If
 End Sub
 
 Private Sub Form_Deactivate()
+    ' Handles Form movement (drag and drop).
+    Set clsFormulario = New clsFormMovementManager
+    clsFormulario.Initialize Me
+    
     Me.Visible = False
     List1.Clear
 End Sub
 
 Private Sub Form_Load()
-
-    ' Handles Form movement (drag and drop).
-    Set clsFormulario = New clsFormMovementManager
-    clsFormulario.Initialize Me
-    
     List1.Clear
     
     Me.Picture = LoadPicture(App.path & "\graficos\VentanaShowSos.jpg")
@@ -147,7 +146,7 @@ Private Sub LoadButtons()
 
     Set cBotonCerrar = New clsGraphicalButton
     
-    Set LastButtonPressed = New clsGraphicalButton
+    Set LastPressed = New clsGraphicalButton
     
     
     Call cBotonCerrar.Initialize(imgCerrar, GrhPath & "BotonCerrarShowSos.jpg", _
@@ -156,7 +155,7 @@ Private Sub LoadButtons()
 End Sub
 
 Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    LastButtonPressed.ToggleToNormal
+    LastPressed.ToggleToNormal
 End Sub
 
 Private Sub imgCerrar_Click()
@@ -177,7 +176,7 @@ Private Sub List1_MouseDown(Button As Integer, Shift As Integer, X As Single, Y 
 End Sub
 
 Private Sub List1_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    LastButtonPressed.ToggleToNormal
+    LastPressed.ToggleToNormal
 End Sub
 
 Private Sub mnuBorrar_Click()

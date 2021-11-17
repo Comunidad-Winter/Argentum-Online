@@ -158,9 +158,9 @@ Private Type JPEG_CORE_PROPERTIES_VB ' Sadly, due to a limitation in VB (UDT var
 End Type
 
 '
-Private Declare Function GetDC Lib "user32" (ByVal hwnd As Long) As Long
-Private Declare Function ReleaseDC Lib "user32" (ByVal hwnd As Long, ByVal hdc As Long) As Long
-Private Declare Sub CopyMemory Lib "kernel32" Alias "RtlMoveMemory" (ByRef dest As Any, ByRef Source As Any, ByVal byteCount As Long)
+Private Declare Function GetDC Lib "user32" (ByVal hWnd As Long) As Long
+Private Declare Function ReleaseDC Lib "user32" (ByVal hWnd As Long, ByVal hdc As Long) As Long
+Private Declare Sub CopyMemory Lib "kernel32" Alias "RtlMoveMemory" (ByRef dest As Any, ByRef source As Any, ByVal byteCount As Long)
 
 '
 
@@ -506,56 +506,33 @@ Dim hFile As Long
 End Function
 
 Public Sub ScreenCapture(Optional ByVal Autofragshooter As Boolean = False)
-'**************************************************************
-'Author: Unknown
-'Last Modify Date: 11/16/2006
-'11/16/2010: Amraphen - Now the FragShooter screenshots are stored in different directories.
-'**************************************************************
+'Medio desprolijo donde pongo la pic, pero es lo que hay por ahora
 On Error GoTo Err:
-    Dim hwnd As Long
+    Dim hWnd As Long
     Dim file As String
     Dim sI As String
-    Dim c As cDIBSection
-    Set c = New cDIBSection
+    Dim c As New cDIBSection
     Dim i As Long
     Dim hdcc As Long
     
     Dim dirFile As String
     
-    hdcc = GetDC(frmMain.hwnd)
+    hdcc = GetDC(frmMain.hWnd)
     
     frmScreenshots.Picture1.AutoRedraw = True
     frmScreenshots.Picture1.Width = 12090
     frmScreenshots.Picture1.Height = 9075
 
     Call BitBlt(frmScreenshots.Picture1.hdc, 0, 0, 800, 600, hdcc, 0, 0, SRCCOPY)
-    Call ReleaseDC(frmMain.hwnd, hdcc)
+    Call ReleaseDC(frmMain.hWnd, hdcc)
     
     hdcc = INVALID_HANDLE
     
-    ' Primero chequea si existe la carpeta Screenshots
-    dirFile = App.path & "\Screenshots"
-    If Not FileExist(dirFile, vbDirectory) Then Call MkDir(dirFile)
+    dirFile = IIf(Autofragshooter, "\Screenshots\FragShooter", "\Screenshots")
     
-    ' Si es una imagen de Autofragshooter, se fija si existe la carpeta.
-    If Autofragshooter Then
-        dirFile = dirFile & "\FragShooter"
-        If Not FileExist(dirFile, vbDirectory) Then Call MkDir(dirFile)
-        
-        'Nuevos directorios del FragShooter:
-        If FragShooterKilledSomeone Then 'Si mató a alguien.
-            dirFile = dirFile & "\Frags"
-        Else 'Si nos mató alguien.
-            dirFile = dirFile & "\Muertes"
-        End If
-        If Not FileExist(dirFile, vbDirectory) Then Call MkDir(dirFile)
-        
-        'Nuevo formato de las screenshots del FragShooter: "VICTIMA/ASESINO(DD-MM-YYYY hh-mm-ss).jpg"
-        file = dirFile & "\" & FragShooterNickname & "(" & Format(Now, "DD-MM-YYYY hh-mm-ss") & ").jpg"
-    Else
-        'Si no es screenshot del FragShooter, entonces se usa el formato "DD-MM-YYYY hh-mm-ss.jpg"
-        file = dirFile & "\" & Format(Now, "DD-MM-YYYY hh-mm-ss") & ".jpg"
-    End If
+    If Not FileExist(App.path & dirFile, vbDirectory) Then MkDir (App.path & dirFile)
+    
+    file = App.path & dirFile & "\" & Format(Now, "DD-MM-YYYY hh-mm-ss") & ".jpg"
     
     frmScreenshots.Picture1.Refresh
     frmScreenshots.Picture1.Picture = frmScreenshots.Picture1.Image
@@ -571,13 +548,12 @@ Err:
     Call AddtoRichTextBox(frmMain.RecTxt, Err.number & "-" & Err.Description, 200, 200, 200, False, False, True)
     
     If hdcc <> INVALID_HANDLE Then _
-        Call ReleaseDC(frmMain.hwnd, hdcc)
+        Call ReleaseDC(frmMain.hWnd, hdcc)
 End Sub
 
 Public Function FullScreenCapture(ByVal file As String) As Boolean
 'Medio desprolijo donde pongo la pic, pero es lo que hay por ahora
-    Dim c As cDIBSection
-    Set c = New cDIBSection
+    Dim c As New cDIBSection
     Dim hdcc As Long
     Dim handle As Long
     

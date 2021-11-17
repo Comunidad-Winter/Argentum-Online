@@ -121,12 +121,12 @@ Private Sub ButtonHolder_MouseMove(Button As Integer, Shift As Integer, X As Sin
     If Not OverButton Then
     
         'This helps when two buttons are close
-        FormActual.LastButtonPressed.ToggleToNormal
+        FormActual.LastPressed.ToggleToNormal
         
         ButtonHolder.Picture = RollOverButtonImage
         OverButton = True
         
-        Set FormActual.LastButtonPressed = Me
+        Set FormActual.LastPressed = Me
     End If
 End Sub
 

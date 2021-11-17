@@ -1,68 +1,32 @@
 VERSION 5.00
 Begin VB.Form frmDebugNpc 
-   BackColor       =   &H00FFC0C0&
-   BorderStyle     =   1  'Fixed Single
-   Caption         =   "Debug Npcs"
+   Caption         =   "DebugNpcs"
    ClientHeight    =   2460
-   ClientLeft      =   45
-   ClientTop       =   330
+   ClientLeft      =   60
+   ClientTop       =   345
    ClientWidth     =   4680
    LinkTopic       =   "Form1"
-   MaxButton       =   0   'False
    ScaleHeight     =   2460
    ScaleWidth      =   4680
-   StartUpPosition =   2  'CenterScreen
+   StartUpPosition =   3  'Windows Default
    Begin VB.CommandButton Command2 
-      BackColor       =   &H00FFC0C0&
-      Cancel          =   -1  'True
-      Caption         =   "Salir (Esc)"
-      BeginProperty Font 
-         Name            =   "MS Sans Serif"
-         Size            =   8.25
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
+      Caption         =   "Salir"
       Height          =   300
       Left            =   90
-      Style           =   1  'Graphical
       TabIndex        =   5
       Top             =   2085
       Width           =   4455
    End
    Begin VB.CommandButton Command1 
-      BackColor       =   &H00FFC0C0&
       Caption         =   "ActualizarInfo"
-      BeginProperty Font 
-         Name            =   "MS Sans Serif"
-         Size            =   8.25
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
       Height          =   300
       Left            =   90
-      Style           =   1  'Graphical
       TabIndex        =   2
       Top             =   1755
       Width           =   4455
    End
    Begin VB.Label Label4 
-      BackStyle       =   0  'Transparent
       Caption         =   "MaxNpcs:"
-      BeginProperty Font 
-         Name            =   "MS Sans Serif"
-         Size            =   8.25
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
       Height          =   285
       Left            =   90
       TabIndex        =   4
@@ -70,17 +34,7 @@ Begin VB.Form frmDebugNpc
       Width           =   4455
    End
    Begin VB.Label Label3 
-      BackStyle       =   0  'Transparent
       Caption         =   "LastNpcIndex:"
-      BeginProperty Font 
-         Name            =   "MS Sans Serif"
-         Size            =   8.25
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
       Height          =   285
       Left            =   90
       TabIndex        =   3
@@ -88,17 +42,7 @@ Begin VB.Form frmDebugNpc
       Width           =   4455
    End
    Begin VB.Label Label2 
-      BackStyle       =   0  'Transparent
       Caption         =   "Npcs Libres:"
-      BeginProperty Font 
-         Name            =   "MS Sans Serif"
-         Size            =   8.25
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
       Height          =   285
       Left            =   105
       TabIndex        =   1
@@ -106,17 +50,7 @@ Begin VB.Form frmDebugNpc
       Width           =   4455
    End
    Begin VB.Label Label1 
-      BackStyle       =   0  'Transparent
       Caption         =   "Npcs Activos:"
-      BeginProperty Font 
-         Name            =   "MS Sans Serif"
-         Size            =   8.25
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
       Height          =   285
       Left            =   90
       TabIndex        =   0
@@ -174,6 +108,6 @@ Label4.Caption = "MAXNPCS:" & MAXNPCS
 End Sub
 
 Private Sub Command2_Click()
-    Unload Me
+Unload Me
 End Sub
 

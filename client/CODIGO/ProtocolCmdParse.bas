@@ -32,22 +32,30 @@ Public Enum eNumber_Types
 End Enum
 
 Public Sub AuxWriteWhisper(ByVal UserName As String, ByVal Mensaje As String)
-'***************************************************
-'Author: Unknown
-'Last Modification: 03/12/2010
-'03/12/2010: Enanoh - Ahora se envía el nick en vez del index del usuario.
-'***************************************************
     If LenB(UserName) = 0 Then Exit Sub
     
+    Dim i As Long
+    Dim nameLength As Long
     
     If (InStrB(UserName, "+") <> 0) Then
         UserName = Replace$(UserName, "+", " ")
     End If
     
     UserName = UCase$(UserName)
+    nameLength = Len(UserName)
     
-    Call WriteWhisper(UserName, Mensaje)
+    i = 1
+    Do While i <= LastChar
+        If UCase$(charlist(i).Nombre) = UserName Or UCase$(Left$(charlist(i).Nombre, nameLength + 2)) = UserName & " <" Then
+            Exit Do
+        Else
+            i = i + 1
+        End If
+    Loop
     
+    If i <= LastChar Then
+        Call WriteWhisper(i, Mensaje)
+    End If
 End Sub
 
 ''
@@ -63,7 +71,6 @@ Public Sub ParseUserCommand(ByVal RawCommand As String)
 'Interpreta, valida y ejecuta el comando ingresado
 '26/03/2009: ZaMa - Flexibilizo la cantidad de parametros de /nene,  /onlinemap y /telep
 '16/11/2009: ZaMa - Ahora el /ct admite radio
-'18/09/2010: ZaMa - Agrego el comando /mod username vida xxx
 '***************************************************
     Dim TmpArgos() As String
     
@@ -202,7 +209,7 @@ Public Sub ParseUserCommand(ByVal RawCommand As String)
                 Call WriteMeditate
         
             Case "/CONSULTA"
-                Call WriteConsultation
+                Call WriteConsulta
             
             Case "/RESUCITAR"
                 Call WriteResucitate
@@ -511,7 +518,7 @@ Public Sub ParseUserCommand(ByVal RawCommand As String)
                     'Avisar que falta el parametro
                     Call ShowConsoleMsg("Faltan parámetros. Utilice /acceptparty NICKNAME.")
                 End If
-                    
+
             '
             ' BEGIN GM COMMANDS
             '
@@ -624,14 +631,9 @@ Public Sub ParseUserCommand(ByVal RawCommand As String)
                             
                         Case "INT"
                             Call WriteShowServerForm
-                        
-                        Case "DENUNCIAS"
-                            Call WriteShowDenouncesList
+                            
                     End Select
                 End If
-                
-            Case "/DENUNCIAS"
-                Call WriteEnableDenounces
                 
             Case "/IRA"
                 If notNullArguments Then
@@ -737,18 +739,11 @@ Public Sub ParseUserCommand(ByVal RawCommand As String)
                         Case "AGREGAR"
                             tmpInt = eEditOptions.eo_addGold
                         
-                        Case "VIDA"
-                            tmpInt = eEditOptions.eo_Vida
-                         
-                        Case "POSS"
-                            tmpInt = eEditOptions.eo_Poss
-                         
                         Case Else
                             tmpInt = -1
                     End Select
                     
                     If tmpInt > 0 Then
-                        
                         If CantidadArgumentos = 3 Then
                             Call WriteEditChar(ArgumentosAll(0), tmpInt, ArgumentosAll(2), "")
                         Else
@@ -902,14 +897,6 @@ Public Sub ParseUserCommand(ByVal RawCommand As String)
             Case "/RMSG"
                 If notNullArguments Then
                     Call WriteServerMessage(ArgumentosRaw)
-                Else
-                    'Avisar que falta el parametro
-                    Call ShowConsoleMsg("Escriba un mensaje.")
-                End If
-            
-            Case "/MAPMSG"
-                If notNullArguments Then
-                    Call WriteMapMessage(ArgumentosRaw)
                 Else
                     'Avisar que falta el parametro
                     Call ShowConsoleMsg("Escriba un mensaje.")
@@ -1435,43 +1422,6 @@ Public Sub ParseUserCommand(ByVal RawCommand As String)
             Case "/CENTINELAACTIVADO"
                 Call WriteToggleCentinelActivated
                 
-            Case "/CREARPRETORIANOS"
-            
-                If CantidadArgumentos = 3 Then
-                    
-                    If ValidNumber(ArgumentosAll(0), eNumber_Types.ent_Integer) And _
-                       ValidNumber(ArgumentosAll(1), eNumber_Types.ent_Byte) And _
-                       ValidNumber(ArgumentosAll(2), eNumber_Types.ent_Byte) Then
-                       
-                        Call WriteCreatePretorianClan(Val(ArgumentosAll(0)), Val(ArgumentosAll(1)), _
-                                                      Val(ArgumentosAll(2)))
-                    Else
-                        'Faltan o sobran los parametros con el formato propio
-                        Call ShowConsoleMsg("Formato incorrecto. Utilice /CrearPretorianos MAPA X Y.")
-                    End If
-                    
-                Else
-                    'Avisar que falta el parametro
-                    Call ShowConsoleMsg("Faltan parámetros. Utilice /CrearPretorianos MAPA X Y.")
-                End If
-                
-            Case "/ELIMINARPRETORIANOS"
-            
-                If CantidadArgumentos = 1 Then
-                    
-                    If ValidNumber(ArgumentosAll(0), eNumber_Types.ent_Integer) Then
-                       
-                        Call WriteDeletePretorianClan(Val(ArgumentosAll(0)))
-                    Else
-                        'Faltan o sobran los parametros con el formato propio
-                        Call ShowConsoleMsg("Formato incorrecto. Utilice /EliminarPretorianos MAPA.")
-                    End If
-                    
-                Else
-                    'Avisar que falta el parametro
-                    Call ShowConsoleMsg("Faltan parámetros. Utilice /EliminarPretorianos MAPA.")
-                End If
-            
             Case "/DOBACKUP"
                 Call WriteDoBackup
                 
@@ -1499,29 +1449,19 @@ Public Sub ParseUserCommand(ByVal RawCommand As String)
                             Call WriteChangeMapInfoRestricted(ArgumentosAll(1))
                         
                         Case "MAGIASINEFECTO" '/MODMAPINFO MAGIASINEFECTO
-                            Call WriteChangeMapInfoNoMagic(ArgumentosAll(1) = "1")
+                            Call WriteChangeMapInfoNoMagic(ArgumentosAll(1))
                         
                         Case "INVISINEFECTO" '/MODMAPINFO INVISINEFECTO
-                            Call WriteChangeMapInfoNoInvi(ArgumentosAll(1) = "1")
+                            Call WriteChangeMapInfoNoInvi(ArgumentosAll(1))
                         
                         Case "RESUSINEFECTO" '/MODMAPINFO RESUSINEFECTO
-                            Call WriteChangeMapInfoNoResu(ArgumentosAll(1) = "1")
+                            Call WriteChangeMapInfoNoResu(ArgumentosAll(1))
                         
                         Case "TERRENO" '/MODMAPINFO TERRENO
                             Call WriteChangeMapInfoLand(ArgumentosAll(1))
                         
                         Case "ZONA" '/MODMAPINFO ZONA
                             Call WriteChangeMapInfoZone(ArgumentosAll(1))
-                            
-                        Case "ROBONPC" '/MODMAPINFO ROBONPC
-                            Call WriteChangeMapInfoStealNpc(ArgumentosAll(1) = "1")
-                            
-                        Case "OCULTARSINEFECTO" '/MODMAPINFO OCULTARSINEFECTO
-                            Call WriteChangeMapInfoNoOcultar(ArgumentosAll(1) = "1")
-                            
-                        Case "INVOCARSINEFECTO" '/MODMAPINFO INVOCARSINEFECTO
-                            Call WriteChangeMapInfoNoInvocar(ArgumentosAll(1) = "1")
-                            
                     End Select
                 Else
                     'Avisar que falta el parametro
@@ -1596,20 +1536,6 @@ Public Sub ParseUserCommand(ByVal RawCommand As String)
             Case "/HOGAR"
                 Call WriteHome
                 
-            Case "/SETDIALOG"
-                If notNullArguments Then
-                    Call WriteSetDialog(ArgumentosRaw)
-                Else
-                    'Avisar que falta el parametro
-                    Call ShowConsoleMsg("Faltan parámetros. Utilice /SETDIALOG DIALOGO.")
-                End If
-            
-            Case "/IMPERSONAR"
-                Call WriteImpersonate
-                
-            Case "/MIMETIZAR"
-                Call WriteImitate
-            
 #If SeguridadAlkon Then
             Case Else
                 Call ParseUserCommandEx(Comando, CantidadArgumentos, ArgumentosAll, ArgumentosRaw)

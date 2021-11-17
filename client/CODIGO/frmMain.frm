@@ -1,10 +1,10 @@
 VERSION 5.00
-Object = "{3B7C8863-D78F-101B-B9B5-04021C009402}#1.2#0"; "RICHTX32.OCX"
-Object = "{33101C00-75C3-11CF-A8A0-444553540000}#1.0#0"; "CSWSK32.OCX"
-Object = "{248DD890-BB45-11CF-9ABC-0080C7E7B78D}#1.0#0"; "MSWINSCK.OCX"
+Object = "{3B7C8863-D78F-101B-B9B5-04021C009402}#1.2#0"; "RICHTX32.ocx"
+Object = "{33101C00-75C3-11CF-A8A0-444553540000}#1.0#0"; "CSWSK32.ocx"
+Object = "{248DD890-BB45-11CF-9ABC-0080C7E7B78D}#1.0#0"; "MSWINSCK.ocx"
 Begin VB.Form frmMain 
    BorderStyle     =   0  'None
-   ClientHeight    =   8805
+   ClientHeight    =   8700
    ClientLeft      =   360
    ClientTop       =   300
    ClientWidth     =   12000
@@ -26,14 +26,14 @@ Begin VB.Form frmMain
    MaxButton       =   0   'False
    MinButton       =   0   'False
    PaletteMode     =   1  'UseZOrder
-   ScaleHeight     =   587
+   ScaleHeight     =   580
    ScaleMode       =   3  'Pixel
    ScaleWidth      =   800
    StartUpPosition =   2  'CenterScreen
    Visible         =   0   'False
    Begin SocketWrenchCtrl.Socket Socket1 
       Left            =   6750
-      Top             =   1800
+      Top             =   1920
       _Version        =   65536
       _ExtentX        =   741
       _ExtentY        =   741
@@ -62,29 +62,6 @@ Begin VB.Form frmMain
       Timeout         =   10000
       Type            =   1
       Urgent          =   0   'False
-   End
-   Begin VB.PictureBox MainViewPic 
-      AutoRedraw      =   -1  'True
-      BackColor       =   &H00000000&
-      BorderStyle     =   0  'None
-      Height          =   6240
-      Left            =   120
-      MousePointer    =   99  'Custom
-      ScaleHeight     =   416
-      ScaleMode       =   3  'Pixel
-      ScaleWidth      =   544
-      TabIndex        =   34
-      TabStop         =   0   'False
-      Top             =   2160
-      Width           =   8160
-      Begin VB.Shape MainViewShp 
-         BorderColor     =   &H00404040&
-         Height          =   6240
-         Left            =   0
-         Top             =   0
-         Visible         =   0   'False
-         Width           =   8160
-      End
    End
    Begin VB.PictureBox picSM 
       Appearance      =   0  'Flat
@@ -197,7 +174,7 @@ Begin VB.Form frmMain
       EndProperty
       ForeColor       =   &H000000FF&
       Height          =   315
-      Left            =   120
+      Left            =   150
       MaxLength       =   160
       MultiLine       =   -1  'True
       TabIndex        =   2
@@ -391,7 +368,7 @@ Begin VB.Form frmMain
       Caption         =   "101"
       ForeColor       =   &H00FFFFFF&
       Height          =   180
-      Left            =   6660
+      Left            =   6705
       TabIndex        =   26
       Top             =   60
       Width           =   555
@@ -768,6 +745,14 @@ Begin VB.Form frmMain
       Top             =   3225
       Width           =   225
    End
+   Begin VB.Shape MainViewShp 
+      BorderColor     =   &H00404040&
+      Height          =   6240
+      Left            =   180
+      Top             =   2235
+      Visible         =   0   'False
+      Width           =   8160
+   End
    Begin VB.Image InvEqu 
       Height          =   4230
       Left            =   8715
@@ -944,14 +929,6 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-'--------------------------------------------------------------------------------
-'    Component  : frmMain
-'    Project    : ARGENTUM
-'
-'    Description: [type_description_here]
-'
-'    Modified   :
-'--------------------------------------------------------------------------------
 'Argentum Online 0.11.6
 '
 'Copyright (C) 2002 Márquez Pablo Ignacio
@@ -1008,19 +985,11 @@ Private cBotonEstadisticas As clsGraphicalButton
 Private cBotonClanes As clsGraphicalButton
 Private cBotonAsignarSkill As clsGraphicalButton
 
-Public LastButtonPressed As clsGraphicalButton
+Public LastPressed As clsGraphicalButton
 
 Public picSkillStar As Picture
 
 Dim PuedeMacrear As Boolean
-
-
-'Usado para controlar que no se dispare el binding de la tecla CTRL cuando se usa CTRL+Tecla.
-Dim CtrlMaskOn As Boolean
-
-Public Sub dragInventory_dragDone(ByVal originalSlot As Integer, ByVal newSlot As Integer)
-Call Protocol.WriteMoveItem(originalSlot, newSlot, eMoveType.Inventory)
-End Sub
 
 Private Sub Form_Load()
     
@@ -1036,19 +1005,8 @@ Private Sub Form_Load()
     
     Call LoadButtons
     
-    
-    'Seteamos el tamaño del frmmain
-    With Me
-        .Left = 0
-        .Top = 0
-        .Height = 9000
-        .Width = 12000
-    End With
-    
-    ' Detect links in console
-    EnableURLDetect RecTxt.hWnd, Me.hWnd
-    
-    CtrlMaskOn = False
+    Me.Left = 0
+    Me.Top = 0
 End Sub
 
 Private Sub LoadButtons()
@@ -1066,7 +1024,7 @@ Private Sub LoadButtons()
     Set cBotonAsignarSkill = New clsGraphicalButton
     Set cBotonMapa = New clsGraphicalButton
     
-    Set LastButtonPressed = New clsGraphicalButton
+    Set LastPressed = New clsGraphicalButton
     
     
     Call cBotonDiamArriba.Initialize(imgInvScrollUp, "", _
@@ -1177,15 +1135,15 @@ With GrhData(GrhIndex)
     SR.Left = .sX
     SR.Right = SR.Left + .pixelWidth
     SR.Top = .sY
-    SR.bottom = SR.Top + .pixelHeight
+    SR.Bottom = SR.Top + .pixelHeight
     
     DR.Left = 0
     DR.Right = .pixelWidth
     DR.Top = 0
-    DR.bottom = .pixelHeight
+    DR.Bottom = .pixelHeight
 End With
 
-Call DrawGrhtoHdc(picSM(Index).hDC, GrhIndex, SR, DR)
+Call DrawGrhtoHdc(picSM(Index).hdc, GrhIndex, SR, DR)
 picSM(Index).Refresh
 
 Select Case Index
@@ -1228,54 +1186,14 @@ End Sub
 Private Sub Form_KeyUp(KeyCode As Integer, Shift As Integer)
 '***************************************************
 'Autor: Unknown
-'Last Modification: 18/11/2010
+'Last Modification: 18/11/2009
 '18/11/2009: ZaMa - Ahora se pueden poner comandos en los mensajes personalizados (execpto guildchat y privados)
-'18/11/2010: Amraphen - Agregué el handle correspondiente para las nuevas configuraciones de teclas (CTRL+0..9).
 '***************************************************
 #If SeguridadAlkon Then
     If LOGGING Then Call CheatingDeath.StoreKey(KeyCode, False)
 #End If
     
     If (Not SendTxt.Visible) And (Not SendCMSTXT.Visible) Then
-    
-        'Verificamos si se está presionando la tecla CTRL.
-        If Shift = 2 Then
-            If KeyCode >= vbKey0 And KeyCode <= vbKey9 Then
-                If KeyCode = vbKey0 Then
-                    'Si es CTRL+0 muestro la ventana de configuración de teclas.
-                    Call frmCustomKeys.Show(vbModal, Me)
-                    
-                ElseIf KeyCode >= vbKey1 And KeyCode <= vbKey9 Then
-                    'Si es CTRL+1..9 cambio la configuración.
-                    If KeyCode - vbKey0 = CustomKeys.CurrentConfig Then Exit Sub
-                    
-                    CustomKeys.CurrentConfig = KeyCode - vbKey0
-                    
-                    Dim sMsg As String
-                    
-                    sMsg = "¡Se ha cargado la configuración "
-                    If CustomKeys.CurrentConfig = 0 Then
-                        sMsg = sMsg & "default"
-                    Else
-                        sMsg = sMsg & "perzonalizada número " & CStr(CustomKeys.CurrentConfig)
-                    End If
-                    sMsg = sMsg & "!"
-
-                    Call ShowConsoleMsg(sMsg, 255, 255, 255, True)
-                End If
-                
-                CtrlMaskOn = True
-                Exit Sub
-            End If
-        End If
-        
-        If KeyCode = vbKeyControl Then
-            'Chequeo que no se haya usado un CTRL + tecla antes de disparar las bindings.
-            If CtrlMaskOn Then
-                CtrlMaskOn = False
-                Exit Sub
-            End If
-        End If
         
         'Checks if the key is valid
         If LenB(CustomKeys.ReadableName(KeyCode)) > 0 Then
@@ -1347,10 +1265,6 @@ Private Sub Form_KeyUp(KeyCode As Integer, Shift As Integer)
                     Call WriteResuscitationToggle
             End Select
         Else
-            
-            'Evito que se muestren los mensajes personalizados cuando se cambie una configuración de teclas.
-            If Shift = 2 Then Exit Sub
-            
             Select Case KeyCode
                 'Custom messages!
                 Case vbKey0 To vbKey9
@@ -1447,11 +1361,8 @@ Private Sub Form_KeyUp(KeyCode As Integer, Shift As Integer)
             
             If TrainingMacro.Enabled Then Call DesactivarMacroHechizos
             If macrotrabajo.Enabled Then Call DesactivarMacroTrabajo
-            
-            If frmCustomKeys.Visible Then Exit Sub 'Chequeo si está visible la ventana de configuración de teclas.
-            
             Call WriteAttack
-            
+        
         Case CustomKeys.BindedKey(eKeyType.mKeyTalk)
             If SendCMSTXT.Visible Then Exit Sub
             
@@ -1480,10 +1391,6 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
         prgRun = False
         Cancel = 1
     End If
-End Sub
-
-Private Sub Form_Unload(Cancel As Integer)
-    DisableURLDetect
 End Sub
 
 Private Sub imgAsignarSkill_Click()
@@ -1553,7 +1460,7 @@ Private Sub imgOpciones_Click()
 End Sub
 
 Private Sub InvEqu_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    LastButtonPressed.ToggleToNormal
+    LastPressed.ToggleToNormal
 End Sub
 
 Private Sub lblScroll_Click(Index As Integer)
@@ -1579,19 +1486,19 @@ Private Sub macrotrabajo_Timer()
     End If
     
     'Macros are disabled if not using Argentum!
-    'If Not Application.IsAppActive() Then  'Implemento lo propuesto por GD, se puede usar macro aun que se esté en otra ventana
-    '    Call DesactivarMacroTrabajo
-    '    Exit Sub
-    'End If
+    If Not Application.IsAppActive() Then
+        Call DesactivarMacroTrabajo
+        Exit Sub
+    End If
     
     If UsingSkill = eSkill.Pesca Or UsingSkill = eSkill.Talar Or UsingSkill = eSkill.Mineria Or _
-                UsingSkill = FundirMetal Or (UsingSkill = eSkill.Herreria And Not MirandoHerreria) Then
+                UsingSkill = FundirMetal Or (UsingSkill = eSkill.Herreria And Not frmHerrero.Visible) Then
         Call WriteWorkLeftClick(tX, tY, UsingSkill)
         UsingSkill = 0
     End If
     
     'If Inventario.OBJType(Inventario.SelectedItem) = eObjType.otWeapon Then
-     If Not MirandoCarpinteria Then Call UsarItem
+     If Not (frmCarp.Visible = True) Then Call UsarItem
 End Sub
 
 Public Sub ActivarMacroTrabajo()
@@ -1678,54 +1585,6 @@ Select Case Index
 End Select
 End Sub
 
-Private Sub RecTxt_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    StartCheckingLinks
-End Sub
-
-Private Sub SendTxt_KeyDown(KeyCode As Integer, Shift As Integer)
-    
-    ' Control + Shift
-    If Shift = 3 Then
-        On Error GoTo ErrHandler
-        
-        ' Only allow numeric keys
-        If KeyCode >= vbKey0 And KeyCode <= vbKey9 Then
-            
-            ' Get Msg Number
-            Dim NroMsg As Integer
-            NroMsg = KeyCode - vbKey0 - 1
-            
-            ' Pressed "0", so Msg Number is 9
-            If NroMsg = -1 Then NroMsg = 9
-            
-            'Como es KeyDown, si mantenes _
-             apretado el mensaje llena la consola
-            If CustomMessages.Message(NroMsg) = SendTxt.Text Then
-                Exit Sub
-            End If
-            
-            CustomMessages.Message(NroMsg) = SendTxt.Text
-            
-            With FontTypes(FontTypeNames.FONTTYPE_INFO)
-                Call ShowConsoleMsg("¡¡""" & SendTxt.Text & """ fue guardado como mensaje personalizado " & NroMsg + 1 & "!!", .red, .green, .blue, .bold, .italic)
-            End With
-            
-        End If
-        
-    End If
-    
-    Exit Sub
-    
-ErrHandler:
-    'Did detected an invalid message??
-    If Err.number = CustomMessages.InvalidMessageErrCode Then
-        With FontTypes(FontTypeNames.FONTTYPE_INFO)
-            Call ShowConsoleMsg("El Mensaje es inválido. Modifiquelo por favor.", .red, .green, .blue, .bold, .italic)
-        End With
-    End If
-    
-End Sub
-
 Private Sub SendTxt_KeyUp(KeyCode As Integer, Shift As Integer)
     'Send text
     If KeyCode = vbKeyReturn Then
@@ -1778,10 +1637,10 @@ Private Sub TirarItem()
         End With
     Else
         If (Inventario.SelectedItem > 0 And Inventario.SelectedItem < MAX_INVENTORY_SLOTS + 1) Or (Inventario.SelectedItem = FLAGORO) Then
-            If Inventario.amount(Inventario.SelectedItem) = 1 Then
+            If Inventario.Amount(Inventario.SelectedItem) = 1 Then
                 Call WriteDrop(Inventario.SelectedItem, 1)
             Else
-                If Inventario.amount(Inventario.SelectedItem) > 1 Then
+                If Inventario.Amount(Inventario.SelectedItem) > 1 Then
                     If Not Comerciando Then frmCantidad.Show , frmMain
                 End If
             End If
@@ -1888,7 +1747,7 @@ Private Sub DespInv_Click(Index As Integer)
 End Sub
 
 Private Sub Form_Click()
-    'If Cartel Then Cartel = False
+    If Cartel Then Cartel = False
 
 #If SeguridadAlkon Then
     If LOGGING Then Call CheatingDeath.StoreKey(MouseBoton, True)
@@ -1978,7 +1837,6 @@ Private Sub Form_Click()
                     UsingSkill = 0
                 End If
             Else
-                'Call WriteRightClick(tx, tY) 'Proximamnete lo implementaremos..
                 Call AbrirMenuViewPort
             End If
         ElseIf (MouseShift And 1) = 1 Then
@@ -2001,43 +1859,16 @@ Private Sub Form_DblClick()
         Call WriteDoubleClick(tX, tY)
     End If
 End Sub
-Private Sub MainViewPic_Click()
-    Form_Click
-End Sub
-
-Private Sub MainViewPic_DblClick()
-
-Call Form_DblClick
-End Sub
-
-Private Sub MainViewPic_MouseDown(Button As Integer, _
-Shift As Integer, _
-X As Single, _
-Y As Single)
-MouseBoton = Button
-MouseShift = Shift
-
-Call ConvertCPtoTP(X, Y, tX, tY)
-
-End Sub
-Private Sub MainViewPic_MouseUp(Button As Integer, _
-Shift As Integer, _
-X As Single, _
-Y As Single)
-clicX = X
-clicY = Y
-
-End Sub
 
 Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    MouseX = X - MainViewPic.Left
-    MouseY = Y - MainViewPic.Top
+    MouseX = X - MainViewShp.Left
+    MouseY = Y - MainViewShp.Top
     
     'Trim to fit screen
     If MouseX < 0 Then
         MouseX = 0
     ElseIf MouseX > MainViewShp.Width Then
-        MouseX = MainViewPic.Width
+        MouseX = MainViewShp.Width
     End If
     
     'Trim to fit screen
@@ -2047,10 +1878,7 @@ Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y A
         MouseY = MainViewShp.Height
     End If
     
-    'LastPressed.ToggleToNormal
-    
-    ' Disable links checking (not over consola)
-    StopCheckingLinks
+    LastPressed.ToggleToNormal
     
 End Sub
 
@@ -2093,8 +1921,6 @@ Private Sub Label4_Click()
     cmdMoverHechi(0).Visible = False
     cmdMoverHechi(1).Visible = False
     
-    Inventario.DrawInventory
-    DoEvents
 End Sub
 
 Private Sub Label7_Click()
@@ -2118,8 +1944,7 @@ Private Sub Label7_Click()
 End Sub
 
 Private Sub picInv_DblClick()
-
-    If MirandoCarpinteria Or MirandoHerreria Then Exit Sub
+    If frmCarp.Visible Or frmHerrero.Visible Then Exit Sub
     
     If Not MainTimer.Check(TimersIndex.UseItemWithDblClick) Then Exit Sub
     
@@ -2142,7 +1967,7 @@ On Error Resume Next  'el .SetFocus causaba errores al salir y volver a entrar
         SendCMSTXT.SetFocus
     ElseIf (Not Comerciando) And (Not MirandoAsignarSkills) And _
         (Not frmMSG.Visible) And (Not MirandoForo) And _
-        (Not frmEstadisticas.Visible) And (Not frmCantidad.Visible) And (Not MirandoParty) Then
+        (Not frmEstadisticas.Visible) And (Not frmCantidad.Visible) Then
          
         If PicInv.Visible Then
             PicInv.SetFocus
@@ -2291,30 +2116,87 @@ Private Sub Socket1_Connect()
 End Sub
 
 Private Sub Socket1_Disconnect()
-    ResetAllInfo
+    Dim i As Long
+    
+    Second.Enabled = False
+    Connected = False
+    
     Socket1.Cleanup
+    
+    frmConnect.MousePointer = vbNormal
+    
+    Do While i < Forms.Count - 1
+        i = i + 1
+        
+        If Forms(i).Name <> Me.Name And Forms(i).Name <> frmConnect.Name And Forms(i).Name <> frmCrearPersonaje.Name Then
+            Unload Forms(i)
+        End If
+    Loop
+    
+    On Local Error GoTo 0
+    
+    If Not frmCrearPersonaje.Visible Then
+        frmConnect.Visible = True
+    End If
+    
+    frmMain.Visible = False
+    
+    pausa = False
+    UserMeditar = False
+    
+#If SeguridadAlkon Then
+    LOGGING = False
+    LOGSTRING = False
+    LastPressed = 0
+    LastMouse = False
+    LastAmount = 0
+#End If
+
+    UserClase = 0
+    UserSexo = 0
+    UserRaza = 0
+    UserHogar = 0
+    UserEmail = ""
+    
+    For i = 1 To NUMSKILLS
+        UserSkills(i) = 0
+    Next i
+
+    For i = 1 To NUMATRIBUTOS
+        UserAtributos(i) = 0
+    Next i
+    
+    For i = 1 To MAX_INVENTORY_SLOTS
+        
+    Next i
+    
+    macrotrabajo.Enabled = False
+
+    SkillPoints = 0
+    Alocados = 0
 End Sub
 
 Private Sub Socket1_LastError(ErrorCode As Integer, ErrorString As String, Response As Integer)
     '*********************************************
     'Handle socket errors
     '*********************************************
-    Select Case ErrorCode
-        Case TOO_FAST 'jajasAJ CUALQUEIRA AJJAJA
-            Call MsgBox("Por favor espere, intentando completar conexion.", vbApplicationModal + vbInformation + vbOKOnly + vbDefaultButton1, "Error")
-            Exit Sub
-        Case REFUSED 'Vivan las negradas
-            Call MsgBox("El servidor se encuentra cerrado o no te has podido conectar correctamente.", vbApplicationModal + vbInformation + vbOKOnly + vbDefaultButton1, "Error")
-        Case TIME_OUT
-            Call MsgBox("El tiempo de espera se ha agotado, intenta nuevamente.", vbApplicationModal + vbInformation + vbOKOnly + vbDefaultButton1, "Error")
-        Case Else
-            Call MsgBox(ErrorString, vbApplicationModal + vbInformation + vbOKOnly + vbDefaultButton1, "Error")
-    End Select
+    If ErrorCode = 24036 Then
+        Call MsgBox("Por favor espere, intentando completar conexion.", vbApplicationModal + vbInformation + vbOKOnly + vbDefaultButton1, "Error")
+        Exit Sub
+    End If
     
+    Call MsgBox(ErrorString, vbApplicationModal + vbInformation + vbOKOnly + vbDefaultButton1, "Error")
     frmConnect.MousePointer = 1
     Response = 0
+    Second.Enabled = False
 
     frmMain.Socket1.Disconnect
+    
+    If Not frmCrearPersonaje.Visible Then
+        frmConnect.Show
+    Else
+        frmCrearPersonaje.MousePointer = 0
+    End If
 End Sub
 
 Private Sub Socket1_Read(dataLength As Integer, IsUrgent As Integer)
@@ -2346,11 +2228,10 @@ Private Sub AbrirMenuViewPort()
 If tX >= MinXBorder And tY >= MinYBorder And _
     tY <= MaxYBorder And tX <= MaxXBorder Then
     If MapData(tX, tY).CharIndex > 0 Then
-        If charlist(MapData(tX, tY).CharIndex).Invisible = False Then
+        If charlist(MapData(tX, tY).CharIndex).invisible = False Then
         
             Dim i As Long
-            Dim M As frmMenuseFashion
-            Set M = New frmMenuseFashion
+            Dim M As New frmMenuseFashion
             
             Load M
             M.SetCallback Me
@@ -2559,15 +2440,4 @@ Private Sub Winsock2_Connect()
 #If SeguridadAlkon = 1 Then
     Call modURL.ProcessRequest
 #End If
-End Sub
-
-Private Sub MainViewPic_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    
-    MouseX = X
-    MouseY = Y
-    
-   ' LastPressed.ToggleToNormal
-    
-    Call ConvertCPtoTP(X, Y, tX, tY)
-
 End Sub

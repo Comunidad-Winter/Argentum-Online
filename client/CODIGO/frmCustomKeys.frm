@@ -623,11 +623,7 @@ Private clsFormulario As clsFormMovementManager
 Private cBotonGuardar As clsGraphicalButton
 Private cBotonDefaultKeys As clsGraphicalButton
 
-Public LastButtonPressed As clsGraphicalButton
-
-Private SelectedConfig As Byte
-Private InitialConfig As Byte
-Private CurrentTab As Integer
+Public LastPressed As clsGraphicalButton
 
 Private Sub Form_Load()
     Dim i As Long
@@ -640,12 +636,7 @@ Private Sub Form_Load()
     
     Call LoadButtons
     
-    SelectedConfig = CustomKeys.CurrentConfig
-    InitialConfig = SelectedConfig
-    
-    CurrentTab = SelectedConfig
-    
-    For i = 1 To CustomKeys.KeyCount
+    For i = 1 To CustomKeys.Count
         Text1(i).Text = CustomKeys.ReadableName(CustomKeys.BindedKey(i))
     Next i
 End Sub
@@ -658,7 +649,7 @@ Private Sub LoadButtons()
     Set cBotonGuardar = New clsGraphicalButton
     Set cBotonDefaultKeys = New clsGraphicalButton
     
-    Set LastButtonPressed = New clsGraphicalButton
+    Set LastPressed = New clsGraphicalButton
     
     
     Call cBotonGuardar.Initialize(imgGuardar, GrhPath & "BotonGuardarConfigKey.jpg", _
@@ -668,56 +659,36 @@ Private Sub LoadButtons()
     Call cBotonDefaultKeys.Initialize(imgDefaultKeys, GrhPath & "BotonDefaultKeys.jpg", _
                                     GrhPath & "BotonDefaultKeysRollover.jpg", _
                                     GrhPath & "BotonDefaultKeysClick.jpg", Me)
-                                    
 End Sub
 
-
 Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    LastButtonPressed.ToggleToNormal
+    LastPressed.ToggleToNormal
 End Sub
 
 Private Sub imgDefaultKeys_Click()
-
-    Call CustomKeys.LoadDefaults(CustomKeys.CurrentConfig)
-
-    Call ShowConfig
+    Call CustomKeys.LoadDefaults
+    Dim i As Long
+    
+    For i = 1 To CustomKeys.Count
+        Text1(i).Text = CustomKeys.ReadableName(CustomKeys.BindedKey(i))
+    Next i
 End Sub
 
 Private Sub imgGuardar_Click()
-
     Dim i As Long
-    Dim sMsg As String
     
-    For i = 1 To CustomKeys.KeyCount
+    For i = 1 To CustomKeys.Count
         If LenB(Text1(i).Text) = 0 Then
             Call MsgBox("Hay una o más teclas no válidas, por favor verifique.", vbCritical Or vbOKOnly Or vbApplicationModal Or vbDefaultButton1, "Argentum Online")
             Exit Sub
         End If
     Next i
     
-    CustomKeys.CurrentConfig = SelectedConfig
-    
-    If SelectedConfig <> InitialConfig Then
-        sMsg = "¡Se ha cargado la configuración "
-        If SelectedConfig = 0 Then
-            sMsg = sMsg & "default"
-        Else
-            sMsg = sMsg & "personalizada número " & CStr(SelectedConfig)
-        End If
-        sMsg = sMsg & "!"
-        
-        Call ShowConsoleMsg(sMsg, 255, 255, 255, True)
-    End If
-    
     Unload Me
 End Sub
 
-
 Private Sub Text1_KeyDown(Index As Integer, KeyCode As Integer, Shift As Integer)
     Dim i As Long
-    
-    ' Can't change default combination
-    If CurrentTab = 0 Then Exit Sub
     
     If LenB(CustomKeys.ReadableName(KeyCode)) = 0 Then Exit Sub
     'If key is not valid, we exit
@@ -725,20 +696,18 @@ Private Sub Text1_KeyDown(Index As Integer, KeyCode As Integer, Shift As Integer
     Text1(Index).Text = CustomKeys.ReadableName(KeyCode)
     Text1(Index).SelStart = Len(Text1(Index).Text)
     
-    For i = 1 To CustomKeys.KeyCount
+    For i = 1 To CustomKeys.Count
         If i <> Index Then
             If CustomKeys.BindedKey(i) = KeyCode Then
                 Text1(Index).Text = "" 'If the key is already assigned, simply reject it
                 Call Beep 'Alert the user
                 KeyCode = 0
-                
                 Exit Sub
             End If
         End If
     Next i
     
     CustomKeys.BindedKey(Index) = KeyCode
-    
 End Sub
 
 Private Sub Text1_KeyPress(Index As Integer, KeyAscii As Integer)
@@ -750,13 +719,5 @@ Private Sub Text1_KeyUp(Index As Integer, KeyCode As Integer, Shift As Integer)
 End Sub
 
 Private Sub Text1_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
-    LastButtonPressed.ToggleToNormal
-End Sub
-Private Sub ShowConfig()
-
-    Dim i As Long
-
-    For i = 1 To CustomKeys.KeyCount
-        Text1(i).Text = CustomKeys.ReadableName(CustomKeys.BindedKey(i))
-    Next i
+    LastPressed.ToggleToNormal
 End Sub

@@ -63,7 +63,7 @@ Public Type tSockCache
     Slot As Long
 End Type
 
-Public WSAPISock2Usr As Collection
+Public WSAPISock2Usr As New Collection
 
 ' ====================================================================================
 ' ====================================================================================
@@ -205,7 +205,7 @@ Public Function WndProc(ByVal hWnd As Long, ByVal msg As Long, ByVal wParam As L
 
 On Error Resume Next
 
-    Dim ret As Long
+    Dim Ret As Long
     Dim Tmp() As Byte
     Dim S As Long
     Dim E As Long
@@ -263,14 +263,14 @@ On Error Resume Next
                     'create appropiate sized buffer
                     ReDim Preserve Tmp(SIZE_RCVBUF - 1) As Byte
                     
-                    ret = recv(S, Tmp(0), SIZE_RCVBUF, 0)
+                    Ret = recv(S, Tmp(0), SIZE_RCVBUF, 0)
                     ' Comparo por = 0 ya que esto es cuando se cierra
                     ' "gracefully". (mas abajo)
-                    If ret < 0 Then
+                    If Ret < 0 Then
                         UltError = Err.LastDllError
                         If UltError = WSAEMSGSIZE Then
                             Debug.Print "WSAEMSGSIZE"
-                            ret = SIZE_RCVBUF
+                            Ret = SIZE_RCVBUF
                         Else
                             Debug.Print "Error en Recv: " & GetWSAErrorString(UltError)
                             Call LogApiSock("Error en Recv: N=" & N & " S=" & S & " Str=" & GetWSAErrorString(UltError))
@@ -282,12 +282,12 @@ On Error Resume Next
                             Call Cerrar_Usuario(N)
                             Exit Function
                         End If
-                    ElseIf ret = 0 Then
+                    ElseIf Ret = 0 Then
                         Call CloseSocketSL(N)
                         Call Cerrar_Usuario(N)
                     End If
                     
-                    ReDim Preserve Tmp(ret - 1) As Byte
+                    ReDim Preserve Tmp(Ret - 1) As Byte
                     
                     Call EventoSockRead(N, Tmp)
                 
@@ -313,7 +313,7 @@ End Function
 'retorna <> 0 cuando no se pudo enviar o no se pudo meter en la cola
 Public Function WsApiEnviar(ByVal Slot As Integer, ByRef str As String) As Long
 #If UsarQueSocket = 1 Then
-    Dim ret As String
+    Dim Ret As String
     Dim Retorno As Long
     Dim data() As Byte
     
@@ -328,10 +328,10 @@ Public Function WsApiEnviar(ByVal Slot As Integer, ByRef str As String) As Long
     Retorno = 0
     
     If UserList(Slot).ConnID <> -1 And UserList(Slot).ConnIDValida Then
-        ret = send(ByVal UserList(Slot).ConnID, data(0), ByVal UBound(data()) + 1, ByVal 0)
-        If ret < 0 Then
-            ret = Err.LastDllError
-            If ret = WSAEWOULDBLOCK Then
+        Ret = send(ByVal UserList(Slot).ConnID, data(0), ByVal UBound(data()) + 1, ByVal 0)
+        If Ret < 0 Then
+            Ret = Err.LastDllError
+            If Ret = WSAEWOULDBLOCK Then
                 
 #If SeguridadAlkon Then
                 Call Security.DataStored(Slot)
@@ -354,7 +354,7 @@ End Function
 Public Sub LogApiSock(ByVal str As String)
 #If (UsarQueSocket = 1) Then
 
-On Error GoTo ErrHandler
+On Error GoTo Errhandler
 
 Dim nfile As Integer
 nfile = FreeFile ' obtenemos un canal
@@ -364,7 +364,7 @@ Close #nfile
 
 Exit Sub
 
-ErrHandler:
+Errhandler:
 
 #End If
 End Sub
@@ -376,12 +376,11 @@ Public Sub EventoSockAccept(ByVal SockID As Long)
 '========================
     
     Dim NewIndex As Integer
-    Dim ret As Long
+    Dim Ret As Long
     Dim Tam As Long, sa As sockaddr
     Dim NuevoSock As Long
     Dim i As Long
-    Dim str As String
-    Dim data() As Byte
+    Dim tStr As String
     
     Tam = sockaddr_size
     
@@ -391,20 +390,25 @@ Public Sub EventoSockAccept(ByVal SockID As Long)
     'socket de la nueva conn
     
 'Modificado por Maraxus
-    'ret = WSAAccept(SockID, sa, Tam, AddressOf CondicionSocket, 0)
-    ret = accept(SockID, sa, Tam)
+    'Ret = WSAAccept(SockID, sa, Tam, AddressOf CondicionSocket, 0)
+    Ret = accept(SockID, sa, Tam)
 
-    If ret = INVALID_SOCKET Then
+    If Ret = INVALID_SOCKET Then
         i = Err.LastDllError
         Call LogCriticEvent("Error en Accept() API " & i & ": " & GetWSAErrorString(i))
         Exit Sub
     End If
+    
+    If Not SecurityIp.IpSecurityAceptarNuevaConexion(sa.sin_addr) Then
+        Call WSApiCloseSocket(NuevoSock)
+        Exit Sub
+    End If
 
-    'If ret = INVALID_SOCKET Then
+    'If Ret = INVALID_SOCKET Then
     '    If Err.LastDllError = 11002 Then
     '        ' We couldn't decide if to accept or reject the connection
     '        'Force reject so we can get it out of the queue
-    '        ret = WSAAccept(SockID, sa, Tam, AddressOf CondicionSocket, 1)
+    '        Ret = WSAAccept(SockID, sa, Tam, AddressOf CondicionSocket, 1)
     '        Call LogCriticEvent("Error en WSAAccept() API 11002: No se pudo decidir si aceptar o rechazar la conexión.")
     '    Else
     '        i = Err.LastDllError
@@ -413,33 +417,7 @@ Public Sub EventoSockAccept(ByVal SockID As Long)
     '    End If
     'End If
 
-    NuevoSock = ret
-    
-    If setsockopt(NuevoSock, SOL_SOCKET, SO_LINGER, 0, 4) <> 0 Then
-        i = Err.LastDllError
-        Call LogCriticEvent("Error al setear lingers." & i & ": " & GetWSAErrorString(i))
-    End If
-    
-    If Not SecurityIp.IpSecurityAceptarNuevaConexion(sa.sin_addr) Then
-        Call WSApiCloseSocket(NuevoSock)
-        Exit Sub
-    End If
-    
-    If SecurityIp.IPSecuritySuperaLimiteConexiones(sa.sin_addr) Then
-        str = Protocol.PrepareMessageErrorMsg("Limite de conexiones para su IP alcanzado.")
-        
-        ReDim Preserve data(Len(str) - 1) As Byte
-        
-        data = StrConv(str, vbFromUnicode)
-        
-#If SeguridadAlkon Then
-        Call Security.DataSent(Security.NO_SLOT, data)
-#End If
-        
-        Call send(ByVal NuevoSock, data(0), ByVal UBound(data()) + 1, ByVal 0)
-        Call WSApiCloseSocket(NuevoSock)
-        Exit Sub
-    End If
+    NuevoSock = Ret
     
     'Seteamos el tamaño del buffer de entrada
     If setsockopt(NuevoSock, SOL_SOCKET, SO_RCVBUFFER, SIZE_RCVBUF, 4) <> 0 Then
@@ -451,6 +429,13 @@ Public Sub EventoSockAccept(ByVal SockID As Long)
         i = Err.LastDllError
         Call LogCriticEvent("Error al setear el tamaño del buffer de salida " & i & ": " & GetWSAErrorString(i))
     End If
+
+    'If SecurityIp.IPSecuritySuperaLimiteConexiones(sa.sin_addr) Then
+        'tStr = "Limite de conexiones para su IP alcanzado."
+        'Call send(ByVal NuevoSock, ByVal tStr, ByVal Len(tStr), ByVal 0)
+        'Call WSApiCloseSocket(NuevoSock)
+        'Exit Sub
+    'End If
     
     '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -478,7 +463,7 @@ Public Sub EventoSockAccept(ByVal SockID As Long)
                 'Call apiclosesocket(NuevoSock)
                 Call WriteErrorMsg(NewIndex, "Su IP se encuentra bloqueada en este servidor.")
                 Call FlushBuffer(NewIndex)
-                Call SecurityIp.IpRestarConexion(sa.sin_addr)
+                'Call SecurityIp.IpRestarConexion(sa.sin_addr)
                 Call WSApiCloseSocket(NuevoSock)
                 Exit Sub
             End If
@@ -491,6 +476,9 @@ Public Sub EventoSockAccept(ByVal SockID As Long)
         
         Call AgregaSlotSock(NuevoSock, NewIndex)
     Else
+        Dim str As String
+        Dim data() As Byte
+        
         str = Protocol.PrepareMessageErrorMsg("El servidor se encuentra lleno en este momento. Disculpe las molestias ocasionadas.")
         
         ReDim Preserve data(Len(str) - 1) As Byte
@@ -534,12 +522,8 @@ Public Sub EventoSockClose(ByVal Slot As Integer)
 
     'Es el mismo user al que está revisando el centinela??
     'Si estamos acá es porque se cerró la conexión, no es un /salir, y no queremos banearlo....
-    Dim CentinelaIndex As Byte
-    CentinelaIndex = UserList(Slot).flags.CentinelaIndex
-        
-    If CentinelaIndex <> 0 Then
-        Call modCentinela.CentinelaUserLogout(CentinelaIndex)
-    End If
+    If Centinela.RevisandoUserIndex = Slot Then _
+        Call modCentinela.CentinelaUserLogout
     
 #If SeguridadAlkon Then
     Call Security.UserDisconnected(Slot)

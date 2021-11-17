@@ -92,7 +92,7 @@ Private cBotonNeutral As clsGraphicalButton
 Private cBotonReal As clsGraphicalButton
 Private cBotonSalir As clsGraphicalButton
 
-Public LastButtonPressed As clsGraphicalButton
+Public LastPressed As clsGraphicalButton
 
 Private Enum eAlineacion
     ieREAL = 0
@@ -124,7 +124,7 @@ Private Sub LoadButtons()
     Set cBotonReal = New clsGraphicalButton
     Set cBotonSalir = New clsGraphicalButton
     
-    Set LastButtonPressed = New clsGraphicalButton
+    Set LastPressed = New clsGraphicalButton
     
     
     Call cBotonCriminal.Initialize(imgCriminal, "", _
@@ -155,7 +155,7 @@ Private Sub LoadButtons()
 End Sub
 
 Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    LastButtonPressed.ToggleToNormal
+    LastPressed.ToggleToNormal
 End Sub
 
 Private Sub imgCaos_Click()

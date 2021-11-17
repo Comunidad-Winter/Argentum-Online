@@ -113,20 +113,16 @@ Private Function PoderAtaqueProyectil(ByVal UserIndex As Integer) As Long
 '***************************************************
 
     Dim PoderAtaqueTemp As Long
-    Dim SkillProyectiles As Integer
     
     With UserList(UserIndex)
-     
-        SkillProyectiles = .Stats.UserSkills(eSkill.Proyectiles)
-    
-        If SkillProyectiles < 31 Then
-            PoderAtaqueTemp = SkillProyectiles * ModClase(.clase).AtaqueProyectiles
-        ElseIf SkillProyectiles < 61 Then
-            PoderAtaqueTemp = (SkillProyectiles + .Stats.UserAtributos(eAtributos.Agilidad)) * ModClase(.clase).AtaqueProyectiles
-        ElseIf SkillProyectiles < 91 Then
-            PoderAtaqueTemp = (SkillProyectiles + 2 * .Stats.UserAtributos(eAtributos.Agilidad)) * ModClase(.clase).AtaqueProyectiles
+        If .Stats.UserSkills(eSkill.Proyectiles) < 31 Then
+            PoderAtaqueTemp = .Stats.UserSkills(eSkill.Proyectiles) * ModClase(.clase).AtaqueProyectiles
+        ElseIf .Stats.UserSkills(eSkill.Proyectiles) < 61 Then
+            PoderAtaqueTemp = (.Stats.UserSkills(eSkill.Proyectiles) + .Stats.UserAtributos(eAtributos.Agilidad)) * ModClase(.clase).AtaqueProyectiles
+        ElseIf .Stats.UserSkills(eSkill.Proyectiles) < 91 Then
+            PoderAtaqueTemp = (.Stats.UserSkills(eSkill.Proyectiles) + 2 * .Stats.UserAtributos(eAtributos.Agilidad)) * ModClase(.clase).AtaqueProyectiles
         Else
-            PoderAtaqueTemp = (SkillProyectiles + 3 * .Stats.UserAtributos(eAtributos.Agilidad)) * ModClase(.clase).AtaqueProyectiles
+            PoderAtaqueTemp = (.Stats.UserSkills(eSkill.Proyectiles) + 3 * .Stats.UserAtributos(eAtributos.Agilidad)) * ModClase(.clase).AtaqueProyectiles
         End If
         
         PoderAtaqueProyectil = (PoderAtaqueTemp + (2.5 * MaximoInt(.Stats.ELV - 12, 0)))
@@ -141,20 +137,16 @@ Private Function PoderAtaqueWrestling(ByVal UserIndex As Integer) As Long
 '***************************************************
 
     Dim PoderAtaqueTemp As Long
-    Dim WrestlingSkill As Integer
     
     With UserList(UserIndex)
-    
-        WrestlingSkill = .Stats.UserSkills(eSkill.Wrestling)
-    
-        If WrestlingSkill < 31 Then
-            PoderAtaqueTemp = WrestlingSkill * ModClase(.clase).AtaqueWrestling
-        ElseIf WrestlingSkill < 61 Then
-            PoderAtaqueTemp = (WrestlingSkill + .Stats.UserAtributos(eAtributos.Agilidad)) * ModClase(.clase).AtaqueWrestling
-        ElseIf WrestlingSkill < 91 Then
-            PoderAtaqueTemp = (WrestlingSkill + 2 * .Stats.UserAtributos(eAtributos.Agilidad)) * ModClase(.clase).AtaqueWrestling
+        If .Stats.UserSkills(eSkill.Wrestling) < 31 Then
+            PoderAtaqueTemp = .Stats.UserSkills(eSkill.Wrestling) * ModClase(.clase).AtaqueWrestling
+        ElseIf .Stats.UserSkills(eSkill.Wrestling) < 61 Then
+            PoderAtaqueTemp = (.Stats.UserSkills(eSkill.Wrestling) + .Stats.UserAtributos(eAtributos.Agilidad)) * ModClase(.clase).AtaqueWrestling
+        ElseIf .Stats.UserSkills(eSkill.Wrestling) < 91 Then
+            PoderAtaqueTemp = (.Stats.UserSkills(eSkill.Wrestling) + 2 * .Stats.UserAtributos(eAtributos.Agilidad)) * ModClase(.clase).AtaqueWrestling
         Else
-            PoderAtaqueTemp = (WrestlingSkill + 3 * .Stats.UserAtributos(eAtributos.Agilidad)) * ModClase(.clase).AtaqueWrestling
+            PoderAtaqueTemp = (.Stats.UserSkills(eSkill.Wrestling) + 3 * .Stats.UserAtributos(eAtributos.Agilidad)) * ModClase(.clase).AtaqueWrestling
         End If
         
         PoderAtaqueWrestling = (PoderAtaqueTemp + (2.5 * MaximoInt(.Stats.ELV - 12, 0)))
@@ -237,19 +229,16 @@ Public Function NpcImpacto(ByVal NpcIndex As Integer, ByVal UserIndex As Integer
             If SkillDefensa + SkillTacticas > 0 Then  'Evitamos división por cero
                 ' Chances are rounded
                 ProbRechazo = MaximoInt(10, MinimoInt(90, 100 * SkillDefensa / (SkillDefensa + SkillTacticas)))
-            Else
-                ProbRechazo = 10 'Si no tiene skills le dejamos el 10% mínimo
-            End If
-            
-            Rechazo = (RandomNumber(1, 100) <= ProbRechazo)
+                Rechazo = (RandomNumber(1, 100) <= ProbRechazo)
                 
-            If Rechazo Then
-                'Se rechazo el ataque con el escudo
-                Call SendData(SendTarget.ToPCArea, UserIndex, PrepareMessagePlayWave(SND_ESCUDO, UserList(UserIndex).Pos.X, UserList(UserIndex).Pos.Y))
-                Call WriteMultiMessage(UserIndex, eMessages.BlockedWithShieldUser) 'Call WriteBlockedWithShieldUser(UserIndex)
-                Call SubirSkill(UserIndex, eSkill.Defensa, True)
-            Else
-                Call SubirSkill(UserIndex, eSkill.Defensa, False)
+                If Rechazo Then
+                    'Se rechazo el ataque con el escudo
+                    Call SendData(SendTarget.ToPCArea, UserIndex, PrepareMessagePlayWave(SND_ESCUDO, UserList(UserIndex).Pos.X, UserList(UserIndex).Pos.Y))
+                    Call WriteMultiMessage(UserIndex, eMessages.BlockedWithShieldUser) 'Call WriteBlockedWithShieldUser(UserIndex)
+                    Call SubirSkill(UserIndex, eSkill.Defensa, True)
+                Else
+                    Call SubirSkill(UserIndex, eSkill.Defensa, False)
+                End If
             End If
         End If
     End If
@@ -368,30 +357,21 @@ End Function
 Public Sub UserDañoNpc(ByVal UserIndex As Integer, ByVal NpcIndex As Integer)
 '***************************************************
 'Author: Unknown
-'Last Modification: 07/04/2010 (Pato)
+'Last Modification: 07/04/2010 (ZaMa)
 '25/01/2010: ZaMa - Agrego poder acuchillar npcs.
 '07/04/2010: ZaMa - Los asesinos apuñalan acorde al daño base sin descontar la defensa del npc.
-'07/04/2010: Pato - Si se mata al dragón en party se loguean los miembros de la misma.
-'11/07/2010: ZaMa - Ahora la defensa es solo ignorada para asesinos.
 '***************************************************
 
     Dim daño As Long
     Dim DañoBase As Long
-    Dim PI As Integer
-    Dim MembersOnline(1 To PARTY_MAXMEMBERS) As Integer
-    Dim Text As String
-    Dim i As Integer
-    
-    Dim BoatIndex As Integer
     
     DañoBase = CalcularDaño(UserIndex, NpcIndex)
     
     'esta navegando? si es asi le sumamos el daño del barco
     If UserList(UserIndex).flags.Navegando = 1 Then
-    
-        BoatIndex = UserList(UserIndex).Invent.BarcoObjIndex
-        If BoatIndex > 0 Then
-            DañoBase = DañoBase + RandomNumber(ObjData(BoatIndex).MinHIT, ObjData(BoatIndex).MaxHIT)
+        If UserList(UserIndex).Invent.BarcoObjIndex > 0 Then
+            DañoBase = DañoBase + RandomNumber(ObjData(UserList(UserIndex).Invent.BarcoObjIndex).MinHIT, _
+                                        ObjData(UserList(UserIndex).Invent.BarcoObjIndex).MaxHIT)
         End If
     End If
     
@@ -400,6 +380,7 @@ Public Sub UserDañoNpc(ByVal UserIndex As Integer, ByVal NpcIndex As Integer)
         
         If daño < 0 Then daño = 0
         
+        'Call WriteUserHitNPC(UserIndex, daño)
         Call WriteMultiMessage(UserIndex, eMessages.UserHitNPC, daño)
         Call CalcularDarExp(UserIndex, NpcIndex, daño)
         .Stats.MinHp = .Stats.MinHp - daño
@@ -407,14 +388,7 @@ Public Sub UserDañoNpc(ByVal UserIndex As Integer, ByVal NpcIndex As Integer)
         If .Stats.MinHp > 0 Then
             'Trata de apuñalar por la espalda al enemigo
             If PuedeApuñalar(UserIndex) Then
-                
-                ' La defensa se ignora solo en asesinos
-                If UserList(UserIndex).clase <> eClass.Assasin Then
-                    DañoBase = daño
-                End If
-                
-                Call DoApuñalar(UserIndex, NpcIndex, 0, DañoBase)
-                
+               Call DoApuñalar(UserIndex, NpcIndex, 0, DañoBase)
             End If
             
             'trata de dar golpe crítico
@@ -433,37 +407,20 @@ Public Sub UserDañoNpc(ByVal UserIndex As Integer, ByVal NpcIndex As Integer)
                 If UserList(UserIndex).Invent.WeaponEqpObjIndex = EspadaMataDragonesIndex Then
                     Call QuitarObjetos(EspadaMataDragonesIndex, 1, UserIndex)
                 End If
-                If .Stats.MaxHp > 100000 Then
-                    Text = UserList(UserIndex).Name & " mató un dragón"
-                    PI = UserList(UserIndex).PartyIndex
-                    
-                    If PI > 0 Then
-                        Call Parties(PI).ObtenerMiembrosOnline(MembersOnline())
-                        Text = Text & " estando en party "
-                        
-                        For i = 1 To PARTY_MAXMEMBERS
-                            If MembersOnline(i) > 0 Then
-                                Text = Text & UserList(MembersOnline(i)).Name & ", "
-                            End If
-                        Next i
-                        
-                        Text = Left$(Text, Len(Text) - 2) & ")"
-                    End If
-                    
-                    Call LogDesarrollo(Text & ".")
-                End If
+                If .Stats.MaxHp > 100000 Then Call LogDesarrollo(UserList(UserIndex).name & " mató un dragón")
             End If
             
             ' Para que las mascotas no sigan intentando luchar y
             ' comiencen a seguir al amo
-            For i = 1 To MAXMASCOTAS
-                If UserList(UserIndex).MascotasIndex(i) > 0 Then
-                    If Npclist(UserList(UserIndex).MascotasIndex(i)).TargetNPC = NpcIndex Then
-                        Npclist(UserList(UserIndex).MascotasIndex(i)).TargetNPC = 0
-                        Npclist(UserList(UserIndex).MascotasIndex(i)).Movement = TipoAI.SigueAmo
+            Dim j As Integer
+            For j = 1 To MAXMASCOTAS
+                If UserList(UserIndex).MascotasIndex(j) > 0 Then
+                    If Npclist(UserList(UserIndex).MascotasIndex(j)).TargetNPC = NpcIndex Then
+                        Npclist(UserList(UserIndex).MascotasIndex(j)).TargetNPC = 0
+                        Npclist(UserList(UserIndex).MascotasIndex(j)).Movement = TipoAI.SigueAmo
                     End If
                 End If
-            Next i
+            Next j
             
             Call MuereNpc(NpcIndex, UserIndex)
         End If
@@ -473,79 +430,53 @@ End Sub
 Public Sub NpcDaño(ByVal NpcIndex As Integer, ByVal UserIndex As Integer)
 '***************************************************
 'Author: Unknown
-'Last Modification: 18/09/2010 (ZaMa)
-'18/09/2010: ZaMa - Ahora se considera siempre la defensa del barco y el escudo.
+'Last Modification: -
+'
 '***************************************************
 
     Dim daño As Integer
     Dim Lugar As Integer
+    Dim absorbido As Integer
+    Dim defbarco As Integer
     Dim Obj As ObjData
-    
-    Dim BoatDefense As Integer
-    Dim HeadDefense As Integer
-    Dim BodyDefense As Integer
-    
-    Dim BoatIndex As Integer
-    Dim HelmetIndex As Integer
-    Dim ArmourIndex As Integer
-    Dim ShieldIndex As Integer
     
     daño = RandomNumber(Npclist(NpcIndex).Stats.MinHIT, Npclist(NpcIndex).Stats.MaxHIT)
     
     With UserList(UserIndex)
-        ' Navega?
-        If .flags.Navegando = 1 Then
-            ' En barca suma defensa
-            BoatIndex = .Invent.BarcoObjIndex
-            If BoatIndex > 0 Then
-                Obj = ObjData(BoatIndex)
-                BoatDefense = RandomNumber(Obj.MinDef, Obj.MaxDef)
-            End If
+        If .flags.Navegando = 1 And .Invent.BarcoObjIndex > 0 Then
+            Obj = ObjData(.Invent.BarcoObjIndex)
+            defbarco = RandomNumber(Obj.MinDef, Obj.MaxDef)
         End If
         
         Lugar = RandomNumber(PartesCuerpo.bCabeza, PartesCuerpo.bTorso)
         
         Select Case Lugar
-        
             Case PartesCuerpo.bCabeza
-            
                 'Si tiene casco absorbe el golpe
-                HelmetIndex = .Invent.CascoEqpObjIndex
-                If HelmetIndex > 0 Then
-                   Obj = ObjData(HelmetIndex)
-                   HeadDefense = RandomNumber(Obj.MinDef, Obj.MaxDef)
+                If .Invent.CascoEqpObjIndex > 0 Then
+                   Obj = ObjData(.Invent.CascoEqpObjIndex)
+                   absorbido = RandomNumber(Obj.MinDef, Obj.MaxDef)
                 End If
-                
-            Case Else
-                
-                Dim MinDef As Integer
-                Dim MaxDef As Integer
-            
+          Case Else
                 'Si tiene armadura absorbe el golpe
-                ArmourIndex = .Invent.ArmourEqpObjIndex
-                If ArmourIndex > 0 Then
-                    Obj = ObjData(ArmourIndex)
-                    MinDef = Obj.MinDef
-                    MaxDef = Obj.MaxDef
+                If .Invent.ArmourEqpObjIndex > 0 Then
+                    Dim Obj2 As ObjData
+                    Obj = ObjData(.Invent.ArmourEqpObjIndex)
+                    If .Invent.EscudoEqpObjIndex Then
+                        Obj2 = ObjData(.Invent.EscudoEqpObjIndex)
+                        absorbido = RandomNumber(Obj.MinDef + Obj2.MinDef, Obj.MaxDef + Obj2.MaxDef)
+                    Else
+                        absorbido = RandomNumber(Obj.MinDef, Obj.MaxDef)
+                   End If
                 End If
-                
-                ' Si tiene casco absorbe el golpe
-                ShieldIndex = .Invent.EscudoEqpObjIndex
-                If ShieldIndex > 0 Then
-                    Obj = ObjData(ShieldIndex)
-                    MinDef = MinDef + Obj.MinDef
-                    MaxDef = MaxDef + Obj.MaxDef
-                End If
-                
-                BodyDefense = RandomNumber(MinDef, MaxDef)
-        
         End Select
         
-        ' Daño final
-        daño = daño - HeadDefense - BodyDefense - BoatDefense
+        absorbido = absorbido + defbarco
+        daño = daño - absorbido
         If daño < 1 Then daño = 1
         
         Call WriteMultiMessage(UserIndex, eMessages.NPCHitUser, Lugar, daño)
+        'Call WriteNPCHitUser(UserIndex, Lugar, daño)
         
         If .flags.Privilegios And PlayerType.User Then .Stats.MinHp = .Stats.MinHp - daño
         
@@ -562,27 +493,23 @@ Public Sub NpcDaño(ByVal NpcIndex As Integer, ByVal UserIndex As Integer)
         
         'Muere el usuario
         If .Stats.MinHp <= 0 Then
-            Call WriteMultiMessage(UserIndex, eMessages.NPCKillUser)  'Le informamos que ha muerto ;)
+            Call WriteMultiMessage(UserIndex, eMessages.NPCKillUser) 'Call WriteNPCKillUser(UserIndex) ' Le informamos que ha muerto ;)
             
             'Si lo mato un guardia
-            If criminal(UserIndex) Then
-                If Npclist(NpcIndex).NPCtype = eNPCType.GuardiaReal Then
-                    Call RestarCriminalidad(UserIndex)
-                End If
+            If criminal(UserIndex) And Npclist(NpcIndex).NPCtype = eNPCType.GuardiaReal Then
+                Call RestarCriminalidad(UserIndex)
+                If Not criminal(UserIndex) And .Faccion.FuerzasCaos = 1 Then Call ExpulsarFaccionCaos(UserIndex)
             End If
             
             If Npclist(NpcIndex).MaestroUser > 0 Then
                 Call AllFollowAmo(Npclist(NpcIndex).MaestroUser)
             Else
                 'Al matarlo no lo sigue mas
-                With Npclist(NpcIndex)
-                    If .Stats.Alineacion = 0 Then
-                        .Movement = .flags.OldMovement
-                        .Hostile = .flags.OldHostil
-                        .flags.AttackedBy = vbNullString
-                    End If
-                End With
-                
+                If Npclist(NpcIndex).Stats.Alineacion = 0 Then
+                    Npclist(NpcIndex).Movement = Npclist(NpcIndex).flags.OldMovement
+                    Npclist(NpcIndex).Hostile = Npclist(NpcIndex).flags.OldHostil
+                    Npclist(NpcIndex).flags.AttackedBy = vbNullString
+                End If
             End If
             
             Call UserDie(UserIndex)
@@ -608,16 +535,11 @@ Public Sub RestarCriminalidad(ByVal UserIndex As Integer)
              .LadronesRep = .LadronesRep - (vlCAZADOR * 10)
              If .LadronesRep < 0 Then .LadronesRep = 0
         End If
-    
-    
-        If EraCriminal And Not criminal(UserIndex) Then
-        
-            If esCaos(UserIndex) Then Call ExpulsarFaccionCaos(UserIndex)
-            
-            Call RefreshCharStatus(UserIndex)
-        End If
-    
     End With
+    
+    If EraCriminal And Not criminal(UserIndex) Then
+        Call RefreshCharStatus(UserIndex)
+    End If
 End Sub
 
 Public Sub CheckPets(ByVal NpcIndex As Integer, ByVal UserIndex As Integer, Optional ByVal CheckElementales As Boolean = True)
@@ -754,7 +676,6 @@ Public Sub NpcDañoNpc(ByVal Atacante As Integer, ByVal Victima As Integer)
 '***************************************************
 
     Dim daño As Integer
-    Dim MasterIndex As Integer
     
     With Npclist(Atacante)
         daño = RandomNumber(.Stats.MinHIT, .Stats.MaxHIT)
@@ -767,12 +688,11 @@ Public Sub NpcDañoNpc(ByVal Atacante As Integer, ByVal Victima As Integer)
                 .Hostile = .flags.OldHostil
             End If
             
-            MasterIndex = .MaestroUser
-            If MasterIndex > 0 Then
+            If .MaestroUser > 0 Then
                 Call FollowAmo(Atacante)
             End If
             
-            Call MuereNpc(Victima, MasterIndex)
+            Call MuereNpc(Victima, .MaestroUser)
         End If
     End With
 End Sub
@@ -782,16 +702,13 @@ Public Sub NpcAtacaNpc(ByVal Atacante As Integer, ByVal Victima As Integer, Opti
 'Author: Unknown
 'Last modified: 01/03/2009
 '01/03/2009: ZaMa - Las mascotas no pueden atacar al rey si quedan pretorianos vivos.
-'23/05/2010: ZaMa - Ahora los elementales renuevan el tiempo de pertencia del npc que atacan si pertenece a su amo.
 '*************************************************
-    
-    Dim MasterIndex As Integer
     
     With Npclist(Atacante)
         
         'Es el Rey Preatoriano?
-        If Npclist(Victima).NPCtype = eNPCType.Pretoriano Then
-            If Not ClanPretoriano(Npclist(Victima).ClanIndex).CanAtackMember(Victima) Then
+        If Npclist(Victima).Numero = PRKING_NPC Then
+            If pretorianosVivos > 0 Then
                 Call WriteConsoleMsg(.MaestroUser, "Debes matar al resto del ejército antes de atacar al rey!", FontTypeNames.FONTTYPE_FIGHT)
                 .TargetNPC = 0
                 Exit Sub
@@ -813,18 +730,6 @@ Public Sub NpcAtacaNpc(ByVal Atacante As Integer, ByVal Victima As Integer, Opti
             Call SendData(SendTarget.ToNPCArea, Atacante, PrepareMessagePlayWave(.flags.Snd1, .Pos.X, .Pos.Y))
         End If
         
-        MasterIndex = .MaestroUser
-        
-        ' Tiene maestro?
-        If MasterIndex > 0 Then
-            ' Su maestro es dueño del npc al que ataca?
-            If Npclist(Victima).Owner = MasterIndex Then
-                ' Renuevo el timer de pertenencia
-                Call IntervaloPerdioNpc(MasterIndex, True)
-            End If
-        End If
-        
-        
         If NpcImpactoNpc(Atacante, Victima) Then
             If Npclist(Victima).flags.Snd2 > 0 Then
                 Call SendData(SendTarget.ToNPCArea, Victima, PrepareMessagePlayWave(Npclist(Victima).flags.Snd2, Npclist(Victima).Pos.X, Npclist(Victima).Pos.Y))
@@ -832,7 +737,7 @@ Public Sub NpcAtacaNpc(ByVal Atacante As Integer, ByVal Victima As Integer, Opti
                 Call SendData(SendTarget.ToNPCArea, Victima, PrepareMessagePlayWave(SND_IMPACTO2, Npclist(Victima).Pos.X, Npclist(Victima).Pos.Y))
             End If
         
-            If MasterIndex > 0 Then
+            If .MaestroUser > 0 Then
                 Call SendData(SendTarget.ToNPCArea, Atacante, PrepareMessagePlayWave(SND_IMPACTO, .Pos.X, .Pos.Y))
             Else
                 Call SendData(SendTarget.ToNPCArea, Victima, PrepareMessagePlayWave(SND_IMPACTO, Npclist(Victima).Pos.X, Npclist(Victima).Pos.Y))
@@ -840,7 +745,7 @@ Public Sub NpcAtacaNpc(ByVal Atacante As Integer, ByVal Victima As Integer, Opti
             
             Call NpcDañoNpc(Atacante, Victima)
         Else
-            If MasterIndex > 0 Then
+            If .MaestroUser > 0 Then
                 Call SendData(SendTarget.ToNPCArea, Atacante, PrepareMessagePlayWave(SND_SWING, .Pos.X, .Pos.Y))
             Else
                 Call SendData(SendTarget.ToNPCArea, Victima, PrepareMessagePlayWave(SND_SWING, Npclist(Victima).Pos.X, Npclist(Victima).Pos.Y))
@@ -852,13 +757,12 @@ End Sub
 Public Function UsuarioAtacaNpc(ByVal UserIndex As Integer, ByVal NpcIndex As Integer) As Boolean
 '***************************************************
 'Author: Unknown
-'Last Modification: 13/02/2011 (Amraphen)
+'Last Modification: 14/01/2010 (ZaMa)
 '12/01/2010: ZaMa - Los druidas pierden la inmunidad de ser atacados por npcs cuando los atacan.
 '14/01/2010: ZaMa - Lo transformo en función, para que no se pierdan municiones al atacar targets inválidos.
-'13/02/2011: Amraphen - Ahora la stamina es quitada cuando efectivamente se ataca al NPC.
 '***************************************************
 
-On Error GoTo ErrHandler
+On Error GoTo Errhandler
 
     If Not PuedeAtacarNPC(UserIndex, NpcIndex) Then Exit Function
     
@@ -877,9 +781,6 @@ On Error GoTo ErrHandler
         Call WriteMultiMessage(UserIndex, eMessages.UserSwing)
     End If
     
-    'Quitamos stamina
-    Call QuitarSta(UserIndex, RandomNumber(1, 10))
-    
     ' Reveló su condición de usuario al atacar, los npcs lo van a atacar
     UserList(UserIndex).flags.Ignorado = False
     
@@ -887,21 +788,16 @@ On Error GoTo ErrHandler
     
     Exit Function
     
-ErrHandler:
-    Dim UserName As String
-    
-    If UserIndex > 0 Then UserName = UserList(UserIndex).Name
-    
-    Call LogError("Error en UsuarioAtacaNpc. Error " & Err.Number & " : " & Err.description & ". User: " & _
-                   UserIndex & "-> " & UserName & ". NpcIndex: " & NpcIndex & ".")
+Errhandler:
+    Call LogError("Error en UsuarioAtacaNpc. Error " & Err.Number & " : " & Err.description)
     
 End Function
 
 Public Sub UsuarioAtaca(ByVal UserIndex As Integer)
 '***************************************************
 'Author: Unknown
-'Last Modification: 13/02/2011 (Amraphen)
-'13/02/2011: Amraphen - Ahora se quita la stamina en el sub UsuarioAtacaNPC.
+'Last Modification: -
+'
 '***************************************************
 
     Dim index As Integer
@@ -919,8 +815,10 @@ Public Sub UsuarioAtaca(ByVal UserIndex As Integer)
     End If
     
     With UserList(UserIndex)
-        'Chequeamos que tenga por lo menos 10 de stamina.
-        If .Stats.MinSta < 10 Then
+        'Quitamos stamina
+        If .Stats.MinSta >= 10 Then
+            Call QuitarSta(UserIndex, RandomNumber(1, 10))
+        Else
             If .Genero = eGenero.Hombre Then
                 Call WriteConsoleMsg(UserIndex, "Estás muy cansado para luchar.", FontTypeNames.FONTTYPE_INFO)
             Else
@@ -980,11 +878,11 @@ End Sub
 Public Function UsuarioImpacto(ByVal AtacanteIndex As Integer, ByVal VictimaIndex As Integer) As Boolean
 '***************************************************
 'Author: Unknown
-'Last Modification: 21/05/2010
-'21/05/2010: ZaMa - Evito division por cero.
+'Last Modification: -
+'
 '***************************************************
 
-On Error GoTo ErrHandler
+On Error GoTo Errhandler
 
     Dim ProbRechazo As Long
     Dim Rechazo As Boolean
@@ -998,90 +896,81 @@ On Error GoTo ErrHandler
     Dim ProbEvadir As Long
     Dim Skill As eSkill
     
-    With UserList(VictimaIndex)
+    SkillTacticas = UserList(VictimaIndex).Stats.UserSkills(eSkill.Tacticas)
+    SkillDefensa = UserList(VictimaIndex).Stats.UserSkills(eSkill.Defensa)
     
-        SkillTacticas = .Stats.UserSkills(eSkill.Tacticas)
-        SkillDefensa = .Stats.UserSkills(eSkill.Defensa)
-        
-        Arma = UserList(AtacanteIndex).Invent.WeaponEqpObjIndex
-        
-        'Calculamos el poder de evasion...
-        UserPoderEvasion = PoderEvasion(VictimaIndex)
-        
-        If .Invent.EscudoEqpObjIndex > 0 Then
-           UserPoderEvasionEscudo = PoderEvasionEscudo(VictimaIndex)
-           UserPoderEvasion = UserPoderEvasion + UserPoderEvasionEscudo
+    Arma = UserList(AtacanteIndex).Invent.WeaponEqpObjIndex
+    
+    'Calculamos el poder de evasion...
+    UserPoderEvasion = PoderEvasion(VictimaIndex)
+    
+    If UserList(VictimaIndex).Invent.EscudoEqpObjIndex > 0 Then
+       UserPoderEvasionEscudo = PoderEvasionEscudo(VictimaIndex)
+       UserPoderEvasion = UserPoderEvasion + UserPoderEvasionEscudo
+    Else
+        UserPoderEvasionEscudo = 0
+    End If
+    
+    'Esta usando un arma ???
+    If UserList(AtacanteIndex).Invent.WeaponEqpObjIndex > 0 Then
+        If ObjData(Arma).proyectil = 1 Then
+            PoderAtaque = PoderAtaqueProyectil(AtacanteIndex)
+            Skill = eSkill.Proyectiles
         Else
-            UserPoderEvasionEscudo = 0
+            PoderAtaque = PoderAtaqueArma(AtacanteIndex)
+            Skill = eSkill.Armas
         End If
-        
-        'Esta usando un arma ???
-        If UserList(AtacanteIndex).Invent.WeaponEqpObjIndex > 0 Then
-            If ObjData(Arma).proyectil = 1 Then
-                PoderAtaque = PoderAtaqueProyectil(AtacanteIndex)
-                Skill = eSkill.Proyectiles
-            Else
-                PoderAtaque = PoderAtaqueArma(AtacanteIndex)
-                Skill = eSkill.Armas
-            End If
-        Else
-            PoderAtaque = PoderAtaqueWrestling(AtacanteIndex)
-            Skill = eSkill.Wrestling
-        End If
-        
-        ' Chances are rounded
-        ProbExito = MaximoInt(10, MinimoInt(90, 50 + (PoderAtaque - UserPoderEvasion) * 0.4))
-        
-        ' Se reduce la evasion un 25%
-        If .flags.Meditando Then
-            ProbEvadir = (100 - ProbExito) * 0.75
-            ProbExito = MinimoInt(90, 100 - ProbEvadir)
-        End If
-        
-        UsuarioImpacto = (RandomNumber(1, 100) <= ProbExito)
-        
-        ' el usuario esta usando un escudo ???
-        If .Invent.EscudoEqpObjIndex > 0 Then
-            'Fallo ???
-            If Not UsuarioImpacto Then
-                
-                Dim SumaSkills As Integer
-                
-                ' Para evitar division por 0
-                SumaSkills = MaximoInt(1, SkillDefensa + SkillTacticas)
-                
-                ' Chances are rounded
-                ProbRechazo = MaximoInt(10, MinimoInt(90, 100 * SkillDefensa / SumaSkills))
-                Rechazo = (RandomNumber(1, 100) <= ProbRechazo)
-                If Rechazo Then
-                    'Se rechazo el ataque con el escudo
-                    Call SendData(SendTarget.ToPCArea, VictimaIndex, PrepareMessagePlayWave(SND_ESCUDO, .Pos.X, .Pos.Y))
-                      
-                    Call WriteMultiMessage(AtacanteIndex, eMessages.BlockedWithShieldother)
-                    Call WriteMultiMessage(VictimaIndex, eMessages.BlockedWithShieldUser)
-                    
-                    Call SubirSkill(VictimaIndex, eSkill.Defensa, True)
-                Else
-                    Call SubirSkill(VictimaIndex, eSkill.Defensa, False)
-                End If
-            End If
-        End If
-        
+    Else
+        PoderAtaque = PoderAtaqueWrestling(AtacanteIndex)
+        Skill = eSkill.Wrestling
+    End If
+    
+    ' Chances are rounded
+    ProbExito = MaximoInt(10, MinimoInt(90, 50 + (PoderAtaque - UserPoderEvasion) * 0.4))
+    
+    ' Se reduce la evasion un 25%
+    If UserList(VictimaIndex).flags.Meditando = True Then
+        ProbEvadir = (100 - ProbExito) * 0.75
+        ProbExito = MinimoInt(90, 100 - ProbEvadir)
+    End If
+    
+    UsuarioImpacto = (RandomNumber(1, 100) <= ProbExito)
+    
+    ' el usuario esta usando un escudo ???
+    If UserList(VictimaIndex).Invent.EscudoEqpObjIndex > 0 Then
+        'Fallo ???
         If Not UsuarioImpacto Then
-            Call SubirSkill(AtacanteIndex, Skill, False)
+            ' Chances are rounded
+            ProbRechazo = MaximoInt(10, MinimoInt(90, 100 * SkillDefensa / (SkillDefensa + SkillTacticas)))
+            Rechazo = (RandomNumber(1, 100) <= ProbRechazo)
+            If Rechazo Then
+                'Se rechazo el ataque con el escudo
+                Call SendData(SendTarget.ToPCArea, VictimaIndex, PrepareMessagePlayWave(SND_ESCUDO, UserList(VictimaIndex).Pos.X, UserList(VictimaIndex).Pos.Y))
+                  
+                Call WriteMultiMessage(AtacanteIndex, eMessages.BlockedWithShieldother)
+                Call WriteMultiMessage(VictimaIndex, eMessages.BlockedWithShieldUser)
+                
+                Call SubirSkill(VictimaIndex, eSkill.Defensa, True)
+            Else
+                Call SubirSkill(VictimaIndex, eSkill.Defensa, False)
+            End If
         End If
-        
-        Call FlushBuffer(VictimaIndex)
-    End With
+    End If
+    
+    If Not UsuarioImpacto Then
+        Call SubirSkill(AtacanteIndex, Skill, False)
+    End If
+    
+    Call FlushBuffer(VictimaIndex)
     
     Exit Function
     
-ErrHandler:
+Errhandler:
     Dim AtacanteNick As String
     Dim VictimaNick As String
     
-    If AtacanteIndex > 0 Then AtacanteNick = UserList(AtacanteIndex).Name
-    If VictimaIndex > 0 Then VictimaNick = UserList(VictimaIndex).Name
+    If AtacanteIndex > 0 Then AtacanteNick = UserList(AtacanteIndex).name
+    If VictimaIndex > 0 Then VictimaNick = UserList(VictimaIndex).name
     
     Call LogError("Error en UsuarioImpacto. Error " & Err.Number & " : " & Err.description & " AtacanteIndex: " & _
              AtacanteIndex & " Nick: " & AtacanteNick & " VictimaIndex: " & VictimaIndex & " Nick: " & VictimaNick)
@@ -1095,7 +984,7 @@ Public Function UsuarioAtacaUsuario(ByVal AtacanteIndex As Integer, ByVal Victim
 '                    inválidos, y evitar un doble chequeo innecesario
 '***************************************************
 
-On Error GoTo ErrHandler
+On Error GoTo Errhandler
 
     If Not PuedeAtacar(AtacanteIndex, VictimaIndex) Then Exit Function
     
@@ -1145,7 +1034,7 @@ On Error GoTo ErrHandler
     
     Exit Function
     
-ErrHandler:
+Errhandler:
     Call LogError("Error en UsuarioAtacaUsuario. Error " & Err.Number & " : " & Err.description)
 End Function
 
@@ -1153,109 +1042,67 @@ Public Sub UserDañoUser(ByVal AtacanteIndex As Integer, ByVal VictimaIndex As In
 '***************************************************
 'Author: Unknown
 'Last Modification: 12/01/2010 (ZaMa)
-'12/01/2010: ZaMa - Implemento armas arrojadizas y probabilidad de acuchillar.
-'11/03/2010: ZaMa - Ahora no cuenta la muerte si estaba en estado atacable, y no se vuelve criminal.
-'18/09/2010: ZaMa - Ahora se cosidera la defensa de los barcos siempre.
+'12/01/2010: ZaMa - Implemento armas arrojadizas y probabilidad de acuchillar
+'11/03/2010: ZaMa - Ahora no cuenta la muerte si estaba en estado atacable, y no se vuelve criminal
 '***************************************************
     
-On Error GoTo ErrHandler
+On Error GoTo Errhandler
 
     Dim daño As Long
     Dim Lugar As Byte
+    Dim absorbido As Long
+    Dim defbarco As Integer
     Dim Obj As ObjData
-    
-    Dim BoatDefense As Integer
-    Dim BodyDefense As Integer
-    Dim HeadDefense As Integer
-    Dim WeaponBoost As Integer
-    
-    Dim BoatIndex As Integer
-    Dim WeaponIndex As Integer
-    Dim HelmetIndex As Integer
-    Dim ArmourIndex As Integer
-    Dim ShieldIndex As Integer
-    
-    Dim BarcaIndex As Integer
-    Dim ArmaIndex As Integer
-    Dim CascoIndex As Integer
-    Dim ArmaduraIndex As Integer
+    Dim Resist As Byte
     
     daño = CalcularDaño(AtacanteIndex)
     
     Call UserEnvenena(AtacanteIndex, VictimaIndex)
     
     With UserList(AtacanteIndex)
-        
-        ' Aumento de daño por barca (atacante)
-        If .flags.Navegando = 1 Then
-            
-            BoatIndex = .Invent.BarcoObjIndex
-            
-            If BoatIndex > 0 Then
-                Obj = ObjData(BoatIndex)
-                daño = daño + RandomNumber(Obj.MinHIT, Obj.MaxHIT)
-            End If
-            
+        If .flags.Navegando = 1 And .Invent.BarcoObjIndex > 0 Then
+             Obj = ObjData(.Invent.BarcoObjIndex)
+             daño = daño + RandomNumber(Obj.MinHIT, Obj.MaxHIT)
         End If
         
-        ' Aumento de defensa por barca (victima)
-        If UserList(VictimaIndex).flags.Navegando = 1 Then
-            
-            BoatIndex = UserList(VictimaIndex).Invent.BarcoObjIndex
-            
-            If BoatIndex > 0 Then
-                Obj = ObjData(BoatIndex)
-                BoatDefense = RandomNumber(Obj.MinDef, Obj.MaxDef)
-            End If
-            
+        If UserList(VictimaIndex).flags.Navegando = 1 And UserList(VictimaIndex).Invent.BarcoObjIndex > 0 Then
+             Obj = ObjData(UserList(VictimaIndex).Invent.BarcoObjIndex)
+             defbarco = RandomNumber(Obj.MinDef, Obj.MaxDef)
         End If
         
-        ' Refuerzo arma (atacante)
-        WeaponIndex = .Invent.WeaponEqpObjIndex
-        If WeaponIndex > 0 Then
-            WeaponBoost = ObjData(WeaponIndex).Refuerzo
+        If .Invent.WeaponEqpObjIndex > 0 Then
+            Resist = ObjData(.Invent.WeaponEqpObjIndex).Refuerzo
         End If
         
         Lugar = RandomNumber(PartesCuerpo.bCabeza, PartesCuerpo.bTorso)
         
         Select Case Lugar
-        
             Case PartesCuerpo.bCabeza
-            
                 'Si tiene casco absorbe el golpe
-                HelmetIndex = UserList(VictimaIndex).Invent.CascoEqpObjIndex
-                If HelmetIndex > 0 Then
-                    Obj = ObjData(HelmetIndex)
-                    HeadDefense = RandomNumber(Obj.MinDef, Obj.MaxDef)
+                If UserList(VictimaIndex).Invent.CascoEqpObjIndex > 0 Then
+                    Obj = ObjData(UserList(VictimaIndex).Invent.CascoEqpObjIndex)
+                    absorbido = RandomNumber(Obj.MinDef, Obj.MaxDef)
+                    absorbido = absorbido + defbarco - Resist
+                    daño = daño - absorbido
+                    If daño < 0 Then daño = 1
                 End If
             
             Case Else
-                
-                Dim MinDef As Integer
-                Dim MaxDef As Integer
-                
                 'Si tiene armadura absorbe el golpe
-                ArmourIndex = UserList(VictimaIndex).Invent.ArmourEqpObjIndex
-                If ArmourIndex > 0 Then
-                    Obj = ObjData(ArmourIndex)
-                    MinDef = Obj.MinDef
-                    MaxDef = Obj.MaxDef
+                If UserList(VictimaIndex).Invent.ArmourEqpObjIndex > 0 Then
+                    Obj = ObjData(UserList(VictimaIndex).Invent.ArmourEqpObjIndex)
+                    Dim Obj2 As ObjData
+                    If UserList(VictimaIndex).Invent.EscudoEqpObjIndex Then
+                        Obj2 = ObjData(UserList(VictimaIndex).Invent.EscudoEqpObjIndex)
+                        absorbido = RandomNumber(Obj.MinDef + Obj2.MinDef, Obj.MaxDef + Obj2.MaxDef)
+                    Else
+                        absorbido = RandomNumber(Obj.MinDef, Obj.MaxDef)
+                    End If
+                    absorbido = absorbido + defbarco - Resist
+                    daño = daño - absorbido
+                    If daño < 0 Then daño = 1
                 End If
-                
-                ' Si tiene escudo, tambien absorbe el golpe
-                ShieldIndex = UserList(VictimaIndex).Invent.EscudoEqpObjIndex
-                If ShieldIndex > 0 Then
-                    Obj = ObjData(ShieldIndex)
-                    MinDef = MinDef + Obj.MinDef
-                    MaxDef = MaxDef + Obj.MaxDef
-                End If
-                
-                BodyDefense = RandomNumber(MinDef, MaxDef)
-                
         End Select
-        
-        daño = daño + WeaponBoost - HeadDefense - BodyDefense - BoatDefense
-        If daño < 0 Then daño = 1
         
         Call WriteMultiMessage(AtacanteIndex, eMessages.UserHittedUser, UserList(VictimaIndex).Char.CharIndex, Lugar, daño)
         Call WriteMultiMessage(VictimaIndex, eMessages.UserHittedByUser, .Char.CharIndex, Lugar, daño)
@@ -1264,14 +1111,17 @@ On Error GoTo ErrHandler
         
         If .flags.Hambre = 0 And .flags.Sed = 0 Then
             'Si usa un arma quizas suba "Combate con armas"
-            If WeaponIndex > 0 Then
-                If ObjData(WeaponIndex).proyectil Then
+            If .Invent.WeaponEqpObjIndex > 0 Then
+                If ObjData(.Invent.WeaponEqpObjIndex).proyectil Then
                     'es un Arco. Sube Armas a Distancia
                     Call SubirSkill(AtacanteIndex, eSkill.Proyectiles, True)
                     
-                    ' Si acuchilla
-                    If PuedeAcuchillar(AtacanteIndex) Then
-                        Call DoAcuchillar(AtacanteIndex, 0, VictimaIndex, daño)
+                    ' Si es arma arrojadiza..
+                    If ObjData(.Invent.WeaponEqpObjIndex).Municion = 0 Then
+                        ' Si acuchilla
+                        If ObjData(.Invent.WeaponEqpObjIndex).Acuchilla = 1 Then
+                            Call DoAcuchillar(AtacanteIndex, 0, VictimaIndex, daño)
+                        End If
                     End If
                 Else
                     'Sube combate con armas.
@@ -1327,12 +1177,12 @@ On Error GoTo ErrHandler
     
     Exit Sub
     
-ErrHandler:
+Errhandler:
     Dim AtacanteNick As String
     Dim VictimaNick As String
     
-    If AtacanteIndex > 0 Then AtacanteNick = UserList(AtacanteIndex).Name
-    If VictimaIndex > 0 Then VictimaNick = UserList(VictimaIndex).Name
+    If AtacanteIndex > 0 Then AtacanteNick = UserList(AtacanteIndex).name
+    If VictimaIndex > 0 Then VictimaNick = UserList(VictimaIndex).name
     
     Call LogError("Error en UserDañoUser. Error " & Err.Number & " : " & Err.description & " AtacanteIndex: " & _
              AtacanteIndex & " Nick: " & AtacanteNick & " VictimaIndex: " & VictimaIndex & " Nick: " & VictimaNick)
@@ -1416,7 +1266,7 @@ Sub AllMascotasAtacanUser(ByVal victim As Integer, ByVal Maestro As Integer)
     
     For iCount = 1 To MAXMASCOTAS
         If UserList(Maestro).MascotasIndex(iCount) > 0 Then
-            Npclist(UserList(Maestro).MascotasIndex(iCount)).flags.AttackedBy = UserList(victim).Name
+            Npclist(UserList(Maestro).MascotasIndex(iCount)).flags.AttackedBy = UserList(victim).name
             Npclist(UserList(Maestro).MascotasIndex(iCount)).Movement = TipoAI.NPCDEFENSA
             Npclist(UserList(Maestro).MascotasIndex(iCount)).Hostile = 1
         End If
@@ -1432,7 +1282,7 @@ Public Function PuedeAtacar(ByVal AttackerIndex As Integer, ByVal VictimIndex As
 '24/02/2009: ZaMa - Los usuarios pueden atacarse entre si.
 '02/04/2010: ZaMa - Los armadas no pueden atacar nunca a los ciudas, salvo que esten atacables.
 '***************************************************
-On Error GoTo ErrHandler
+On Error GoTo Errhandler
 
     'MUY importante el orden de estos "IF"...
     
@@ -1571,7 +1421,7 @@ On Error GoTo ErrHandler
     PuedeAtacar = True
 Exit Function
 
-ErrHandler:
+Errhandler:
     Call LogError("Error en PuedeAtacar. Error " & Err.Number & " : " & Err.description)
 End Function
 
@@ -1580,155 +1430,136 @@ Public Function PuedeAtacarNPC(ByVal AttackerIndex As Integer, ByVal NpcIndex As
 '***************************************************
 'Autor: Unknown Author (Original version)
 'Returns True if AttackerIndex can attack the NpcIndex
-'Last Modification: 04/07/2010
+'Last Modification: 16/11/2009
 '24/01/2007 Pablo (ToxicWaste) - Orden y corrección de ataque sobre una mascota y guardias
 '14/08/2007 Pablo (ToxicWaste) - Reescribo y agrego TODOS los casos posibles cosa de usar
 'esta función para todo lo referente a ataque a un NPC. Ya sea Magia, Físico o a Distancia.
 '16/11/2009: ZaMa - Agrego validacion de pertenencia de npc.
 '02/04/2010: ZaMa - Los armadas ya no peuden atacar npcs no hotiles.
-'23/05/2010: ZaMa - El inmo/para renuevan el timer de pertenencia si el ataque fue a un npc propio.
-'04/07/2010: ZaMa - Ahora no se puede apropiar del dragon de dd.
 '***************************************************
-
-On Error GoTo ErrHandler
-
-    With Npclist(NpcIndex)
     
-        'Estas muerto?
-        If UserList(AttackerIndex).flags.Muerto = 1 Then
-            Call WriteConsoleMsg(AttackerIndex, "¡¡Estás muerto!!", FontTypeNames.FONTTYPE_INFO)
-            Exit Function
-        End If
-        
-        'Sos consejero?
-        If UserList(AttackerIndex).flags.Privilegios And PlayerType.Consejero Then
-            'No pueden atacar NPC los Consejeros.
-            Exit Function
-        End If
-        
-        ' No podes atacar si estas en consulta
-        If UserList(AttackerIndex).flags.EnConsulta Then
-            Call WriteConsoleMsg(AttackerIndex, "No puedes atacar npcs mientras estas en consulta.", FontTypeNames.FONTTYPE_INFO)
-            Exit Function
-        End If
-        
-        'Es una criatura atacable?
-        If .Attackable = 0 Then
-            Call WriteConsoleMsg(AttackerIndex, "No puedes atacar esta criatura.", FontTypeNames.FONTTYPE_INFO)
-            Exit Function
-        End If
-        
-        'Es valida la distancia a la cual estamos atacando?
-        If Distancia(UserList(AttackerIndex).Pos, .Pos) >= MAXDISTANCIAARCO Then
-           Call WriteConsoleMsg(AttackerIndex, "Estás muy lejos para disparar.", FontTypeNames.FONTTYPE_FIGHT)
-           Exit Function
-        End If
-        
-        'Es una criatura No-Hostil?
-        If .Hostile = 0 Then
-            'Es Guardia del Caos?
-            If .NPCtype = eNPCType.Guardiascaos Then
-                'Lo quiere atacar un caos?
-                If esCaos(AttackerIndex) Then
-                    Call WriteConsoleMsg(AttackerIndex, "No puedes atacar Guardias del Caos siendo de la legión oscura.", FontTypeNames.FONTTYPE_INFO)
-                    Exit Function
-                End If
-            'Es guardia Real?
-            ElseIf .NPCtype = eNPCType.GuardiaReal Then
-                'Lo quiere atacar un Armada?
+    Dim OwnerUserIndex As Integer
+    
+    'Estas muerto?
+    If UserList(AttackerIndex).flags.Muerto = 1 Then
+        Call WriteConsoleMsg(AttackerIndex, "¡¡Estás muerto!!", FontTypeNames.FONTTYPE_INFO)
+        Exit Function
+    End If
+    
+    'Sos consejero?
+    If UserList(AttackerIndex).flags.Privilegios And PlayerType.Consejero Then
+        'No pueden atacar NPC los Consejeros.
+        Exit Function
+    End If
+    
+    ' No podes atacar si estas en consulta
+    If UserList(AttackerIndex).flags.EnConsulta Then
+        Call WriteConsoleMsg(AttackerIndex, "No puedes atacar npcs mientras estas en consulta.", FontTypeNames.FONTTYPE_INFO)
+        Exit Function
+    End If
+    
+    'Es una criatura atacable?
+    If Npclist(NpcIndex).Attackable = 0 Then
+        Call WriteConsoleMsg(AttackerIndex, "No puedes atacar esta criatura.", FontTypeNames.FONTTYPE_INFO)
+        Exit Function
+    End If
+    
+    'Es valida la distancia a la cual estamos atacando?
+    If Distancia(UserList(AttackerIndex).Pos, Npclist(NpcIndex).Pos) >= MAXDISTANCIAARCO Then
+       Call WriteConsoleMsg(AttackerIndex, "Estás muy lejos para disparar.", FontTypeNames.FONTTYPE_FIGHT)
+       Exit Function
+    End If
+    
+    'Es una criatura No-Hostil?
+    If Npclist(NpcIndex).Hostile = 0 Then
+        'Es Guardia del Caos?
+        If Npclist(NpcIndex).NPCtype = eNPCType.Guardiascaos Then
+            'Lo quiere atacar un caos?
+            If esCaos(AttackerIndex) Then
+                Call WriteConsoleMsg(AttackerIndex, "No puedes atacar Guardias del Caos siendo de la legión oscura.", FontTypeNames.FONTTYPE_INFO)
+                Exit Function
+            End If
+        'Es guardia Real?
+        ElseIf Npclist(NpcIndex).NPCtype = eNPCType.GuardiaReal Then
+            'Lo quiere atacar un Armada?
+            If esArmada(AttackerIndex) Then
+                Call WriteConsoleMsg(AttackerIndex, "No puedes atacar Guardias Reales siendo del ejército real.", FontTypeNames.FONTTYPE_INFO)
+                Exit Function
+            End If
+            'Tienes el seguro puesto?
+            If UserList(AttackerIndex).flags.Seguro Then
+                Call WriteConsoleMsg(AttackerIndex, "Para poder atacar Guardias Reales debes quitarte el seguro.", FontTypeNames.FONTTYPE_INFO)
+                Exit Function
+            Else
+                Call WriteConsoleMsg(AttackerIndex, "¡Atacaste un Guardia Real! Eres un criminal.", FontTypeNames.FONTTYPE_INFO)
+                Call VolverCriminal(AttackerIndex)
+                PuedeAtacarNPC = True
+                Exit Function
+            End If
+    
+        'No era un Guardia, asi que es una criatura No-Hostil común.
+        'Para asegurarnos que no sea una Mascota:
+        ElseIf Npclist(NpcIndex).MaestroUser = 0 Then
+            'Si sos ciudadano tenes que quitar el seguro para atacarla.
+            If Not criminal(AttackerIndex) Then
+                
+                ' Si sos armada no podes atacarlo directamente
                 If esArmada(AttackerIndex) Then
-                    Call WriteConsoleMsg(AttackerIndex, "No puedes atacar Guardias Reales siendo del ejército real.", FontTypeNames.FONTTYPE_INFO)
+                    Call WriteConsoleMsg(AttackerIndex, "Los miembros del ejército real no pueden atacar npcs no hostiles.", FontTypeNames.FONTTYPE_INFO)
                     Exit Function
                 End If
-                'Tienes el seguro puesto?
+            
+                'Sos ciudadano, tenes el seguro puesto?
                 If UserList(AttackerIndex).flags.Seguro Then
-                    Call WriteConsoleMsg(AttackerIndex, "Para poder atacar Guardias Reales debes quitarte el seguro.", FontTypeNames.FONTTYPE_INFO)
+                    Call WriteConsoleMsg(AttackerIndex, "Para atacar a este NPC debes quitarte el seguro.", FontTypeNames.FONTTYPE_INFO)
                     Exit Function
                 Else
-                    Call WriteConsoleMsg(AttackerIndex, "¡Atacaste un Guardia Real! Eres un criminal.", FontTypeNames.FONTTYPE_INFO)
+                    'No tiene seguro puesto. Puede atacar pero es penalizado.
+                    Call WriteConsoleMsg(AttackerIndex, "Atacaste un NPC no-hostil. Continúa haciéndolo y te podrás convertir en criminal.", FontTypeNames.FONTTYPE_INFO)
+                    'NicoNZ: Cambio para que al atacar npcs no hostiles no bajen puntos de nobleza
+                    Call DisNobAuBan(AttackerIndex, 0, 1000)
+                    PuedeAtacarNPC = True
+                    Exit Function
+                End If
+            End If
+        End If
+    End If
+    
+    'Es el NPC mascota de alguien?
+    If Npclist(NpcIndex).MaestroUser > 0 Then
+        If Not criminal(Npclist(NpcIndex).MaestroUser) Then
+        
+            'Es mascota de un Ciudadano.
+            If esArmada(AttackerIndex) Then
+                'El atacante es Armada y esta intentando atacar mascota de un Ciudadano
+                Call WriteConsoleMsg(AttackerIndex, "Los miembros del ejército real no pueden atacar mascotas de ciudadanos.", FontTypeNames.FONTTYPE_INFO)
+                Exit Function
+            End If
+            
+            If Not criminal(AttackerIndex) Then
+                
+                'El atacante es Ciudadano y esta intentando atacar mascota de un Ciudadano.
+                If UserList(AttackerIndex).flags.Seguro Then
+                    'El atacante tiene el seguro puesto. No puede atacar.
+                    Call WriteConsoleMsg(AttackerIndex, "Para atacar mascotas de ciudadanos debes quitarte el seguro.", FontTypeNames.FONTTYPE_INFO)
+                    Exit Function
+                Else
+                    'El atacante no tiene el seguro puesto. Recibe penalización.
+                    Call WriteConsoleMsg(AttackerIndex, "Has atacado la Mascota de un ciudadano. Eres un criminal.", FontTypeNames.FONTTYPE_INFO)
                     Call VolverCriminal(AttackerIndex)
                     PuedeAtacarNPC = True
                     Exit Function
                 End If
-        
-            'No era un Guardia, asi que es una criatura No-Hostil común.
-            'Para asegurarnos que no sea una Mascota:
-            ElseIf .MaestroUser = 0 Then
-                'Si sos ciudadano tenes que quitar el seguro para atacarla.
-                If Not criminal(AttackerIndex) Then
-                    
-                    ' Si sos armada no podes atacarlo directamente
-                    If esArmada(AttackerIndex) Then
-                        Call WriteConsoleMsg(AttackerIndex, "Los miembros del ejército real no pueden atacar npcs no hostiles.", FontTypeNames.FONTTYPE_INFO)
-                        Exit Function
-                    End If
-                
-                    'Sos ciudadano, tenes el seguro puesto?
-                    If UserList(AttackerIndex).flags.Seguro Then
-                        Call WriteConsoleMsg(AttackerIndex, "Para atacar a este NPC debes quitarte el seguro.", FontTypeNames.FONTTYPE_INFO)
-                        Exit Function
-                    Else
-                        'No tiene seguro puesto. Puede atacar pero es penalizado.
-                        Call WriteConsoleMsg(AttackerIndex, "Atacaste un NPC no-hostil. Continúa haciéndolo y te podrás convertir en criminal.", FontTypeNames.FONTTYPE_INFO)
-                        'NicoNZ: Cambio para que al atacar npcs no hostiles no bajen puntos de nobleza
-                        Call DisNobAuBan(AttackerIndex, 0, 1000)
-                        PuedeAtacarNPC = True
-                        Exit Function
-                    End If
+            Else
+                'El atacante es criminal y quiere atacar un elemental ciuda, pero tiene el seguro puesto (NicoNZ)
+                If UserList(AttackerIndex).flags.Seguro Then
+                    Call WriteConsoleMsg(AttackerIndex, "Para atacar mascotas de ciudadanos debes quitarte el seguro.", FontTypeNames.FONTTYPE_INFO)
+                    Exit Function
                 End If
             End If
-        End If
-    
-    
-        Dim MasterIndex As Integer
-        MasterIndex = .MaestroUser
-        
-        'Es el NPC mascota de alguien?
-        If MasterIndex > 0 Then
-            
-            ' Dueño de la mascota ciuda?
-            If Not criminal(MasterIndex) Then
-                
-                ' Atacante ciuda?
-                If Not criminal(AttackerIndex) Then
-                    
-                    ' Si esta en estado atacable puede atacar su mascota sin problemas
-                    If UserList(MasterIndex).flags.AtacablePor = AttackerIndex Then
-                        ' Toogle to atacable and restart the timer
-                        Call ToogleToAtackable(AttackerIndex, MasterIndex)
-                        PuedeAtacarNPC = True
-                        Exit Function
-                    End If
-                    
-                    'Atacante armada?
-                    If esArmada(AttackerIndex) Then
-                        'El atacante es Armada y esta intentando atacar mascota de un Ciudadano
-                        Call WriteConsoleMsg(AttackerIndex, "Los miembros del ejército real no pueden atacar mascotas de ciudadanos.", FontTypeNames.FONTTYPE_INFO)
-                        Exit Function
-                    End If
-                    
-                    'El atacante es Ciudadano y esta intentando atacar mascota de un Ciudadano.
-                    If UserList(AttackerIndex).flags.Seguro Then
-                        'El atacante tiene el seguro puesto. No puede atacar.
-                        Call WriteConsoleMsg(AttackerIndex, "Para atacar mascotas de ciudadanos debes quitarte el seguro.", FontTypeNames.FONTTYPE_INFO)
-                        Exit Function
-                    Else
-                        'El atacante no tiene el seguro puesto. Recibe penalización.
-                        Call WriteConsoleMsg(AttackerIndex, "Has atacado la Mascota de un ciudadano. Eres un criminal.", FontTypeNames.FONTTYPE_INFO)
-                        Call VolverCriminal(AttackerIndex)
-                        PuedeAtacarNPC = True
-                        Exit Function
-                    End If
-                Else
-                    'El atacante es criminal y quiere atacar un elemental ciuda, pero tiene el seguro puesto (NicoNZ)
-                    If UserList(AttackerIndex).flags.Seguro Then
-                        Call WriteConsoleMsg(AttackerIndex, "Para atacar mascotas de ciudadanos debes quitarte el seguro.", FontTypeNames.FONTTYPE_INFO)
-                        Exit Function
-                    End If
-                End If
-            
-            'Es mascota de un caos?
-            ElseIf esCaos(MasterIndex) Then
+        Else
+            'Es mascota de un Criminal.
+            If esCaos(Npclist(NpcIndex).MaestroUser) Then
                 'Es Caos el Dueño.
                 If esCaos(AttackerIndex) Then
                     'Un Caos intenta atacar una criatura de un Caos. No puede atacar.
@@ -1736,12 +1567,14 @@ On Error GoTo ErrHandler
                     Exit Function
                 End If
             End If
-            
-        ' No es mascota de nadie, le pertenece a alguien?
-        ElseIf .Owner > 0 Then
+        End If
+    End If
+    
+    With Npclist(NpcIndex)
+        ' El npc le pertenece a alguien?
+        OwnerUserIndex = .Owner
         
-            Dim OwnerUserIndex As Integer
-            OwnerUserIndex = .Owner
+        If OwnerUserIndex > 0 Then
             
             ' Puede atacar a su propia criatura!
             If OwnerUserIndex = AttackerIndex Then
@@ -1836,15 +1669,10 @@ On Error GoTo ErrHandler
                     Else
                         ' Si no tiene dueño, puede apropiarselo
                         If OwnerUserIndex = 0 Then
-                        
                             ' Siempre que no posea uno ya (el inmo/para no cambia pertenencia de npcs).
                             If UserList(AttackerIndex).flags.OwnedNpc = 0 Then
                                 Call ApropioNpc(AttackerIndex, NpcIndex)
                             End If
-                            
-                        ' Si inmobiliza a su propio npc, renueva el timer
-                        ElseIf OwnerUserIndex = AttackerIndex Then
-                            Call IntervaloPerdioNpc(OwnerUserIndex, True) ' Renuevo el timer
                         End If
                         
                         ' Siempre se pueden paralizar/inmobilizar npcs con o sin dueño
@@ -1939,19 +1767,16 @@ On Error GoTo ErrHandler
             ' Solo pueden apropiarse de npcs los caos, armadas o ciudas.
             If Not criminal(AttackerIndex) Or esCaos(AttackerIndex) Then
                 ' No puede apropiarse de los pretos!
-                If Npclist(NpcIndex).NPCtype <> eNPCType.Pretoriano Then
-                    ' No puede apropiarse del dragon de dd!
-                    If Npclist(NpcIndex).NPCtype <> DRAGON Then
-                        ' Si es una mascota atacando, no se apropia del npc
-                        If Not IsPet Then
-                            ' No es dueño de ningun npc => Se lo apropia.
-                            If UserList(AttackerIndex).flags.OwnedNpc = 0 Then
-                                Call ApropioNpc(AttackerIndex, NpcIndex)
-                            ' Es dueño de un npc, pero no puede ser de este porque no tiene propietario.
-                            Else
-                                ' Se va a adueñar del npc (y perder el otro) solo si no inmobiliza/paraliza
-                                If Not Paraliza Then Call ApropioNpc(AttackerIndex, NpcIndex)
-                            End If
+                If Not (esPretoriano(NpcIndex) <> 0) Then
+                    ' Si es una mascota atacando, no se apropia del npc
+                    If Not IsPet Then
+                        ' No es dueño de ningun npc => Se lo apropia.
+                        If UserList(AttackerIndex).flags.OwnedNpc = 0 Then
+                            Call ApropioNpc(AttackerIndex, NpcIndex)
+                        ' Es dueño de un npc, pero no puede ser de este porque no tiene propietario.
+                        Else
+                            ' Se va a adueñar del npc (y perder el otro) solo si no inmobiliza/paraliza
+                            If Not Paraliza Then Call ApropioNpc(AttackerIndex, NpcIndex)
                         End If
                     End If
                 End If
@@ -1960,28 +1785,14 @@ On Error GoTo ErrHandler
     End With
     
     'Es el Rey Preatoriano?
-    If Npclist(NpcIndex).NPCtype = eNPCType.Pretoriano Then
-        If Not ClanPretoriano(Npclist(NpcIndex).ClanIndex).CanAtackMember(NpcIndex) Then
+    If esPretoriano(NpcIndex) = 4 Then
+        If pretorianosVivos > 0 Then
             Call WriteConsoleMsg(AttackerIndex, "Debes matar al resto del ejército antes de atacar al rey.", FontTypeNames.FONTTYPE_FIGHT)
             Exit Function
         End If
     End If
     
     PuedeAtacarNPC = True
-        
-    Exit Function
-        
-ErrHandler:
-    
-    Dim AtckName As String
-    Dim OwnerName As String
-
-    If AttackerIndex > 0 Then AtckName = UserList(AttackerIndex).Name
-    If OwnerUserIndex > 0 Then OwnerName = UserList(OwnerUserIndex).Name
-    
-    Call LogError("Error en PuedeAtacarNpc. Erorr: " & Err.Number & " - " & Err.description & " Atacante: " & _
-                   AttackerIndex & "-> " & AtckName & ". Owner: " & OwnerUserIndex & "-> " & OwnerName & _
-                   ". NpcIndex: " & NpcIndex & ".")
 End Function
 
 Private Function SameClan(ByVal UserIndex As Integer, ByVal OtherUserIndex As Integer) As Boolean
@@ -2056,7 +1867,7 @@ Public Function TriggerZonaPelea(ByVal Origen As Integer, ByVal Destino As Integ
 
 'TODO: Pero que rebuscado!!
 'Nigo:  Te lo rediseñe, pero no te borro el TODO para que lo revises.
-On Error GoTo ErrHandler
+On Error GoTo Errhandler
     Dim tOrg As eTrigger
     Dim tDst As eTrigger
     
@@ -2074,7 +1885,7 @@ On Error GoTo ErrHandler
     End If
 
 Exit Function
-ErrHandler:
+Errhandler:
     TriggerZonaPelea = TRIGGER6_AUSENTE
     LogError ("Error en TriggerZonaPelea - " & Err.description)
 End Function
@@ -2100,8 +1911,8 @@ Sub UserEnvenena(ByVal AtacanteIndex As Integer, ByVal VictimaIndex As Integer)
                 
                 If RandomNumber(1, 100) < 60 Then
                     UserList(VictimaIndex).flags.Envenenado = 1
-                    Call WriteConsoleMsg(VictimaIndex, "¡¡" & UserList(AtacanteIndex).Name & " te ha envenenado!!", FontTypeNames.FONTTYPE_FIGHT)
-                    Call WriteConsoleMsg(AtacanteIndex, "¡¡Has envenenado a " & UserList(VictimaIndex).Name & "!!", FontTypeNames.FONTTYPE_FIGHT)
+                    Call WriteConsoleMsg(VictimaIndex, "¡¡" & UserList(AtacanteIndex).name & " te ha envenenado!!", FontTypeNames.FONTTYPE_FIGHT)
+                    Call WriteConsoleMsg(AtacanteIndex, "¡¡Has envenenado a " & UserList(VictimaIndex).name & "!!", FontTypeNames.FONTTYPE_FIGHT)
                 End If
             End If
         End If
@@ -2109,165 +1920,3 @@ Sub UserEnvenena(ByVal AtacanteIndex As Integer, ByVal VictimaIndex As Integer)
     
     Call FlushBuffer(VictimaIndex)
 End Sub
-
-Public Sub LanzarProyectil(ByVal UserIndex As Integer, ByVal X As Byte, ByVal Y As Byte)
-'***************************************************
-'Autor: ZaMa
-'Last Modification: 10/07/2010
-'Throws an arrow or knive to target user/npc.
-'***************************************************
-On Error GoTo ErrHandler
-
-    Dim MunicionSlot As Byte
-    Dim MunicionIndex As Integer
-    Dim WeaponSlot As Byte
-    Dim WeaponIndex As Integer
-
-    Dim TargetUserIndex As Integer
-    Dim TargetNpcIndex As Integer
-
-    Dim DummyInt As Integer
-    
-    Dim Threw As Boolean
-    Threw = True
-    
-    'Make sure the item is valid and there is ammo equipped.
-    With UserList(UserIndex)
-        
-        With .Invent
-            MunicionSlot = .MunicionEqpSlot
-            MunicionIndex = .MunicionEqpObjIndex
-            WeaponSlot = .WeaponEqpSlot
-            WeaponIndex = .WeaponEqpObjIndex
-        End With
-        
-        ' Tiene arma equipada?
-        If WeaponIndex = 0 Then
-            DummyInt = 1
-            Call WriteConsoleMsg(UserIndex, "No tienes un arco o cuchilla equipada.", FontTypeNames.FONTTYPE_INFO)
-            
-        ' En un slot válido?
-        ElseIf WeaponSlot < 1 Or WeaponSlot > .CurrentInventorySlots Then
-            DummyInt = 1
-            Call WriteConsoleMsg(UserIndex, "No tienes un arco o cuchilla equipada.", FontTypeNames.FONTTYPE_INFO)
-            
-        ' Usa munición? (Si no la usa, puede ser un arma arrojadiza)
-        ElseIf ObjData(WeaponIndex).Municion = 1 Then
-        
-            ' La municion esta equipada en un slot valido?
-            If MunicionSlot < 1 Or MunicionSlot > .CurrentInventorySlots Then
-                DummyInt = 1
-                Call WriteConsoleMsg(UserIndex, "No tienes municiones equipadas.", FontTypeNames.FONTTYPE_INFO)
-                
-            ' Tiene munición?
-            ElseIf MunicionIndex = 0 Then
-                DummyInt = 1
-                Call WriteConsoleMsg(UserIndex, "No tienes municiones equipadas.", FontTypeNames.FONTTYPE_INFO)
-                
-            ' Son flechas?
-            ElseIf ObjData(MunicionIndex).OBJType <> eOBJType.otFlechas Then
-                DummyInt = 1
-                Call WriteConsoleMsg(UserIndex, "No tienes municiones.", FontTypeNames.FONTTYPE_INFO)
-                
-            ' Tiene suficientes?
-            ElseIf .Invent.Object(MunicionSlot).Amount < 1 Then
-                DummyInt = 1
-                Call WriteConsoleMsg(UserIndex, "No tienes municiones.", FontTypeNames.FONTTYPE_INFO)
-            End If
-            
-        ' Es un arma de proyectiles?
-        ElseIf ObjData(WeaponIndex).proyectil <> 1 Then
-            DummyInt = 2
-        End If
-        
-        If DummyInt <> 0 Then
-            If DummyInt = 1 Then
-                Call Desequipar(UserIndex, WeaponSlot)
-            End If
-            
-            Call Desequipar(UserIndex, MunicionSlot)
-            Exit Sub
-        End If
-    
-        'Quitamos stamina
-        If .Stats.MinSta >= 10 Then
-            Call QuitarSta(UserIndex, RandomNumber(1, 10))
-        Else
-            If .Genero = eGenero.Hombre Then
-                Call WriteConsoleMsg(UserIndex, "Estás muy cansado para luchar.", FontTypeNames.FONTTYPE_INFO)
-            Else
-                Call WriteConsoleMsg(UserIndex, "Estás muy cansada para luchar.", FontTypeNames.FONTTYPE_INFO)
-            End If
-            Exit Sub
-        End If
-        
-        Call LookatTile(UserIndex, .Pos.Map, X, Y)
-        
-        TargetUserIndex = .flags.TargetUser
-        TargetNpcIndex = .flags.TargetNPC
-        
-        'Validate target
-        If TargetUserIndex > 0 Then
-            'Only allow to atack if the other one can retaliate (can see us)
-            If Abs(UserList(TargetUserIndex).Pos.Y - .Pos.Y) > RANGO_VISION_Y Then
-                Call WriteConsoleMsg(UserIndex, "Estás demasiado lejos para atacar.", FontTypeNames.FONTTYPE_WARNING)
-                Exit Sub
-            End If
-            
-            'Prevent from hitting self
-            If TargetUserIndex = UserIndex Then
-                Call WriteConsoleMsg(UserIndex, "¡No puedes atacarte a vos mismo!", FontTypeNames.FONTTYPE_INFO)
-                Exit Sub
-            End If
-            
-            'Attack!
-            Threw = UsuarioAtacaUsuario(UserIndex, TargetUserIndex)
-            
-        ElseIf TargetNpcIndex > 0 Then
-            'Only allow to atack if the other one can retaliate (can see us)
-            If Abs(Npclist(TargetNpcIndex).Pos.Y - .Pos.Y) > RANGO_VISION_Y And Abs(Npclist(TargetNpcIndex).Pos.X - .Pos.X) > RANGO_VISION_X Then
-                Call WriteConsoleMsg(UserIndex, "Estás demasiado lejos para atacar.", FontTypeNames.FONTTYPE_WARNING)
-                Exit Sub
-            End If
-            
-            'Is it attackable???
-            If Npclist(TargetNpcIndex).Attackable <> 0 Then
-                'Attack!
-                Threw = UsuarioAtacaNpc(UserIndex, TargetNpcIndex)
-            End If
-        End If
-        
-        ' Solo pierde la munición si pudo atacar al target, o tiro al aire
-        If Threw Then
-            
-            Dim Slot As Byte
-            
-            ' Tiene equipado arco y flecha?
-            If ObjData(WeaponIndex).Municion = 1 Then
-                Slot = MunicionSlot
-            ' Tiene equipado un arma arrojadiza
-            Else
-                Slot = WeaponSlot
-            End If
-            
-            'Take 1 knife/arrow away
-            Call QuitarUserInvItem(UserIndex, Slot, 1)
-            Call UpdateUserInv(False, UserIndex, Slot)
-            
-        End If
-        
-    End With
-    
-    Exit Sub
-
-ErrHandler:
-
-    Dim UserName As String
-    If UserIndex > 0 Then UserName = UserList(UserIndex).Name
-
-    Call LogError("Error en LanzarProyectil " & Err.Number & ": " & Err.description & _
-                  ". User: " & UserName & "(" & UserIndex & ")")
-
-End Sub
-
-

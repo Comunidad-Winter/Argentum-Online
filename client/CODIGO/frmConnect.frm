@@ -1,4 +1,5 @@
 VERSION 5.00
+Object = "{EAB22AC0-30C1-11CF-A7EB-0000C05BAE0B}#1.1#0"; "ieframe.dll"
 Begin VB.Form frmConnect 
    BackColor       =   &H00E0E0E0&
    BorderStyle     =   0  'None
@@ -21,6 +22,31 @@ Begin VB.Form frmConnect
    ScaleWidth      =   800
    StartUpPosition =   2  'CenterScreen
    Visible         =   0   'False
+   Begin SHDocVwCtl.WebBrowser webNoticias 
+      Height          =   4440
+      Left            =   435
+      TabIndex        =   5
+      Top             =   1680
+      Width           =   2850
+      ExtentX         =   5027
+      ExtentY         =   7832
+      ViewMode        =   0
+      Offline         =   0
+      Silent          =   0
+      RegisterAsBrowser=   0
+      RegisterAsDropTarget=   1
+      AutoArrange     =   0   'False
+      NoClientEdge    =   0   'False
+      AlignLeft       =   0   'False
+      NoWebView       =   0   'False
+      HideFileNames   =   0   'False
+      SingleClick     =   0   'False
+      SingleSelection =   0   'False
+      NoFolders       =   0   'False
+      Transparent     =   0   'False
+      ViewID          =   "{0057D0E0-3573-11CF-AE69-08002B2E1262}"
+      Location        =   "http:///"
+   End
    Begin VB.TextBox txtPasswd 
       BackColor       =   &H00000000&
       BorderStyle     =   0  'None
@@ -104,6 +130,32 @@ Begin VB.Form frmConnect
       Text            =   "localhost"
       Top             =   2760
       Width           =   1575
+   End
+   Begin SHDocVwCtl.WebBrowser WebAuxiliar 
+      Height          =   360
+      Left            =   960
+      TabIndex        =   6
+      Top             =   0
+      Visible         =   0   'False
+      Width           =   330
+      ExtentX         =   582
+      ExtentY         =   635
+      ViewMode        =   0
+      Offline         =   0
+      Silent          =   0
+      RegisterAsBrowser=   0
+      RegisterAsDropTarget=   1
+      AutoArrange     =   0   'False
+      NoClientEdge    =   0   'False
+      AlignLeft       =   0   'False
+      NoWebView       =   0   'False
+      HideFileNames   =   0   'False
+      SingleClick     =   0   'False
+      SingleSelection =   0   'False
+      NoFolders       =   0   'False
+      Transparent     =   0   'False
+      ViewID          =   "{0057D0E0-3573-11CF-AE69-08002B2E1262}"
+      Location        =   "http:///"
    End
    Begin VB.Image imgTeclas 
       Height          =   375
@@ -252,7 +304,7 @@ Private cBotonForo As clsGraphicalButton
 Private cBotonConectarse As clsGraphicalButton
 Private cBotonTeclas As clsGraphicalButton
 
-Public LastButtonPressed As clsGraphicalButton
+Public LastPressed As clsGraphicalButton
 
 Private Sub Form_Activate()
 'On Error Resume Next
@@ -300,7 +352,9 @@ Private Sub Form_Load()
     '[CODE 002]:MatuX
     EngineRun = False
     '[END]
-
+    
+    webNoticias.Navigate ("http://ao.alkon.com.ar/noticiascliente/noticias.php")
+    
     PortTxt.Text = Config_Inicio.Puerto
  
      '[CODE]:MatuX
@@ -354,7 +408,7 @@ Private Sub LoadButtons()
     Set cBotonConectarse = New clsGraphicalButton
     Set cBotonTeclas = New clsGraphicalButton
     
-    Set LastButtonPressed = New clsGraphicalButton
+    Set LastPressed = New clsGraphicalButton
 
         
     Call cBotonCrearPj.Initialize(imgCrearPj, GrhPath & "BotonCrearPersonajeConectar.jpg", _
@@ -400,7 +454,7 @@ Private Sub LoadButtons()
 End Sub
 
 Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    LastButtonPressed.ToggleToNormal
+    LastPressed.ToggleToNormal
 End Sub
 
 Private Sub CheckServers()
@@ -567,8 +621,19 @@ End Sub
 Private Sub WebAuxiliar_BeforeNavigate2(ByVal pDisp As Object, URL As Variant, flags As Variant, TargetFrameName As Variant, PostData As Variant, Headers As Variant, Cancel As Boolean)
     
     If InStr(1, URL, "alkon") <> 0 Then
-        Call ShellExecute(hwnd, "open", URL, vbNullString, vbNullString, SW_SHOWNORMAL)
+        Call ShellExecute(hWnd, "open", URL, vbNullString, vbNullString, SW_SHOWNORMAL)
         Cancel = True
     End If
+    
+End Sub
+
+Private Sub webNoticias_NavigateError(ByVal pDisp As Object, URL As Variant, Frame As Variant, StatusCode As Variant, Cancel As Boolean)
+    If StatusCode = 500 Then webNoticias.Visible = False
+End Sub
+
+Private Sub webNoticias_NewWindow2(ppDisp As Object, Cancel As Boolean)
+    
+    WebAuxiliar.RegisterAsBrowser = True
+    Set ppDisp = WebAuxiliar.Object
     
 End Sub

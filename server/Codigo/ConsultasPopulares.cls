@@ -100,7 +100,7 @@ Dim sufragio As Integer
         Exit Function
     End If
 
-    CharFile = CharPath & UserList(UserIndex).Name & ".chr"
+    CharFile = CharPath & UserList(UserIndex).name & ".chr"
     
     
     
@@ -151,7 +151,7 @@ End Function
 
 
 Private Sub MarcarPjComoQueYaVoto(ByVal UserIndex As Integer)
-    Call WriteVar(CharPath & UserList(UserIndex).Name & ".chr", "CONSULTAS", "Voto", str(pEncuestaActualNum))
+    Call WriteVar(CharPath & UserList(UserIndex).name & ".chr", "CONSULTAS", "Voto", str(pEncuestaActualNum))
 End Sub
 
 

@@ -167,7 +167,7 @@ Private clsFormulario As clsFormMovementManager
 Private cBotonSiguiente As clsGraphicalButton
 Private cBotonAnterior As clsGraphicalButton
 
-Public LastButtonPressed As clsGraphicalButton
+Public LastPressed As clsGraphicalButton
 
 Private Type tTutorial
     sTitle As String
@@ -205,7 +205,7 @@ Private Sub LoadButtons()
     Set cBotonSiguiente = New clsGraphicalButton
     Set cBotonAnterior = New clsGraphicalButton
     
-    Set LastButtonPressed = New clsGraphicalButton
+    Set LastPressed = New clsGraphicalButton
     
     
     Call cBotonSiguiente.Initialize(imgSiguiente, GrhPath & "BotonSiguienteTutorial.jpg", _
@@ -233,7 +233,7 @@ Private Sub LoadButtons()
 End Sub
 
 Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    LastButtonPressed.ToggleToNormal
+    LastPressed.ToggleToNormal
 End Sub
 
 Private Sub imgAnterior_Click()
@@ -276,7 +276,6 @@ Private Sub imgSiguiente_Click()
 End Sub
 
 Private Sub lblCerrar_Click()
-    bShowTutorial = False 'Mientras no se pueda tildar/destildar para verlo más tarde, esto queda así :P
     Unload Me
 End Sub
 
@@ -322,5 +321,5 @@ Private Sub SelectPage(ByVal lPage As Long)
 End Sub
 
 Private Sub lblMensaje_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    LastButtonPressed.ToggleToNormal
+    LastPressed.ToggleToNormal
 End Sub

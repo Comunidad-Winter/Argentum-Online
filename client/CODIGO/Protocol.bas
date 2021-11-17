@@ -148,9 +148,6 @@ Private Enum ServerPacketID
     ShowMOTDEditionForm     ' ZMOTD
     ShowGMPanelForm         ' ABPANEL
     UserNameList            ' LISTUSU
-    ShowDenounces
-    RecordList
-    RecordDetails
     
     ShowGuildAlign
     ShowPartyForm
@@ -293,8 +290,7 @@ Private Enum ClientPacketID
     ShowGuildNews
     ShareNpc                '/COMPARTIRNPC
     StopSharingNpc          '/NOCOMPARTIRNPC
-    Consultation
-    MoveItem                'Drag and drop
+    Consulta
 End Enum
 
 Public Enum FontTypeNames
@@ -469,12 +465,7 @@ Public Sub HandleIncomingData()
 '***************************************************
 On Error Resume Next
 
-    Dim Packet As Byte
-
-    Packet = incomingData.PeekByte()
-    Debug.Print Packet
-    
-    Select Case Packet
+    Select Case incomingData.PeekByte()
         Case ServerPacketID.logged                  ' LOGGED
             Call HandleLogged
         
@@ -755,16 +746,7 @@ On Error Resume Next
         
         Case ServerPacketID.ShowSOSForm             ' RSOS and MSOS
             Call HandleShowSOSForm
-            
-        Case ServerPacketID.ShowDenounces
-            Call HandleShowDenounces
-            
-        Case ServerPacketID.RecordDetails
-            Call HandleRecordDetails
-            
-        Case ServerPacketID.RecordList
-            Call HandleRecordList
-            
+        
         Case ServerPacketID.ShowMOTDEditionForm     ' ZMOTD
             Call HandleShowMOTDEditionForm
         
@@ -819,13 +801,7 @@ On Error Resume Next
 End Sub
 
 Public Sub HandleMultiMessage()
-'***************************************************
-'Author: Unknown
-'Last Modification: 11/16/2010
-' 09/28/2010: C4b3z0n - Ahora se le saco la "," a los minutos de distancia del /hogar, ya que a veces quedaba "12,5 minutos y 30segundos"
-' 09/21/2010: C4b3z0n - Now the fragshooter operates taking the screen after the change of killed charindex to ghost only if target charindex is visible to the client, else it will take screenshot like before.
-' 11/16/2010: Amraphen - Recoded how the FragShooter works.
-'***************************************************
+
     Dim BodyPart As Byte
     Dim Daño As Integer
     
@@ -980,70 +956,33 @@ With incomingData
             End Select
 
         Case eMessages.HaveKilledUser
-            Dim KilledUser As Integer
-            Dim Exp As Long
-            
-            KilledUser = .ReadInteger
-            Exp = .ReadLong
-            
-            Call ShowConsoleMsg(MENSAJE_HAS_MATADO_A & charlist(KilledUser).Nombre & MENSAJE_22, 255, 0, 0, True, False)
-            Call ShowConsoleMsg(MENSAJE_HAS_GANADO_EXPE_1 & Exp & MENSAJE_HAS_GANADO_EXPE_2, 255, 0, 0, True, False)
-            
-            'Sacamos un screenshot si está activado el FragShooter:
+            Dim level As Long
+            Call ShowConsoleMsg(MENSAJE_HAS_MATADO_A & charlist(.ReadInteger).Nombre & MENSAJE_22, 255, 0, 0, True, False)
+            level = .ReadLong
+            Call ShowConsoleMsg(MENSAJE_HAS_GANADO_EXPE_1 & level & MENSAJE_HAS_GANADO_EXPE_2, 255, 0, 0, True, False)
             If ClientSetup.bKill And ClientSetup.bActive Then
-                If Exp \ 2 > ClientSetup.byMurderedLevel Then
-                    FragShooterNickname = charlist(KilledUser).Nombre
-                    FragShooterKilledSomeone = True
-                    
-                    FragShooterCapturePending = True
+                If level / 2 > ClientSetup.byMurderedLevel Then
+                    isCapturePending = True
                 End If
             End If
-            
         Case eMessages.UserKill
-            Dim KillerUser As Integer
-            
-            KillerUser = .ReadInteger
-            
-            Call ShowConsoleMsg(charlist(KillerUser).Nombre & MENSAJE_TE_HA_MATADO, 255, 0, 0, True, False)
-            
-            'Sacamos un screenshot si está activado el FragShooter:
-            If ClientSetup.bDie And ClientSetup.bActive Then
-                FragShooterNickname = charlist(KillerUser).Nombre
-                FragShooterKilledSomeone = False
-                
-                FragShooterCapturePending = True
-            End If
-                
+            Call ShowConsoleMsg(charlist(.ReadInteger).Nombre & MENSAJE_TE_HA_MATADO, 255, 0, 0, True, False)
+            If ClientSetup.bDie And ClientSetup.bActive Then _
+                isCapturePending = True
         Case eMessages.EarnExp
-            'Call ShowConsoleMsg(MENSAJE_HAS_GANADO_EXPE_1 & .ReadLong & MENSAJE_HAS_GANADO_EXPE_2, 255, 0, 0, True, False)
-        
+            Call ShowConsoleMsg(MENSAJE_HAS_GANADO_EXPE_1 & .ReadLong & MENSAJE_HAS_GANADO_EXPE_2, 255, 0, 0, True, False)
         Case eMessages.GoHome
             Dim Distance As Byte
             Dim Hogar As String
             Dim tiempo As Integer
-            Dim msg As String
-            
             Distance = .ReadByte
             tiempo = .ReadInteger
             Hogar = .ReadASCIIString
-            
-            If tiempo >= 60 Then
-                If tiempo Mod 60 = 0 Then
-                    msg = tiempo / 60 & " minutos."
-                Else
-                    msg = CInt(tiempo \ 60) & " minutos y " & tiempo Mod 60 & " segundos."  'Agregado el CInt() asi el número no es con , [C4b3z0n - 09/28/2010]
-                End If
-            Else
-                msg = tiempo & " segundos."
-            End If
-            
-            Call ShowConsoleMsg("Te encuentras a " & Distance & " mapas de la " & Hogar & ", este viaje durará " & msg, 255, 0, 0, True)
+            Call ShowConsoleMsg("Estás a " & Distance & " mapas de distancia de " & Hogar & ", este viaje durará " & tiempo & " segundos.", 255, 0, 0, True)
             Traveling = True
-        
         Case eMessages.FinishHome
             Call ShowConsoleMsg(MENSAJE_HOGAR, 255, 255, 255)
             Traveling = False
-        
         Case eMessages.CancelGoHome
             Call ShowConsoleMsg(MENSAJE_HOGAR_CANCEL, 255, 0, 0, True)
             Traveling = False
@@ -1066,16 +1005,13 @@ Private Sub HandleLogged()
     Call incomingData.ReadByte
     
     ' Variable initialization
-    UserClase = incomingData.ReadByte
     EngineRun = True
     Nombres = True
-    bRain = False
     
     'Set connected state
     Call SetConnected
     
-    If bShowTutorial Then frmTutorial.Show vbModeless
-    If frmMain.picInv.Visible = True Then Inventario.DrawInventory: DoEvents
+    If bShowTutorial Then frmTutorial.Show
     
     'Show tip
     If tipf = "1" And PrimeraVez Then
@@ -1157,7 +1093,56 @@ Private Sub HandleDisconnect()
     If frmMain.Winsock1.State <> sckClosed Then _
         frmMain.Winsock1.Close
 #End If
-    ResetAllInfo
+    
+    'Hide main form
+    frmMain.Visible = False
+    
+    'Stop audio
+    Call Audio.StopWave
+    frmMain.IsPlaying = PlayLoop.plNone
+    
+    'Show connection form
+    frmConnect.Visible = True
+    
+    'Reset global vars
+    UserDescansar = False
+    UserParalizado = False
+    pausa = False
+    UserCiego = False
+    UserMeditar = False
+    UserNavegando = False
+    bRain = False
+    bFogata = False
+    SkillPoints = 0
+    Comerciando = False
+    'new
+    Traveling = False
+    'Delete all kind of dialogs
+    Call CleanDialogs
+    
+    'Reset some char variables...
+    For i = 1 To LastChar
+        charlist(i).invisible = False
+    Next i
+    
+    'Unload all forms except frmMain and frmConnect
+    Dim frm As Form
+    
+    For Each frm In Forms
+        If frm.Name <> frmMain.Name And frm.Name <> frmConnect.Name Then
+            Unload frm
+        End If
+    Next
+    
+    For i = 1 To MAX_INVENTORY_SLOTS
+        Call Inventario.SetItem(i, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "")
+    Next i
+    
+#If SeguridadAlkon Then
+    Call MI(CualMI).Inicializar(RandomNumber(1, 1000), 10000)
+#End If
+
+    Call Audio.PlayMIDI("2.mid")
 End Sub
 
 ''
@@ -1172,14 +1157,11 @@ Private Sub HandleCommerceEnd()
     'Remove packet ID
     Call incomingData.ReadByte
     
-    Set InvComUsu = Nothing
-    Set InvComNpc = Nothing
+    'Reset vars
+    Comerciando = False
     
     'Hide form
     Unload frmComerciar
-    
-    'Reset vars
-    Comerciando = False
 End Sub
 
 ''
@@ -1215,19 +1197,16 @@ Private Sub HandleCommerceInit()
     'Remove packet ID
     Call incomingData.ReadByte
     
-    Set InvComUsu = New clsGrapchicalInventory
-    Set InvComNpc = New clsGrapchicalInventory
-    
     ' Initialize commerce inventories
-    Call InvComUsu.Initialize(DirectD3D8, frmComerciar.picInvUser, Inventario.MaxObjs)
-    Call InvComNpc.Initialize(DirectD3D8, frmComerciar.picInvNpc, MAX_NPC_INVENTORY_SLOTS)
-    
+    Call InvComUsu.Initialize(DirectDraw, frmComerciar.picInvUser, Inventario.MaxObjs)
+    Call InvComNpc.Initialize(DirectDraw, frmComerciar.picInvNpc, MAX_NPC_INVENTORY_SLOTS)
+
     'Fill user inventory
     For i = 1 To MAX_INVENTORY_SLOTS
-        If Inventario.objIndex(i) <> 0 Then
+        If Inventario.OBJIndex(i) <> 0 Then
             With Inventario
-                Call InvComUsu.SetItem(i, .objIndex(i), _
-                .amount(i), .Equipped(i), .GrhIndex(i), _
+                Call InvComUsu.SetItem(i, .OBJIndex(i), _
+                .Amount(i), .Equipped(i), .GrhIndex(i), _
                 .OBJType(i), .MaxHit(i), .MinHit(i), .MaxDef(i), .MinDef(i), _
                 .Valor(i), .ItemName(i))
             End With
@@ -1236,10 +1215,10 @@ Private Sub HandleCommerceInit()
     
     ' Fill Npc inventory
     For i = 1 To 50
-        If NPCInventory(i).objIndex <> 0 Then
+        If NPCInventory(i).OBJIndex <> 0 Then
             With NPCInventory(i)
-                Call InvComNpc.SetItem(i, .objIndex, _
-                .amount, 0, .GrhIndex, _
+                Call InvComNpc.SetItem(i, .OBJIndex, _
+                .Amount, 0, .GrhIndex, _
                 .OBJType, .MaxHit, .MinHit, .MaxDef, .MinDef, _
                 .Valor, .Name)
             End With
@@ -1249,10 +1228,6 @@ Private Sub HandleCommerceInit()
     'Set state and show form
     Comerciando = True
     frmComerciar.Show , frmMain
-    
-    'Actualiza
-    InvComUsu.DrawInventory
-    InvComNpc.DrawInventory
 End Sub
 
 ''
@@ -1270,18 +1245,14 @@ Private Sub HandleBankInit()
     'Remove packet ID
     Call incomingData.ReadByte
     
-    Set InvBanco(0) = New clsGrapchicalInventory
-    Set InvBanco(1) = New clsGrapchicalInventory
-    
-    BankGold = incomingData.ReadLong
-    Call InvBanco(0).Initialize(DirectD3D8, frmBancoObj.PicBancoInv, MAX_BANCOINVENTORY_SLOTS)
-    Call InvBanco(1).Initialize(DirectD3D8, frmBancoObj.picInv, Inventario.MaxObjs)
-    
+        BankGold = incomingData.ReadLong
+    Call InvBanco(0).Initialize(DirectDraw, frmBancoObj.PicBancoInv, MAX_BANCOINVENTORY_SLOTS)
+    Call InvBanco(1).Initialize(DirectDraw, frmBancoObj.PicInv, Inventario.MaxObjs)
     
     For i = 1 To Inventario.MaxObjs
         With Inventario
-            Call InvBanco(1).SetItem(i, .objIndex(i), _
-                .amount(i), .Equipped(i), .GrhIndex(i), _
+            Call InvBanco(1).SetItem(i, .OBJIndex(i), _
+                .Amount(i), .Equipped(i), .GrhIndex(i), _
                 .OBJType(i), .MaxHit(i), .MinHit(i), .MaxDef(i), .MinDef(i), _
                 .Valor(i), .ItemName(i))
         End With
@@ -1289,8 +1260,8 @@ Private Sub HandleBankInit()
     
     For i = 1 To MAX_BANCOINVENTORY_SLOTS
         With UserBancoInventory(i)
-            Call InvBanco(0).SetItem(i, .objIndex, _
-                .amount, .Equipped, .GrhIndex, _
+            Call InvBanco(0).SetItem(i, .OBJIndex, _
+                .Amount, .Equipped, .GrhIndex, _
                 .OBJType, .MaxHit, .MinHit, .MaxDef, .MinDef, _
                 .Valor, .Name)
         End With
@@ -1302,10 +1273,6 @@ Private Sub HandleBankInit()
     frmBancoObj.lblUserGld.Caption = BankGold
     
     frmBancoObj.Show , frmMain
-    
-    'Actualizamos
-    InvBanco(0).DrawInventory
-    InvBanco(1).DrawInventory
 End Sub
 
 ''
@@ -1321,30 +1288,22 @@ Private Sub HandleUserCommerceInit()
     
     'Remove packet ID
     Call incomingData.ReadByte
-    
     TradingUserName = incomingData.ReadASCIIString
     
-    Set InvComUsu = New clsGrapchicalInventory
-    Set InvOfferComUsu(0) = New clsGrapchicalInventory
-    Set InvOfferComUsu(1) = New clsGrapchicalInventory
-    Set InvOroComUsu(0) = New clsGrapchicalInventory
-    Set InvOroComUsu(1) = New clsGrapchicalInventory
-    Set InvOroComUsu(2) = New clsGrapchicalInventory
-    
     ' Initialize commerce inventories
-    Call InvComUsu.Initialize(DirectD3D8, frmComerciarUsu.picInvComercio, Inventario.MaxObjs)
-    Call InvOfferComUsu(0).Initialize(DirectD3D8, frmComerciarUsu.picInvOfertaProp, INV_OFFER_SLOTS)
-    Call InvOfferComUsu(1).Initialize(DirectD3D8, frmComerciarUsu.picInvOfertaOtro, INV_OFFER_SLOTS)
-    Call InvOroComUsu(0).Initialize(DirectD3D8, frmComerciarUsu.picInvOroProp, INV_GOLD_SLOTS, , TilePixelWidth * 2, TilePixelHeight, TilePixelWidth / 2, , , True)
-    Call InvOroComUsu(1).Initialize(DirectD3D8, frmComerciarUsu.picInvOroOfertaProp, INV_GOLD_SLOTS, , TilePixelWidth * 2, TilePixelHeight, TilePixelWidth / 2, , , True)
-    Call InvOroComUsu(2).Initialize(DirectD3D8, frmComerciarUsu.picInvOroOfertaOtro, INV_GOLD_SLOTS, , TilePixelWidth * 2, TilePixelHeight, TilePixelWidth / 2, , , True)
+    Call InvComUsu.Initialize(DirectDraw, frmComerciarUsu.picInvComercio, Inventario.MaxObjs)
+    Call InvOfferComUsu(0).Initialize(DirectDraw, frmComerciarUsu.picInvOfertaProp, INV_OFFER_SLOTS)
+    Call InvOfferComUsu(1).Initialize(DirectDraw, frmComerciarUsu.picInvOfertaOtro, INV_OFFER_SLOTS)
+    Call InvOroComUsu(0).Initialize(DirectDraw, frmComerciarUsu.picInvOroProp, INV_GOLD_SLOTS, , TilePixelWidth * 2, TilePixelHeight, TilePixelWidth / 2)
+    Call InvOroComUsu(1).Initialize(DirectDraw, frmComerciarUsu.picInvOroOfertaProp, INV_GOLD_SLOTS, , TilePixelWidth * 2, TilePixelHeight, TilePixelWidth / 2)
+    Call InvOroComUsu(2).Initialize(DirectDraw, frmComerciarUsu.picInvOroOfertaOtro, INV_GOLD_SLOTS, , TilePixelWidth * 2, TilePixelHeight, TilePixelWidth / 2)
 
     'Fill user inventory
     For i = 1 To MAX_INVENTORY_SLOTS
-        If Inventario.objIndex(i) <> 0 Then
+        If Inventario.OBJIndex(i) <> 0 Then
             With Inventario
-                Call InvComUsu.SetItem(i, .objIndex(i), _
-                .amount(i), .Equipped(i), .GrhIndex(i), _
+                Call InvComUsu.SetItem(i, .OBJIndex(i), _
+                .Amount(i), .Equipped(i), .GrhIndex(i), _
                 .OBJType(i), .MaxHit(i), .MinHit(i), .MaxDef(i), .MinDef(i), _
                 .Valor(i), .ItemName(i))
             End With
@@ -1422,7 +1381,6 @@ Private Sub HandleShowBlacksmithForm()
         Call WriteCraftBlacksmith(MacroBltIndex)
     Else
         frmHerrero.Show , frmMain
-        MirandoHerreria = True
     End If
 End Sub
 
@@ -1442,7 +1400,6 @@ Private Sub HandleShowCarpenterForm()
         Call WriteCraftCarpenter(MacroBltIndex)
     Else
         frmCarp.Show , frmMain
-        MirandoCarpinteria = True
     End If
 End Sub
 
@@ -1725,10 +1682,9 @@ End Sub
 Private Sub HandleUpdateGold()
 '***************************************************
 'Autor: Juan Martín Sotuyo Dodero (Maraxus)
-'Last Modification: 09/21/10
-'Last Modified By: C4b3z0n
-'- 08/14/07: Tavo - Added GldLbl color variation depending on User Gold and Level
-'- 09/21/10: C4b3z0n - Modified color change of gold ONLY if the player's level is greater than 12 (NOT newbie).
+'Last Modification: 08/14/07
+'Last Modified By: Lucas Tavolaro Ortiz (Tavo)
+'- 08/14/07: Added GldLbl color variation depending on User Gold and Level
 '***************************************************
     'Check packet is complete
     If incomingData.length < 5 Then
@@ -1742,7 +1698,7 @@ Private Sub HandleUpdateGold()
     'Get data and update form
     UserGLD = incomingData.ReadLong()
     
-    If UserGLD >= CLng(UserLvl) * 10000 And UserLvl > 12 Then 'Si el nivel es mayor de 12, es decir, no es newbie.
+    If UserGLD >= CLng(UserLvl) * 10000 Then
         'Changes color
         frmMain.GldLbl.ForeColor = &HFF& 'Red
     Else
@@ -2114,7 +2070,7 @@ Private Sub HandleChatOverHead()
     
 On Error GoTo ErrHandler
     'This packet contains strings, make a copy of the data to prevent losses if it's not complete yet...
-    Dim Buffer As clsByteQueue: Set Buffer = New clsByteQueue
+    Dim Buffer As New clsByteQueue
     Call Buffer.CopyBuffer(incomingData)
     
     'Remove packet ID
@@ -2122,20 +2078,20 @@ On Error GoTo ErrHandler
     
     Dim chat As String
     Dim CharIndex As Integer
-    Dim R As Byte
-    Dim G As Byte
-    Dim B As Byte
+    Dim r As Byte
+    Dim g As Byte
+    Dim b As Byte
     
     chat = Buffer.ReadASCIIString()
     CharIndex = Buffer.ReadInteger()
     
-    R = Buffer.ReadByte()
-    G = Buffer.ReadByte()
-    B = Buffer.ReadByte()
+    r = Buffer.ReadByte()
+    g = Buffer.ReadByte()
+    b = Buffer.ReadByte()
     
     'Only add the chat if the character exists (a CharacterRemove may have been sent to the PC / NPC area before the buffer was flushed)
     If charlist(CharIndex).Active Then _
-        Call Dialogos.CreateDialog(Trim$(chat), CharIndex, RGB(R, G, B))
+        Call Dialogos.CreateDialog(Trim$(chat), CharIndex, RGB(r, g, b))
     
     'If we got here then packet is complete, copy data back to original queue
     Call incomingData.CopyBuffer(Buffer)
@@ -2168,7 +2124,7 @@ Private Sub HandleConsoleMessage()
     
 On Error GoTo ErrHandler
     'This packet contains strings, make a copy of the data to prevent losses if it's not complete yet...
-    Dim Buffer As clsByteQueue: Set Buffer = New clsByteQueue
+    Dim Buffer As New clsByteQueue
     Call Buffer.CopyBuffer(incomingData)
     
     'Remove packet ID
@@ -2177,9 +2133,9 @@ On Error GoTo ErrHandler
     Dim chat As String
     Dim FontIndex As Integer
     Dim str As String
-    Dim R As Byte
-    Dim G As Byte
-    Dim B As Byte
+    Dim r As Byte
+    Dim g As Byte
+    Dim b As Byte
     
     chat = Buffer.ReadASCIIString()
     FontIndex = Buffer.ReadByte()
@@ -2187,26 +2143,26 @@ On Error GoTo ErrHandler
     If InStr(1, chat, "~") Then
         str = ReadField(2, chat, 126)
             If Val(str) > 255 Then
-                R = 255
+                r = 255
             Else
-                R = Val(str)
+                r = Val(str)
             End If
             
             str = ReadField(3, chat, 126)
             If Val(str) > 255 Then
-                G = 255
+                g = 255
             Else
-                G = Val(str)
+                g = Val(str)
             End If
             
             str = ReadField(4, chat, 126)
             If Val(str) > 255 Then
-                B = 255
+                b = 255
             Else
-                B = Val(str)
+                b = Val(str)
             End If
             
-        Call AddtoRichTextBox(frmMain.RecTxt, Left$(chat, InStr(1, chat, "~") - 1), R, G, B, Val(ReadField(5, chat, 126)) <> 0, Val(ReadField(6, chat, 126)) <> 0)
+        Call AddtoRichTextBox(frmMain.RecTxt, Left$(chat, InStr(1, chat, "~") - 1), r, g, b, Val(ReadField(5, chat, 126)) <> 0, Val(ReadField(6, chat, 126)) <> 0)
     Else
         With FontTypes(FontIndex)
             Call AddtoRichTextBox(frmMain.RecTxt, chat, .red, .green, .blue, .bold, .italic)
@@ -2249,7 +2205,7 @@ Private Sub HandleGuildChat()
     
 On Error GoTo ErrHandler
     'This packet contains strings, make a copy of the data to prevent losses if it's not complete yet...
-    Dim Buffer As clsByteQueue: Set Buffer = New clsByteQueue
+    Dim Buffer As New clsByteQueue
     Call Buffer.CopyBuffer(incomingData)
     
     'Remove packet ID
@@ -2257,9 +2213,9 @@ On Error GoTo ErrHandler
     
     Dim chat As String
     Dim str As String
-    Dim R As Byte
-    Dim G As Byte
-    Dim B As Byte
+    Dim r As Byte
+    Dim g As Byte
+    Dim b As Byte
     Dim tmp As Integer
     Dim Cont As Integer
     
@@ -2270,26 +2226,26 @@ On Error GoTo ErrHandler
         If InStr(1, chat, "~") Then
             str = ReadField(2, chat, 126)
             If Val(str) > 255 Then
-                R = 255
+                r = 255
             Else
-                R = Val(str)
+                r = Val(str)
             End If
             
             str = ReadField(3, chat, 126)
             If Val(str) > 255 Then
-                G = 255
+                g = 255
             Else
-                G = Val(str)
+                g = Val(str)
             End If
             
             str = ReadField(4, chat, 126)
             If Val(str) > 255 Then
-                B = 255
+                b = 255
             Else
-                B = Val(str)
+                b = Val(str)
             End If
             
-            Call AddtoRichTextBox(frmMain.RecTxt, Left$(chat, InStr(1, chat, "~") - 1), R, G, B, Val(ReadField(5, chat, 126)) <> 0, Val(ReadField(6, chat, 126)) <> 0)
+            Call AddtoRichTextBox(frmMain.RecTxt, Left$(chat, InStr(1, chat, "~") - 1), r, g, b, Val(ReadField(5, chat, 126)) <> 0, Val(ReadField(6, chat, 126)) <> 0)
         Else
             With FontTypes(FontTypeNames.FONTTYPE_GUILDMSG)
                 Call AddtoRichTextBox(frmMain.RecTxt, chat, .red, .green, .blue, .bold, .italic)
@@ -2330,7 +2286,7 @@ Private Sub HandleCommerceChat()
     
 On Error GoTo ErrHandler
     'This packet contains strings, make a copy of the data to prevent losses if it's not complete yet...
-    Dim Buffer As clsByteQueue: Set Buffer = New clsByteQueue
+    Dim Buffer As New clsByteQueue
     Call Buffer.CopyBuffer(incomingData)
     
     'Remove packet ID
@@ -2339,9 +2295,9 @@ On Error GoTo ErrHandler
     Dim chat As String
     Dim FontIndex As Integer
     Dim str As String
-    Dim R As Byte
-    Dim G As Byte
-    Dim B As Byte
+    Dim r As Byte
+    Dim g As Byte
+    Dim b As Byte
     
     chat = Buffer.ReadASCIIString()
     FontIndex = Buffer.ReadByte()
@@ -2349,26 +2305,26 @@ On Error GoTo ErrHandler
     If InStr(1, chat, "~") Then
         str = ReadField(2, chat, 126)
             If Val(str) > 255 Then
-                R = 255
+                r = 255
             Else
-                R = Val(str)
+                r = Val(str)
             End If
             
             str = ReadField(3, chat, 126)
             If Val(str) > 255 Then
-                G = 255
+                g = 255
             Else
-                G = Val(str)
+                g = Val(str)
             End If
             
             str = ReadField(4, chat, 126)
             If Val(str) > 255 Then
-                B = 255
+                b = 255
             Else
-                B = Val(str)
+                b = Val(str)
             End If
             
-        Call AddtoRichTextBox(frmComerciarUsu.CommerceConsole, Left$(chat, InStr(1, chat, "~") - 1), R, G, B, Val(ReadField(5, chat, 126)) <> 0, Val(ReadField(6, chat, 126)) <> 0)
+        Call AddtoRichTextBox(frmComerciarUsu.CommerceConsole, Left$(chat, InStr(1, chat, "~") - 1), r, g, b, Val(ReadField(5, chat, 126)) <> 0, Val(ReadField(6, chat, 126)) <> 0)
     Else
         With FontTypes(FontIndex)
             Call AddtoRichTextBox(frmComerciarUsu.CommerceConsole, chat, .red, .green, .blue, .bold, .italic)
@@ -2406,7 +2362,7 @@ Private Sub HandleShowMessageBox()
     
 On Error GoTo ErrHandler
     'This packet contains strings, make a copy of the data to prevent losses if it's not complete yet...
-    Dim Buffer As clsByteQueue: Set Buffer = New clsByteQueue
+    Dim Buffer As New clsByteQueue
     Call Buffer.CopyBuffer(incomingData)
     
     'Remove packet ID
@@ -2494,7 +2450,7 @@ Private Sub HandleCharacterCreate()
     
 On Error GoTo ErrHandler
     'This packet contains strings, make a copy of the data to prevent losses if it's not complete yet...
-    Dim Buffer As clsByteQueue: Set Buffer = New clsByteQueue
+    Dim Buffer As New clsByteQueue
     Call Buffer.CopyBuffer(incomingData)
     
     'Remove packet ID
@@ -2555,9 +2511,9 @@ On Error GoTo ErrHandler
             End If
             
             'Log2 of the bit flags sent by the server gives our numbers ^^
-            .Priv = Log(privs) / Log(2)
+            .priv = Log(privs) / Log(2)
         Else
-            .Priv = 0
+            .priv = 0
         End If
     End With
     
@@ -2655,7 +2611,7 @@ Private Sub HandleCharacterMove()
         End If
         
         ' Play steps sounds if the user is not an admin of any kind
-        If .Priv <> 1 And .Priv <> 2 And .Priv <> 3 And .Priv <> 5 And .Priv <> 25 Then
+        If .priv <> 1 And .priv <> 2 And .priv <> 3 And .priv <> 5 And .priv <> 25 Then
             Call DoPasosFx(CharIndex)
         End If
     End With
@@ -2694,9 +2650,8 @@ End Sub
 Private Sub HandleCharacterChange()
 '***************************************************
 'Author: Juan Martín Sotuyo Dodero (Maraxus)
-'Last Modification: 21/09/2010 - C4b3z0n
+'Last Modification: 25/08/2009
 '25/08/2009: ZaMa - Changed a variable used incorrectly.
-'21/09/2010: C4b3z0n - Added code for FragShooter. If its waiting for the death of certain UserIndex, and it dies, then the capture of the screen will occur.
 '***************************************************
     If incomingData.length < 18 Then
         Err.Raise incomingData.NotEnoughDataErrCode
@@ -2734,8 +2689,8 @@ Private Sub HandleCharacterChange()
             .iHead = headIndex
         End If
         
-        .Muerto = (headIndex = CASPER_HEAD)
-        
+        .muerto = (headIndex = CASPER_HEAD)
+
         .Heading = incomingData.ReadByte()
         
         tempint = incomingData.ReadInteger()
@@ -2776,9 +2731,9 @@ Private Sub HandleObjectCreate()
     X = incomingData.ReadByte()
     Y = incomingData.ReadByte()
     
-    MapData(X, Y).OBJGrh.GrhIndex = incomingData.ReadInteger()
+    MapData(X, Y).ObjGrh.GrhIndex = incomingData.ReadInteger()
     
-    Call InitGrh(MapData(X, Y).OBJGrh, MapData(X, Y).OBJGrh.GrhIndex)
+    Call InitGrh(MapData(X, Y).ObjGrh, MapData(X, Y).ObjGrh.GrhIndex)
 End Sub
 
 ''
@@ -2803,7 +2758,7 @@ Private Sub HandleObjectDelete()
     
     X = incomingData.ReadByte()
     Y = incomingData.ReadByte()
-    MapData(X, Y).OBJGrh.GrhIndex = 0
+    MapData(X, Y).ObjGrh.GrhIndex = 0
 End Sub
 
 ''
@@ -2845,28 +2800,24 @@ Private Sub HandlePlayMIDI()
 'Last Modification: 05/17/06
 '
 '***************************************************
-    If incomingData.length < 5 Then
+    If incomingData.length < 4 Then
         Err.Raise incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
-    Dim currentMidi As Integer
-    Dim Loops As Integer
+    Dim currentMidi As Byte
     
     'Remove packet ID
     Call incomingData.ReadByte
     
-    currentMidi = incomingData.ReadInteger()
-    Loops = incomingData.ReadInteger()
+    currentMidi = incomingData.ReadByte()
     
     If currentMidi Then
-        If currentMidi > MP3_INITIAL_INDEX Then
-            Call Audio.MusicMP3Play(App.path & "\MP3\" & currentMidi & ".mp3")
-        Else
-            Call Audio.PlayMIDI(CStr(currentMidi) & ".mid", Loops)
-        End If
+        Call Audio.PlayMIDI(CStr(currentMidi) & ".mid", incomingData.ReadInteger())
+    Else
+        'Remove the bytes to prevent errors
+        Call incomingData.ReadInteger
     End If
-    
 End Sub
 
 ''
@@ -2914,7 +2865,7 @@ Private Sub HandleGuildList()
     
 On Error GoTo ErrHandler
     'This packet contains strings, make a copy of the data to prevent losses if it's not complete yet...
-    Dim Buffer As clsByteQueue: Set Buffer = New clsByteQueue
+    Dim Buffer As New clsByteQueue
     Call Buffer.CopyBuffer(incomingData)
     
     'Remove packet ID
@@ -3196,16 +3147,16 @@ Private Sub HandleChangeInventorySlot()
     
 On Error GoTo ErrHandler
     'This packet contains strings, make a copy of the data to prevent losses if it's not complete yet...
-    Dim Buffer As clsByteQueue: Set Buffer = New clsByteQueue
+    Dim Buffer As New clsByteQueue
     Call Buffer.CopyBuffer(incomingData)
     
     'Remove packet ID
     Call Buffer.ReadByte
     
     Dim slot As Byte
-    Dim objIndex As Integer
+    Dim OBJIndex As Integer
     Dim Name As String
-    Dim amount As Integer
+    Dim Amount As Integer
     Dim Equipped As Boolean
     Dim GrhIndex As Integer
     Dim OBJType As Byte
@@ -3216,9 +3167,9 @@ On Error GoTo ErrHandler
     Dim value As Single
     
     slot = Buffer.ReadByte()
-    objIndex = Buffer.ReadInteger()
+    OBJIndex = Buffer.ReadInteger()
     Name = Buffer.ReadASCIIString()
-    amount = Buffer.ReadInteger()
+    Amount = Buffer.ReadInteger()
     Equipped = Buffer.ReadBoolean()
     GrhIndex = Buffer.ReadInteger()
     OBJType = Buffer.ReadByte()
@@ -3260,7 +3211,7 @@ On Error GoTo ErrHandler
         End Select
     End If
     
-    Call Inventario.SetItem(slot, objIndex, amount, Equipped, GrhIndex, OBJType, MaxHit, MinHit, MaxDef, MinDef, value, Name)
+    Call Inventario.SetItem(slot, OBJIndex, Amount, Equipped, GrhIndex, OBJType, MaxHit, MinHit, MaxDef, MinDef, value, Name)
 
     'If we got here then packet is complete, copy data back to original queue
     Call incomingData.CopyBuffer(Buffer)
@@ -3316,19 +3267,19 @@ Private Sub HandleCancelOfferItem()
 '
 '***************************************************
     Dim slot As Byte
-    Dim amount As Long
+    Dim Amount As Long
     
     Call incomingData.ReadByte
     
     slot = incomingData.ReadByte
     
     With InvOfferComUsu(0)
-        amount = .amount(slot)
+        Amount = .Amount(slot)
         
         ' No tiene sentido que se quiten 0 unidades
-        If amount <> 0 Then
+        If Amount <> 0 Then
             ' Actualizo el inventario general
-            Call frmComerciarUsu.UpdateInvCom(.objIndex(slot), amount)
+            Call frmComerciarUsu.UpdateInvCom(.OBJIndex(slot), Amount)
             
             ' Borro el item
             Call .SetItem(slot, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "")
@@ -3360,7 +3311,7 @@ Private Sub HandleChangeBankSlot()
     
 On Error GoTo ErrHandler
     'This packet contains strings, make a copy of the data to prevent losses if it's not complete yet...
-    Dim Buffer As clsByteQueue: Set Buffer = New clsByteQueue
+    Dim Buffer As New clsByteQueue
     Call Buffer.CopyBuffer(incomingData)
     
     'Remove packet ID
@@ -3370,9 +3321,9 @@ On Error GoTo ErrHandler
     slot = Buffer.ReadByte()
     
     With UserBancoInventory(slot)
-        .objIndex = Buffer.ReadInteger()
+        .OBJIndex = Buffer.ReadInteger()
         .Name = Buffer.ReadASCIIString()
-        .amount = Buffer.ReadInteger()
+        .Amount = Buffer.ReadInteger()
         .GrhIndex = Buffer.ReadInteger()
         .OBJType = Buffer.ReadByte()
         .MaxHit = Buffer.ReadInteger()
@@ -3382,7 +3333,7 @@ On Error GoTo ErrHandler
         .Valor = Buffer.ReadLong()
         
         If Comerciando Then
-            Call InvBanco(0).SetItem(slot, .objIndex, .amount, _
+            Call InvBanco(0).SetItem(slot, .OBJIndex, .Amount, _
                 .Equipped, .GrhIndex, .OBJType, .MaxHit, _
                 .MinHit, .MaxDef, .MinDef, .Valor, .Name)
         End If
@@ -3419,7 +3370,7 @@ Private Sub HandleChangeSpellSlot()
     
 On Error GoTo ErrHandler
     'This packet contains strings, make a copy of the data to prevent losses if it's not complete yet...
-    Dim Buffer As clsByteQueue: Set Buffer = New clsByteQueue
+    Dim Buffer As New clsByteQueue
     Call Buffer.CopyBuffer(incomingData)
     
     'Remove packet ID
@@ -3506,7 +3457,7 @@ Private Sub HandleBlacksmithWeapons()
     
 On Error GoTo ErrHandler
     'This packet contains strings, make a copy of the data to prevent losses if it's not complete yet...
-    Dim Buffer As clsByteQueue: Set Buffer = New clsByteQueue
+    Dim Buffer As New clsByteQueue
     Call Buffer.CopyBuffer(incomingData)
     
     'Remove packet ID
@@ -3529,21 +3480,17 @@ On Error GoTo ErrHandler
             .LinH = Buffer.ReadInteger()        'The iron needed
             .LinP = Buffer.ReadInteger()        'The silver needed
             .LinO = Buffer.ReadInteger()        'The gold needed
-            .objIndex = Buffer.ReadInteger()
+            .OBJIndex = Buffer.ReadInteger()
             .Upgrade = Buffer.ReadInteger()
         End With
     Next i
     
-    For i = 1 To MAX_LIST_ITEMS
-        Set InvLingosHerreria(i) = New clsGrapchicalInventory
-    Next i
-    
     With frmHerrero
         ' Inicializo los inventarios
-        Call InvLingosHerreria(1).Initialize(DirectD3D8, .picLingotes0, 3, , , , , , False)
-        Call InvLingosHerreria(2).Initialize(DirectD3D8, .picLingotes1, 3, , , , , , False)
-        Call InvLingosHerreria(3).Initialize(DirectD3D8, .picLingotes2, 3, , , , , , False)
-        Call InvLingosHerreria(4).Initialize(DirectD3D8, .picLingotes3, 3, , , , , , False)
+        Call InvLingosHerreria(1).Initialize(DirectDraw, .picLingotes0, 3, , , , , , False)
+        Call InvLingosHerreria(2).Initialize(DirectDraw, .picLingotes1, 3, , , , , , False)
+        Call InvLingosHerreria(3).Initialize(DirectDraw, .picLingotes2, 3, , , , , , False)
+        Call InvLingosHerreria(4).Initialize(DirectDraw, .picLingotes3, 3, , , , , , False)
         
         Call .HideExtraControls(Count)
         Call .RenderList(1, True)
@@ -3553,14 +3500,14 @@ On Error GoTo ErrHandler
         With ArmasHerrero(i)
             If .Upgrade Then
                 For k = 1 To Count
-                    If .Upgrade = ArmasHerrero(k).objIndex Then
+                    If .Upgrade = ArmasHerrero(k).OBJIndex Then
                         j = j + 1
                 
                         ReDim Preserve HerreroMejorar(j) As tItemsConstruibles
                         
                         HerreroMejorar(j).Name = .Name
                         HerreroMejorar(j).GrhIndex = .GrhIndex
-                        HerreroMejorar(j).objIndex = .objIndex
+                        HerreroMejorar(j).OBJIndex = .OBJIndex
                         HerreroMejorar(j).UpgradeName = ArmasHerrero(k).Name
                         HerreroMejorar(j).UpgradeGrhIndex = ArmasHerrero(k).GrhIndex
                         HerreroMejorar(j).LinH = ArmasHerrero(k).LinH - .LinH * 0.85
@@ -3605,7 +3552,7 @@ Private Sub HandleBlacksmithArmors()
     
 On Error GoTo ErrHandler
     'This packet contains strings, make a copy of the data to prevent losses if it's not complete yet...
-    Dim Buffer As clsByteQueue: Set Buffer = New clsByteQueue
+    Dim Buffer As New clsByteQueue
     Call Buffer.CopyBuffer(incomingData)
     
     'Remove packet ID
@@ -3627,7 +3574,7 @@ On Error GoTo ErrHandler
             .LinH = Buffer.ReadInteger()        'The iron needed
             .LinP = Buffer.ReadInteger()        'The silver needed
             .LinO = Buffer.ReadInteger()        'The gold needed
-            .objIndex = Buffer.ReadInteger()
+            .OBJIndex = Buffer.ReadInteger()
             .Upgrade = Buffer.ReadInteger()
         End With
     Next i
@@ -3638,14 +3585,14 @@ On Error GoTo ErrHandler
         With ArmadurasHerrero(i)
             If .Upgrade Then
                 For k = 1 To Count
-                    If .Upgrade = ArmadurasHerrero(k).objIndex Then
+                    If .Upgrade = ArmadurasHerrero(k).OBJIndex Then
                         j = j + 1
                 
                         ReDim Preserve HerreroMejorar(j) As tItemsConstruibles
                         
                         HerreroMejorar(j).Name = .Name
                         HerreroMejorar(j).GrhIndex = .GrhIndex
-                        HerreroMejorar(j).objIndex = .objIndex
+                        HerreroMejorar(j).OBJIndex = .OBJIndex
                         HerreroMejorar(j).UpgradeName = ArmadurasHerrero(k).Name
                         HerreroMejorar(j).UpgradeGrhIndex = ArmadurasHerrero(k).GrhIndex
                         HerreroMejorar(j).LinH = ArmadurasHerrero(k).LinH - .LinH * 0.85
@@ -3690,7 +3637,7 @@ Private Sub HandleCarpenterObjects()
     
 On Error GoTo ErrHandler
     'This packet contains strings, make a copy of the data to prevent losses if it's not complete yet...
-    Dim Buffer As clsByteQueue: Set Buffer = New clsByteQueue
+    Dim Buffer As New clsByteQueue
     Call Buffer.CopyBuffer(incomingData)
     
     'Remove packet ID
@@ -3712,21 +3659,17 @@ On Error GoTo ErrHandler
             .GrhIndex = Buffer.ReadInteger()
             .Madera = Buffer.ReadInteger()          'The wood needed
             .MaderaElfica = Buffer.ReadInteger()    'The elfic wood needed
-            .objIndex = Buffer.ReadInteger()
+            .OBJIndex = Buffer.ReadInteger()
             .Upgrade = Buffer.ReadInteger()
         End With
     Next i
     
-    For i = 1 To MAX_LIST_ITEMS
-        Set InvMaderasCarpinteria(i) = New clsGrapchicalInventory
-    Next i
-    
     With frmCarp
         ' Inicializo los inventarios
-        Call InvMaderasCarpinteria(1).Initialize(DirectD3D8, .picMaderas0, 2, , , , , , False)
-        Call InvMaderasCarpinteria(2).Initialize(DirectD3D8, .picMaderas1, 2, , , , , , False)
-        Call InvMaderasCarpinteria(3).Initialize(DirectD3D8, .picMaderas2, 2, , , , , , False)
-        Call InvMaderasCarpinteria(4).Initialize(DirectD3D8, .picMaderas3, 2, , , , , , False)
+        Call InvMaderasCarpinteria(1).Initialize(DirectDraw, .picMaderas0, 2, , , , , , False)
+        Call InvMaderasCarpinteria(2).Initialize(DirectDraw, .picMaderas1, 2, , , , , , False)
+        Call InvMaderasCarpinteria(3).Initialize(DirectDraw, .picMaderas2, 2, , , , , , False)
+        Call InvMaderasCarpinteria(4).Initialize(DirectDraw, .picMaderas3, 2, , , , , , False)
         
         Call .HideExtraControls(Count)
         Call .RenderList(1)
@@ -3736,14 +3679,14 @@ On Error GoTo ErrHandler
         With ObjCarpintero(i)
             If .Upgrade Then
                 For k = 1 To Count
-                    If .Upgrade = ObjCarpintero(k).objIndex Then
+                    If .Upgrade = ObjCarpintero(k).OBJIndex Then
                         j = j + 1
                 
                         ReDim Preserve CarpinteroMejorar(j) As tItemsConstruibles
                         
                         CarpinteroMejorar(j).Name = .Name
                         CarpinteroMejorar(j).GrhIndex = .GrhIndex
-                        CarpinteroMejorar(j).objIndex = .objIndex
+                        CarpinteroMejorar(j).OBJIndex = .OBJIndex
                         CarpinteroMejorar(j).UpgradeName = ObjCarpintero(k).Name
                         CarpinteroMejorar(j).UpgradeGrhIndex = ObjCarpintero(k).GrhIndex
                         CarpinteroMejorar(j).Madera = ObjCarpintero(k).Madera - .Madera * 0.85
@@ -3802,7 +3745,7 @@ Private Sub HandleErrorMessage()
     
 On Error GoTo ErrHandler
     'This packet contains strings, make a copy of the data to prevent losses if it's not complete yet...
-    Dim Buffer As clsByteQueue: Set Buffer = New clsByteQueue
+    Dim Buffer As New clsByteQueue
     Call Buffer.CopyBuffer(incomingData)
     
     'Remove packet ID
@@ -3810,7 +3753,7 @@ On Error GoTo ErrHandler
     
     Call MsgBox(Buffer.ReadASCIIString())
     
-    If frmConnect.Visible And (Not frmCrearPersonaje.Visible) Then
+    If frmConnect.Visible Then
 #If UsarWrench = 1 Then
         frmMain.Socket1.Disconnect
         frmMain.Socket1.Cleanup
@@ -3881,7 +3824,7 @@ Private Sub HandleShowSignal()
     
 On Error GoTo ErrHandler
     'This packet contains strings, make a copy of the data to prevent losses if it's not complete yet...
-    Dim Buffer As clsByteQueue: Set Buffer = New clsByteQueue
+    Dim Buffer As New clsByteQueue
     Call Buffer.CopyBuffer(incomingData)
     
     'Remove packet ID
@@ -3923,7 +3866,7 @@ Private Sub HandleChangeNPCInventorySlot()
     
 On Error GoTo ErrHandler
     'This packet contains strings, make a copy of the data to prevent losses if it's not complete yet...
-    Dim Buffer As clsByteQueue: Set Buffer = New clsByteQueue
+    Dim Buffer As New clsByteQueue
     Call Buffer.CopyBuffer(incomingData)
     
     'Remove packet ID
@@ -3934,10 +3877,10 @@ On Error GoTo ErrHandler
     
     With NPCInventory(slot)
         .Name = Buffer.ReadASCIIString()
-        .amount = Buffer.ReadInteger()
+        .Amount = Buffer.ReadInteger()
         .Valor = Buffer.ReadSingle()
         .GrhIndex = Buffer.ReadInteger()
-        .objIndex = Buffer.ReadInteger()
+        .OBJIndex = Buffer.ReadInteger()
         .OBJType = Buffer.ReadByte()
         .MaxHit = Buffer.ReadInteger()
         .MinHit = Buffer.ReadInteger()
@@ -4098,7 +4041,7 @@ Private Sub HandleAddForumMessage()
     
 On Error GoTo ErrHandler
     'This packet contains strings, make a copy of the data to prevent losses if it's not complete yet...
-    Dim Buffer As clsByteQueue: Set Buffer = New clsByteQueue
+    Dim Buffer As New clsByteQueue
     Call Buffer.CopyBuffer(incomingData)
     
     'Remove packet ID
@@ -4179,10 +4122,10 @@ Private Sub HandleSetInvisible()
     Dim CharIndex As Integer
     
     CharIndex = incomingData.ReadInteger()
-    charlist(CharIndex).Invisible = incomingData.ReadBoolean()
+    charlist(CharIndex).invisible = incomingData.ReadBoolean()
     
 #If SeguridadAlkon Then
-    If charlist(CharIndex).Invisible Then
+    If charlist(CharIndex).invisible Then
         Call MI(CualMI).SetInvisible(CharIndex)
     Else
         Call MI(CualMI).ResetInvisible(CharIndex)
@@ -4200,7 +4143,6 @@ Private Sub HandleDiceRoll()
 'Last Modification: 05/17/06
 '
 '***************************************************
-
     If incomingData.length < 6 Then
         Err.Raise incomingData.NotEnoughDataErrCode
         Exit Sub
@@ -4214,7 +4156,7 @@ Private Sub HandleDiceRoll()
     UserAtributos(eAtributos.Inteligencia) = incomingData.ReadByte()
     UserAtributos(eAtributos.Carisma) = incomingData.ReadByte()
     UserAtributos(eAtributos.Constitucion) = incomingData.ReadByte()
-         
+    
     With frmCrearPersonaje
         .lblAtributos(eAtributos.Fuerza) = UserAtributos(eAtributos.Fuerza)
         .lblAtributos(eAtributos.Agilidad) = UserAtributos(eAtributos.Agilidad)
@@ -4288,13 +4230,13 @@ Private Sub HandleSendSkills()
     'Remove packet ID
     Call incomingData.ReadByte
     
+    UserClase = incomingData.ReadByte
     Dim i As Long
-
+    
     For i = 1 To NUMSKILLS
         UserSkills(i) = incomingData.ReadByte()
         PorcentajeSkills(i) = incomingData.ReadByte()
     Next i
-    
     LlegaronSkills = True
 End Sub
 
@@ -4314,7 +4256,7 @@ Private Sub HandleTrainerCreatureList()
     
 On Error GoTo ErrHandler
     'This packet contains strings, make a copy of the data to prevent losses if it's not complete yet...
-    Dim Buffer As clsByteQueue: Set Buffer = New clsByteQueue
+    Dim Buffer As New clsByteQueue
     Call Buffer.CopyBuffer(incomingData)
     
     'Remove packet ID
@@ -4361,7 +4303,7 @@ Private Sub HandleGuildNews()
     
 On Error GoTo ErrHandler
     'This packet contains strings, make a copy of the data to prevent losses if it's not complete yet...
-    Dim Buffer As clsByteQueue: Set Buffer = New clsByteQueue
+    Dim Buffer As New clsByteQueue
     Call Buffer.CopyBuffer(incomingData)
     
     'Remove packet ID
@@ -4390,7 +4332,7 @@ On Error GoTo ErrHandler
         frmGuildNews.txtClanesAliados.Text = sTemp & guildList(i) & vbCrLf
     Next i
     
-    If ClientSetup.bGuildNews Or bShowGuildNews Then frmGuildNews.Show vbModeless, frmMain
+    If ClientSetup.bGuildNews Then frmGuildNews.Show vbModeless, frmMain
     
     'If we got here then packet is complete, copy data back to original queue
     Call incomingData.CopyBuffer(Buffer)
@@ -4423,7 +4365,7 @@ Private Sub HandleOfferDetails()
     
 On Error GoTo ErrHandler
     'This packet contains strings, make a copy of the data to prevent losses if it's not complete yet...
-    Dim Buffer As clsByteQueue: Set Buffer = New clsByteQueue
+    Dim Buffer As New clsByteQueue
     Call Buffer.CopyBuffer(incomingData)
     
     'Remove packet ID
@@ -4462,7 +4404,7 @@ Private Sub HandleAlianceProposalsList()
     
 On Error GoTo ErrHandler
     'This packet contains strings, make a copy of the data to prevent losses if it's not complete yet...
-    Dim Buffer As clsByteQueue: Set Buffer = New clsByteQueue
+    Dim Buffer As New clsByteQueue
     Call Buffer.CopyBuffer(incomingData)
     
     'Remove packet ID
@@ -4512,7 +4454,7 @@ Private Sub HandlePeaceProposalsList()
     
 On Error GoTo ErrHandler
     'This packet contains strings, make a copy of the data to prevent losses if it's not complete yet...
-    Dim Buffer As clsByteQueue: Set Buffer = New clsByteQueue
+    Dim Buffer As New clsByteQueue
     Call Buffer.CopyBuffer(incomingData)
     
     'Remove packet ID
@@ -4562,7 +4504,7 @@ Private Sub HandleCharacterInfo()
     
 On Error GoTo ErrHandler
     'This packet contains strings, make a copy of the data to prevent losses if it's not complete yet...
-    Dim Buffer As clsByteQueue: Set Buffer = New clsByteQueue
+    Dim Buffer As New clsByteQueue
     Call Buffer.CopyBuffer(incomingData)
     
     'Remove packet ID
@@ -4661,7 +4603,7 @@ Private Sub HandleGuildLeaderInfo()
     
 On Error GoTo ErrHandler
     'This packet contains strings, make a copy of the data to prevent losses if it's not complete yet...
-    Dim Buffer As clsByteQueue: Set Buffer = New clsByteQueue
+    Dim Buffer As New clsByteQueue
     Call Buffer.CopyBuffer(incomingData)
     
     'Remove packet ID
@@ -4738,7 +4680,7 @@ Private Sub HandleGuildDetails()
     
 On Error GoTo ErrHandler
     'This packet contains strings, make a copy of the data to prevent losses if it's not complete yet...
-    Dim Buffer As clsByteQueue: Set Buffer = New clsByteQueue
+    Dim Buffer As New clsByteQueue
     Call Buffer.CopyBuffer(incomingData)
     
     'Remove packet ID
@@ -4858,7 +4800,7 @@ Private Sub HandleShowUserRequest()
     
 On Error GoTo ErrHandler
     'This packet contains strings, make a copy of the data to prevent losses if it's not complete yet...
-    Dim Buffer As clsByteQueue: Set Buffer = New clsByteQueue
+    Dim Buffer As New clsByteQueue
     Call Buffer.CopyBuffer(incomingData)
     
     'Remove packet ID
@@ -4900,32 +4842,32 @@ Private Sub HandleTradeOK()
         'Update user inventory
         For i = 1 To MAX_INVENTORY_SLOTS
             ' Agrego o quito un item en su totalidad
-            If Inventario.objIndex(i) <> InvComUsu.objIndex(i) Then
+            If Inventario.OBJIndex(i) <> InvComUsu.OBJIndex(i) Then
                 With Inventario
-                    Call InvComUsu.SetItem(i, .objIndex(i), _
-                    .amount(i), .Equipped(i), .GrhIndex(i), _
+                    Call InvComUsu.SetItem(i, .OBJIndex(i), _
+                    .Amount(i), .Equipped(i), .GrhIndex(i), _
                     .OBJType(i), .MaxHit(i), .MinHit(i), .MaxDef(i), .MinDef(i), _
                     .Valor(i), .ItemName(i))
                 End With
             ' Vendio o compro cierta cantidad de un item que ya tenia
-            ElseIf Inventario.amount(i) <> InvComUsu.amount(i) Then
-                Call InvComUsu.ChangeSlotItemAmount(i, Inventario.amount(i))
+            ElseIf Inventario.Amount(i) <> InvComUsu.Amount(i) Then
+                Call InvComUsu.ChangeSlotItemAmount(i, Inventario.Amount(i))
             End If
         Next i
         
         ' Fill Npc inventory
         For i = 1 To 20
             ' Compraron la totalidad de un item, o vendieron un item que el npc no tenia
-            If NPCInventory(i).objIndex <> InvComNpc.objIndex(i) Then
+            If NPCInventory(i).OBJIndex <> InvComNpc.OBJIndex(i) Then
                 With NPCInventory(i)
-                    Call InvComNpc.SetItem(i, .objIndex, _
-                    .amount, 0, .GrhIndex, _
+                    Call InvComNpc.SetItem(i, .OBJIndex, _
+                    .Amount, 0, .GrhIndex, _
                     .OBJType, .MaxHit, .MinHit, .MaxDef, .MinDef, _
                     .Valor, .Name)
                 End With
             ' Compraron o vendieron cierta cantidad (no su totalidad)
-            ElseIf NPCInventory(i).amount <> InvComNpc.amount(i) Then
-                Call InvComNpc.ChangeSlotItemAmount(i, NPCInventory(i).amount)
+            ElseIf NPCInventory(i).Amount <> InvComNpc.Amount(i) Then
+                Call InvComNpc.ChangeSlotItemAmount(i, NPCInventory(i).Amount)
             End If
         Next i
     
@@ -4950,7 +4892,7 @@ Private Sub HandleBankOK()
         
         For i = 1 To Inventario.MaxObjs
             With Inventario
-                Call InvBanco(1).SetItem(i, .objIndex(i), .amount(i), _
+                Call InvBanco(1).SetItem(i, .OBJIndex(i), .Amount(i), _
                     .Equipped(i), .GrhIndex(i), .OBJType(i), .MaxHit(i), _
                     .MinHit(i), .MaxDef(i), .MinDef(i), .Valor(i), .ItemName(i))
             End With
@@ -4986,7 +4928,7 @@ Private Sub HandleChangeUserTradeSlot()
     
 On Error GoTo ErrHandler
     'This packet contains strings, make a copy of the data to prevent losses if it's not complete yet...
-    Dim Buffer As clsByteQueue: Set Buffer = New clsByteQueue
+    Dim Buffer As New clsByteQueue
     Call Buffer.CopyBuffer(incomingData)
     
     Dim OfferSlot As Byte
@@ -5062,7 +5004,7 @@ Private Sub HandleSpawnList()
     
 On Error GoTo ErrHandler
     'This packet contains strings, make a copy of the data to prevent losses if it's not complete yet...
-    Dim Buffer As clsByteQueue: Set Buffer = New clsByteQueue
+    Dim Buffer As New clsByteQueue
     Call Buffer.CopyBuffer(incomingData)
     
     'Remove packet ID
@@ -5109,7 +5051,7 @@ Private Sub HandleShowSOSForm()
     
 On Error GoTo ErrHandler
     'This packet contains strings, make a copy of the data to prevent losses if it's not complete yet...
-    Dim Buffer As clsByteQueue: Set Buffer = New clsByteQueue
+    Dim Buffer As New clsByteQueue
     Call Buffer.CopyBuffer(incomingData)
     
     'Remove packet ID
@@ -5141,53 +5083,7 @@ On Error GoTo 0
         Err.Raise error
 End Sub
 
-''
-' Handles the ShowDenounces message.
 
-Private Sub HandleShowDenounces()
-'***************************************************
-'Author: ZaMa
-'Last Modification: 14/11/2010
-'
-'***************************************************
-    If incomingData.length < 3 Then
-        Err.Raise incomingData.NotEnoughDataErrCode
-        Exit Sub
-    End If
-    
-On Error GoTo ErrHandler
-    'This packet contains strings, make a copy of the data to prevent losses if it's not complete yet...
-    Dim Buffer As clsByteQueue: Set Buffer = New clsByteQueue
-    Call Buffer.CopyBuffer(incomingData)
-    
-    'Remove packet ID
-    Call Buffer.ReadByte
-    
-    Dim DenounceList() As String
-    Dim DenounceIndex As Long
-    
-    DenounceList = Split(Buffer.ReadASCIIString(), SEPARATOR)
-    
-    With FontTypes(FontTypeNames.FONTTYPE_GUILDMSG)
-        For DenounceIndex = 0 To UBound(DenounceList())
-            Call AddtoRichTextBox(frmMain.RecTxt, DenounceList(DenounceIndex), .red, .green, .blue, .bold, .italic)
-        Next DenounceIndex
-    End With
-    
-    'If we got here then packet is complete, copy data back to original queue
-    Call incomingData.CopyBuffer(Buffer)
-    
-ErrHandler:
-    Dim error As Long
-    error = Err.number
-On Error GoTo 0
-    
-    'Destroy auxiliar buffer
-    Set Buffer = Nothing
-
-    If error <> 0 Then _
-        Err.Raise error
-End Sub
 
 ''
 ' Handles the ShowSOSForm message.
@@ -5205,7 +5101,7 @@ Private Sub HandleShowPartyForm()
     
 On Error GoTo ErrHandler
     'This packet contains strings, make a copy of the data to prevent losses if it's not complete yet...
-    Dim Buffer As clsByteQueue: Set Buffer = New clsByteQueue
+    Dim Buffer As New clsByteQueue
     Call Buffer.CopyBuffer(incomingData)
     
     'Remove packet ID
@@ -5257,7 +5153,7 @@ Private Sub HandleShowMOTDEditionForm()
     
 On Error GoTo ErrHandler
     'This packet contains strings, make a copy of the data to prevent losses if it's not complete yet...
-    Dim Buffer As clsByteQueue: Set Buffer = New clsByteQueue
+    Dim Buffer As New clsByteQueue
     Call Buffer.CopyBuffer(incomingData)
     
     'Remove packet ID
@@ -5312,7 +5208,7 @@ Private Sub HandleUserNameList()
     
 On Error GoTo ErrHandler
     'This packet contains strings, make a copy of the data to prevent losses if it's not complete yet...
-    Dim Buffer As clsByteQueue: Set Buffer = New clsByteQueue
+    Dim Buffer As New clsByteQueue
     Call Buffer.CopyBuffer(incomingData)
     
     'Remove packet ID
@@ -5378,7 +5274,7 @@ Private Sub HandleGuildMemberInfo()
     
 On Error GoTo ErrHandler
     'This packet contains strings, make a copy of the data to prevent losses if it's not complete yet...
-    Dim Buffer As clsByteQueue: Set Buffer = New clsByteQueue
+    Dim Buffer As New clsByteQueue
     Call Buffer.CopyBuffer(incomingData)
     
     'Remove packet ID
@@ -5440,7 +5336,7 @@ Private Sub HandleUpdateTagAndStatus()
     
 On Error GoTo ErrHandler
     'This packet contains strings, make a copy of the data to prevent losses if it's not complete yet...
-    Dim Buffer As clsByteQueue: Set Buffer = New clsByteQueue
+    Dim Buffer As New clsByteQueue
     Call Buffer.CopyBuffer(incomingData)
     
     'Remove packet ID
@@ -5619,17 +5515,16 @@ End Sub
 ' @param    chat The chat text to be sent to the user.
 ' @remarks  The data is not actually sent until the buffer is properly flushed.
 
-Public Sub WriteWhisper(ByVal CharName As String, ByVal chat As String)
+Public Sub WriteWhisper(ByVal CharIndex As Integer, ByVal chat As String)
 '***************************************************
 'Author: Juan Martín Sotuyo Dodero (Maraxus)
-'Last Modification: 03/12/10
+'Last Modification: 05/17/06
 'Writes the "Whisper" message to the outgoing data buffer
-'03/12/10: Enanoh - Ahora se envía el nick y no el charindex.
 '***************************************************
     With outgoingData
         Call .WriteByte(ClientPacketID.Whisper)
         
-        Call .WriteASCIIString(CharName)
+        Call .WriteInteger(CharIndex)
         
         Call .WriteASCIIString(chat)
     End With
@@ -5911,7 +5806,7 @@ End Sub
 ' @param    amount Number of items to drop.
 ' @remarks  The data is not actually sent until the buffer is properly flushed.
 
-Public Sub WriteDrop(ByVal slot As Byte, ByVal amount As Integer)
+Public Sub WriteDrop(ByVal slot As Byte, ByVal Amount As Integer)
 '***************************************************
 'Author: Juan Martín Sotuyo Dodero (Maraxus)
 'Last Modification: 05/17/06
@@ -5921,7 +5816,7 @@ Public Sub WriteDrop(ByVal slot As Byte, ByVal amount As Integer)
         Call .WriteByte(ClientPacketID.Drop)
         
         Call .WriteByte(slot)
-        Call .WriteInteger(amount)
+        Call .WriteInteger(Amount)
     End With
 End Sub
 
@@ -6257,7 +6152,7 @@ End Sub
 ' @param    amount Number of items to buy.
 ' @remarks  The data is not actually sent until the buffer is properly flushed.
 
-Public Sub WriteCommerceBuy(ByVal slot As Byte, ByVal amount As Integer)
+Public Sub WriteCommerceBuy(ByVal slot As Byte, ByVal Amount As Integer)
 '***************************************************
 'Author: Juan Martín Sotuyo Dodero (Maraxus)
 'Last Modification: 05/17/06
@@ -6267,7 +6162,7 @@ Public Sub WriteCommerceBuy(ByVal slot As Byte, ByVal amount As Integer)
         Call .WriteByte(ClientPacketID.CommerceBuy)
         
         Call .WriteByte(slot)
-        Call .WriteInteger(amount)
+        Call .WriteInteger(Amount)
     End With
 End Sub
 
@@ -6278,7 +6173,7 @@ End Sub
 ' @param    amount Number of items to extract.
 ' @remarks  The data is not actually sent until the buffer is properly flushed.
 
-Public Sub WriteBankExtractItem(ByVal slot As Byte, ByVal amount As Integer)
+Public Sub WriteBankExtractItem(ByVal slot As Byte, ByVal Amount As Integer)
 '***************************************************
 'Author: Juan Martín Sotuyo Dodero (Maraxus)
 'Last Modification: 05/17/06
@@ -6288,7 +6183,7 @@ Public Sub WriteBankExtractItem(ByVal slot As Byte, ByVal amount As Integer)
         Call .WriteByte(ClientPacketID.BankExtractItem)
         
         Call .WriteByte(slot)
-        Call .WriteInteger(amount)
+        Call .WriteInteger(Amount)
     End With
 End Sub
 
@@ -6299,7 +6194,7 @@ End Sub
 ' @param    amount Number of items to sell.
 ' @remarks  The data is not actually sent until the buffer is properly flushed.
 
-Public Sub WriteCommerceSell(ByVal slot As Byte, ByVal amount As Integer)
+Public Sub WriteCommerceSell(ByVal slot As Byte, ByVal Amount As Integer)
 '***************************************************
 'Author: Juan Martín Sotuyo Dodero (Maraxus)
 'Last Modification: 05/17/06
@@ -6309,7 +6204,7 @@ Public Sub WriteCommerceSell(ByVal slot As Byte, ByVal amount As Integer)
         Call .WriteByte(ClientPacketID.CommerceSell)
         
         Call .WriteByte(slot)
-        Call .WriteInteger(amount)
+        Call .WriteInteger(Amount)
     End With
 End Sub
 
@@ -6320,7 +6215,7 @@ End Sub
 ' @param    amount Number of items to deposit.
 ' @remarks  The data is not actually sent until the buffer is properly flushed.
 
-Public Sub WriteBankDeposit(ByVal slot As Byte, ByVal amount As Integer)
+Public Sub WriteBankDeposit(ByVal slot As Byte, ByVal Amount As Integer)
 '***************************************************
 'Author: Juan Martín Sotuyo Dodero (Maraxus)
 'Last Modification: 05/17/06
@@ -6330,7 +6225,7 @@ Public Sub WriteBankDeposit(ByVal slot As Byte, ByVal amount As Integer)
         Call .WriteByte(ClientPacketID.BankDeposit)
         
         Call .WriteByte(slot)
-        Call .WriteInteger(amount)
+        Call .WriteInteger(Amount)
     End With
 End Sub
 
@@ -6437,7 +6332,7 @@ End Sub
 ' @param    amount Number of items to offer.
 ' @remarks  The data is not actually sent until the buffer is properly flushed.
 
-Public Sub WriteUserCommerceOffer(ByVal slot As Byte, ByVal amount As Long, ByVal OfferSlot As Byte)
+Public Sub WriteUserCommerceOffer(ByVal slot As Byte, ByVal Amount As Long, ByVal OfferSlot As Byte)
 '***************************************************
 'Author: Juan Martín Sotuyo Dodero (Maraxus)
 'Last Modification: 05/17/06
@@ -6447,7 +6342,7 @@ Public Sub WriteUserCommerceOffer(ByVal slot As Byte, ByVal amount As Long, ByVa
         Call .WriteByte(ClientPacketID.UserCommerceOffer)
         
         Call .WriteByte(slot)
-        Call .WriteLong(amount)
+        Call .WriteLong(Amount)
         Call .WriteByte(OfferSlot)
     End With
 End Sub
@@ -6733,7 +6628,7 @@ End Sub
 ' @param    reason The reason for which the player was rejected.
 ' @remarks  The data is not actually sent until the buffer is properly flushed.
 
-Public Sub WriteGuildRejectNewMember(ByVal UserName As String, ByVal Reason As String)
+Public Sub WriteGuildRejectNewMember(ByVal UserName As String, ByVal reason As String)
 '***************************************************
 'Author: Juan Martín Sotuyo Dodero (Maraxus)
 'Last Modification: 05/17/06
@@ -6743,7 +6638,7 @@ Public Sub WriteGuildRejectNewMember(ByVal UserName As String, ByVal Reason As S
         Call .WriteByte(ClientPacketID.GuildRejectNewMember)
         
         Call .WriteASCIIString(UserName)
-        Call .WriteASCIIString(Reason)
+        Call .WriteASCIIString(reason)
     End With
 End Sub
 
@@ -7014,17 +6909,17 @@ Public Sub WriteResucitate()
 End Sub
 
 ''
-' Writes the "Consultation" message to the outgoing data buffer.
+' Writes the "Consulta" message to the outgoing data buffer.
 '
 ' @remarks  The data is not actually sent until the buffer is properly flushed.
 
-Public Sub WriteConsultation()
+Public Sub WriteConsulta()
 '***************************************************
 'Author: ZaMa
 'Last Modification: 01/05/2010
-'Writes the "Consultation" message to the outgoing data buffer
+'Writes the "Consulta" message to the outgoing data buffer
 '***************************************************
-    Call outgoingData.WriteByte(ClientPacketID.Consultation)
+    Call outgoingData.WriteByte(ClientPacketID.Consulta)
 
 End Sub
 
@@ -7472,7 +7367,7 @@ End Sub
 ' @param    amount The amount to gamble.
 ' @remarks  The data is not actually sent until the buffer is properly flushed.
 
-Public Sub WriteGamble(ByVal amount As Integer)
+Public Sub WriteGamble(ByVal Amount As Integer)
 '***************************************************
 'Author: Juan Martín Sotuyo Dodero (Maraxus)
 'Last Modification: 05/17/06
@@ -7481,7 +7376,7 @@ Public Sub WriteGamble(ByVal amount As Integer)
     With outgoingData
         Call .WriteByte(ClientPacketID.Gamble)
         
-        Call .WriteInteger(amount)
+        Call .WriteInteger(Amount)
     End With
 End Sub
 
@@ -7524,7 +7419,7 @@ End Sub
 ' @param    amount The amount of money to extract from the bank.
 ' @remarks  The data is not actually sent until the buffer is properly flushed.
 
-Public Sub WriteBankExtractGold(ByVal amount As Long)
+Public Sub WriteBankExtractGold(ByVal Amount As Long)
 '***************************************************
 'Author: Juan Martín Sotuyo Dodero (Maraxus)
 'Last Modification: 05/17/06
@@ -7533,7 +7428,7 @@ Public Sub WriteBankExtractGold(ByVal amount As Long)
     With outgoingData
         Call .WriteByte(ClientPacketID.BankExtractGold)
         
-        Call .WriteLong(amount)
+        Call .WriteLong(Amount)
     End With
 End Sub
 
@@ -7543,7 +7438,7 @@ End Sub
 ' @param    amount The amount of money to deposit in the bank.
 ' @remarks  The data is not actually sent until the buffer is properly flushed.
 
-Public Sub WriteBankDepositGold(ByVal amount As Long)
+Public Sub WriteBankDepositGold(ByVal Amount As Long)
 '***************************************************
 'Author: Juan Martín Sotuyo Dodero (Maraxus)
 'Last Modification: 05/17/06
@@ -7552,7 +7447,7 @@ Public Sub WriteBankDepositGold(ByVal amount As Long)
     With outgoingData
         Call .WriteByte(ClientPacketID.BankDepositGold)
         
-        Call .WriteLong(amount)
+        Call .WriteLong(Amount)
     End With
 End Sub
 
@@ -8012,7 +7907,7 @@ Public Sub WriteInvisible()
 'Writes the "invisible" message to the outgoing data buffer
 '***************************************************
     Call outgoingData.WriteByte(ClientPacketID.GMCommands)
-    Call outgoingData.WriteByte(eGMCommands.Invisible)
+    Call outgoingData.WriteByte(eGMCommands.invisible)
 End Sub
 
 ''
@@ -8083,7 +7978,7 @@ End Sub
 ' @param    time The time (in minutes) the user will have to spend there.
 ' @remarks  The data is not actually sent until the buffer is properly flushed.
 
-Public Sub WriteJail(ByVal UserName As String, ByVal Reason As String, ByVal time As Byte)
+Public Sub WriteJail(ByVal UserName As String, ByVal reason As String, ByVal time As Byte)
 '***************************************************
 'Author: Juan Martín Sotuyo Dodero (Maraxus)
 'Last Modification: 05/17/06
@@ -8094,7 +7989,7 @@ Public Sub WriteJail(ByVal UserName As String, ByVal Reason As String, ByVal tim
         Call .WriteByte(eGMCommands.Jail)
         
         Call .WriteASCIIString(UserName)
-        Call .WriteASCIIString(Reason)
+        Call .WriteASCIIString(reason)
         
         Call .WriteByte(time)
     End With
@@ -8122,7 +8017,7 @@ End Sub
 ' @param    reason Reason for the warning.
 ' @remarks  The data is not actually sent until the buffer is properly flushed.
 
-Public Sub WriteWarnUser(ByVal UserName As String, ByVal Reason As String)
+Public Sub WriteWarnUser(ByVal UserName As String, ByVal reason As String)
 '***************************************************
 'Author: Juan Martín Sotuyo Dodero (Maraxus)
 'Last Modification: 05/17/06
@@ -8133,7 +8028,7 @@ Public Sub WriteWarnUser(ByVal UserName As String, ByVal Reason As String)
         Call .WriteByte(eGMCommands.WarnUser)
         
         Call .WriteASCIIString(UserName)
-        Call .WriteASCIIString(Reason)
+        Call .WriteASCIIString(reason)
     End With
 End Sub
 
@@ -8407,7 +8302,7 @@ End Sub
 ' @param    reason The reson for which the user is to be banned.
 ' @remarks  The data is not actually sent until the buffer is properly flushed.
 
-Public Sub WriteBanChar(ByVal UserName As String, ByVal Reason As String)
+Public Sub WriteBanChar(ByVal UserName As String, ByVal reason As String)
 '***************************************************
 'Author: Juan Martín Sotuyo Dodero (Maraxus)
 'Last Modification: 05/17/06
@@ -8419,7 +8314,7 @@ Public Sub WriteBanChar(ByVal UserName As String, ByVal Reason As String)
         
         Call .WriteASCIIString(UserName)
         
-        Call .WriteASCIIString(Reason)
+        Call .WriteASCIIString(reason)
     End With
 End Sub
 
@@ -8558,25 +8453,6 @@ Public Sub WriteServerMessage(ByVal Message As String)
     With outgoingData
         Call .WriteByte(ClientPacketID.GMCommands)
         Call .WriteByte(eGMCommands.ServerMessage)
-        
-        Call .WriteASCIIString(Message)
-    End With
-End Sub
-''
-' Writes the "MapMessage" message to the outgoing data buffer.
-'
-' @param    message The message to be sent to players.
-' @remarks  The data is not actually sent until the buffer is properly flushed.
-
-Public Sub WriteMapMessage(ByVal Message As String)
-'***************************************************
-'Author: ZaMa
-'Last Modification: 14/11/2010
-'Writes the "MapMessage" message to the outgoing data buffer
-'***************************************************
-    With outgoingData
-        Call .WriteByte(ClientPacketID.GMCommands)
-        Call .WriteByte(eGMCommands.MapMessage)
         
         Call .WriteASCIIString(Message)
     End With
@@ -9116,7 +8992,7 @@ End Sub
 '
 ' @remarks  The data is not actually sent until the buffer is properly flushed.
 
-Public Sub WriteBanIP(ByVal byIp As Boolean, ByRef Ip() As Byte, ByVal Nick As String, ByVal Reason As String)
+Public Sub WriteBanIP(ByVal byIp As Boolean, ByRef Ip() As Byte, ByVal Nick As String, ByVal reason As String)
 '***************************************************
 'Author: Juan Martín Sotuyo Dodero (Maraxus)
 'Last Modification: 05/17/06
@@ -9140,7 +9016,7 @@ Public Sub WriteBanIP(ByVal byIp As Boolean, ByRef Ip() As Byte, ByVal Nick As S
             Call .WriteASCIIString(Nick)
         End If
         
-        Call .WriteASCIIString(Reason)
+        Call .WriteASCIIString(reason)
     End With
 End Sub
 
@@ -9790,46 +9666,6 @@ Public Sub WriteChangeMapInfoPK(ByVal isPK As Boolean)
 End Sub
 
 ''
-' Writes the "ChangeMapInfoNoOcultar" message to the outgoing data buffer.
-'
-' @param    PermitirOcultar True if the map permits to hide, False otherwise.
-' @remarks  The data is not actually sent until the buffer is properly flushed.
-
-Public Sub WriteChangeMapInfoNoOcultar(ByVal PermitirOcultar As Boolean)
-'***************************************************
-'Author: ZaMa
-'Last Modification: 19/09/2010
-'Writes the "ChangeMapInfoNoOcultar" message to the outgoing data buffer
-'***************************************************
-    With outgoingData
-        Call .WriteByte(ClientPacketID.GMCommands)
-        Call .WriteByte(eGMCommands.ChangeMapInfoNoOcultar)
-        
-        Call .WriteBoolean(PermitirOcultar)
-    End With
-End Sub
-
-''
-' Writes the "ChangeMapInfoNoInvocar" message to the outgoing data buffer.
-'
-' @param    PermitirInvocar True if the map permits to invoke, False otherwise.
-' @remarks  The data is not actually sent until the buffer is properly flushed.
-
-Public Sub WriteChangeMapInfoNoInvocar(ByVal PermitirInvocar As Boolean)
-'***************************************************
-'Author: ZaMa
-'Last Modification: 18/09/2010
-'Writes the "ChangeMapInfoNoInvocar" message to the outgoing data buffer
-'***************************************************
-    With outgoingData
-        Call .WriteByte(ClientPacketID.GMCommands)
-        Call .WriteByte(eGMCommands.ChangeMapInfoNoInvocar)
-        
-        Call .WriteBoolean(PermitirInvocar)
-    End With
-End Sub
-
-''
 ' Writes the "ChangeMapInfoBackup" message to the outgoing data buffer.
 '
 ' @param    backup True if the map is to be backuped, False otherwise.
@@ -9970,26 +9806,6 @@ Public Sub WriteChangeMapInfoZone(ByVal zone As String)
 End Sub
 
 ''
-' Writes the "ChangeMapInfoStealNpc" message to the outgoing data buffer.
-'
-' @param    forbid TRUE if stealNpc forbiden.
-' @remarks  The data is not actually sent until the buffer is properly flushed.
-
-Public Sub WriteChangeMapInfoStealNpc(ByVal forbid As Boolean)
-'***************************************************
-'Author: ZaMa
-'Last Modification: 25/07/2010
-'Writes the "ChangeMapInfoStealNpc" message to the outgoing data buffer
-'***************************************************
-    With outgoingData
-        Call .WriteByte(ClientPacketID.GMCommands)
-        Call .WriteByte(eGMCommands.ChangeMapInfoStealNpc)
-        
-        Call .WriteBoolean(forbid)
-    End With
-End Sub
-
-''
 ' Writes the "SaveChars" message to the outgoing data buffer.
 '
 ' @remarks  The data is not actually sent until the buffer is properly flushed.
@@ -10032,36 +9848,6 @@ Public Sub WriteShowServerForm()
 '***************************************************
     Call outgoingData.WriteByte(ClientPacketID.GMCommands)
     Call outgoingData.WriteByte(eGMCommands.ShowServerForm)
-End Sub
-
-''
-' Writes the "ShowDenouncesList" message to the outgoing data buffer.
-'
-' @remarks  The data is not actually sent until the buffer is properly flushed.
-
-Public Sub WriteShowDenouncesList()
-'***************************************************
-'Author: ZaMa
-'Last Modification: 14/11/2010
-'Writes the "ShowDenouncesList" message to the outgoing data buffer
-'***************************************************
-    Call outgoingData.WriteByte(ClientPacketID.GMCommands)
-    Call outgoingData.WriteByte(eGMCommands.ShowDenouncesList)
-End Sub
-
-''
-' Writes the "EnableDenounces" message to the outgoing data buffer.
-'
-' @remarks  The data is not actually sent until the buffer is properly flushed.
-
-Public Sub WriteEnableDenounces()
-'***************************************************
-'Author: ZaMa
-'Last Modification: 14/11/2010
-'Writes the "EnableDenounces" message to the outgoing data buffer
-'***************************************************
-    Call outgoingData.WriteByte(ClientPacketID.GMCommands)
-    Call outgoingData.WriteByte(eGMCommands.EnableDenounces)
 End Sub
 
 ''
@@ -10192,7 +9978,7 @@ End Sub
 ' @param    b The blue component of the new chat color.
 ' @remarks  The data is not actually sent until the buffer is properly flushed.
 
-Public Sub WriteChatColor(ByVal R As Byte, ByVal G As Byte, ByVal B As Byte)
+Public Sub WriteChatColor(ByVal r As Byte, ByVal g As Byte, ByVal b As Byte)
 '***************************************************
 'Author: Juan Martín Sotuyo Dodero (Maraxus)
 'Last Modification: 05/17/06
@@ -10202,9 +9988,9 @@ Public Sub WriteChatColor(ByVal R As Byte, ByVal G As Byte, ByVal B As Byte)
         Call .WriteByte(ClientPacketID.GMCommands)
         Call .WriteByte(eGMCommands.ChatColor)
         
-        Call .WriteByte(R)
-        Call .WriteByte(G)
-        Call .WriteByte(B)
+        Call .WriteByte(r)
+        Call .WriteByte(g)
+        Call .WriteByte(b)
     End With
 End Sub
 
@@ -10320,48 +10106,6 @@ Public Sub WriteSetIniVar(ByRef sLlave As String, ByRef sClave As String, ByRef 
 End Sub
 
 ''
-' Writes the "CreatePretorianClan" message to the outgoing data buffer.
-'
-' @param    Map         The map in which create the pretorian clan.
-' @param    X           The x pos where the king is settled.
-' @param    Y           The y pos where the king is settled.
-' @remarks  The data is not actually sent until the buffer is properly flushed.
-
-Public Sub WriteCreatePretorianClan(ByVal Map As Integer, ByVal X As Byte, ByVal Y As Byte)
-'***************************************************
-'Author: ZaMa
-'Last Modification: 29/10/2010
-'Writes the "CreatePretorianClan" message to the outgoing data buffer
-'***************************************************
-    With outgoingData
-        Call .WriteByte(ClientPacketID.GMCommands)
-        Call .WriteByte(eGMCommands.CreatePretorianClan)
-        Call .WriteInteger(Map)
-        Call .WriteByte(X)
-        Call .WriteByte(Y)
-    End With
-End Sub
-
-''
-' Writes the "DeletePretorianClan" message to the outgoing data buffer.
-'
-' @param    Map         The map which contains the pretorian clan to be removed.
-' @remarks  The data is not actually sent until the buffer is properly flushed.
-
-Public Sub WriteDeletePretorianClan(ByVal Map As Integer)
-'***************************************************
-'Author: ZaMa
-'Last Modification: 29/10/2010
-'Writes the "DeletePretorianClan" message to the outgoing data buffer
-'***************************************************
-    With outgoingData
-        Call .WriteByte(ClientPacketID.GMCommands)
-        Call .WriteByte(eGMCommands.RemovePretorianClan)
-        Call .WriteInteger(Map)
-    End With
-End Sub
-
-''
 ' Flushes the outgoing data buffer of the user.
 '
 ' @param    UserIndex User whose outgoing data buffer will be flushed.
@@ -10423,289 +10167,3 @@ Private Sub SendData(ByRef sdData As String)
 #End If
 
 End Sub
-
-''
-' Writes the "MapMessage" message to the outgoing data buffer.
-'
-' @param    Dialog The new dialog of the NPC.
-' @remarks  The data is not actually sent until the buffer is properly flushed.
-
-Public Sub WriteSetDialog(ByVal dialog As String)
-'***************************************************
-'Author: Amraphen
-'Last Modification: 18/11/2010
-'Writes the "SetDialog" message to the outgoing data buffer
-'***************************************************
-    With outgoingData
-        Call .WriteByte(ClientPacketID.GMCommands)
-        Call .WriteByte(eGMCommands.SetDialog)
-        
-        Call .WriteASCIIString(dialog)
-    End With
-End Sub
-
-''
-' Writes the "Impersonate" message to the outgoing data buffer.
-'
-' @remarks  The data is not actually sent until the buffer is properly flushed.
-
-Public Sub WriteImpersonate()
-'***************************************************
-'Author: ZaMa
-'Last Modification: 20/11/2010
-'Writes the "Impersonate" message to the outgoing data buffer
-'***************************************************
-    Call outgoingData.WriteByte(ClientPacketID.GMCommands)
-    Call outgoingData.WriteByte(eGMCommands.Impersonate)
-End Sub
-
-''
-' Writes the "Imitate" message to the outgoing data buffer.
-'
-' @remarks  The data is not actually sent until the buffer is properly flushed.
-
-Public Sub WriteImitate()
-'***************************************************
-'Author: ZaMa
-'Last Modification: 20/11/2010
-'Writes the "Imitate" message to the outgoing data buffer
-'***************************************************
-    Call outgoingData.WriteByte(ClientPacketID.GMCommands)
-    Call outgoingData.WriteByte(eGMCommands.Imitate)
-End Sub
-
-''
-' Writes the "RecordAddObs" message to the outgoing data buffer.
-'
-' @remarks  The data is not actually sent until the buffer is properly flushed.
-
-Public Sub WriteRecordAddObs(ByVal RecordIndex As Byte, ByVal Observation As String)
-'***************************************************
-'Author: Amraphen
-'Last Modification: 29/11/2010
-'Writes the "RecordAddObs" message to the outgoing data buffer
-'***************************************************
-    With outgoingData
-        Call .WriteByte(ClientPacketID.GMCommands)
-        Call .WriteByte(eGMCommands.RecordAddObs)
-        
-        Call .WriteByte(RecordIndex)
-        Call .WriteASCIIString(Observation)
-    End With
-End Sub
-
-''
-' Writes the "RecordAdd" message to the outgoing data buffer.
-'
-' @remarks  The data is not actually sent until the buffer is properly flushed.
-
-Public Sub WriteRecordAdd(ByVal Nickname As String, ByVal Reason As String)
-'***************************************************
-'Author: Amraphen
-'Last Modification: 29/11/2010
-'Writes the "RecordAdd" message to the outgoing data buffer
-'***************************************************
-    With outgoingData
-        Call .WriteByte(ClientPacketID.GMCommands)
-        Call .WriteByte(eGMCommands.RecordAdd)
-        
-        Call .WriteASCIIString(Nickname)
-        Call .WriteASCIIString(Reason)
-    End With
-End Sub
-
-''
-' Writes the "RecordRemove" message to the outgoing data buffer.
-'
-' @remarks  The data is not actually sent until the buffer is properly flushed.
-
-Public Sub WriteRecordRemove(ByVal RecordIndex As Byte)
-'***************************************************
-'Author: Amraphen
-'Last Modification: 29/11/2010
-'Writes the "RecordRemove" message to the outgoing data buffer
-'***************************************************
-    With outgoingData
-        Call .WriteByte(ClientPacketID.GMCommands)
-        Call .WriteByte(eGMCommands.RecordRemove)
-        
-        Call .WriteByte(RecordIndex)
-    End With
-End Sub
-
-''
-' Writes the "RecordListRequest" message to the outgoing data buffer.
-'
-' @remarks  The data is not actually sent until the buffer is properly flushed.
-
-Public Sub WriteRecordListRequest()
-'***************************************************
-'Author: Amraphen
-'Last Modification: 29/11/2010
-'Writes the "RecordListRequest" message to the outgoing data buffer
-'***************************************************
-    Call outgoingData.WriteByte(ClientPacketID.GMCommands)
-    Call outgoingData.WriteByte(eGMCommands.RecordListRequest)
-End Sub
-
-''
-' Writes the "RecordDetailsRequest" message to the outgoing data buffer.
-'
-' @remarks  The data is not actually sent until the buffer is properly flushed.
-
-Public Sub WriteRecordDetailsRequest(ByVal RecordIndex As Byte)
-'***************************************************
-'Author: Amraphen
-'Last Modification: 29/11/2010
-'Writes the "RecordDetailsRequest" message to the outgoing data buffer
-'***************************************************
-    With outgoingData
-        Call .WriteByte(ClientPacketID.GMCommands)
-        Call .WriteByte(eGMCommands.RecordDetailsRequest)
-        
-        Call .WriteByte(RecordIndex)
-    End With
-End Sub
-
-''
-' Handles the RecordList message.
-
-Private Sub HandleRecordList()
-'***************************************************
-'Author: Amraphen
-'Last Modification: 29/11/2010
-'
-'***************************************************
-    If incomingData.length < 2 Then
-        Err.Raise incomingData.NotEnoughDataErrCode
-        Exit Sub
-    End If
-    
-On Error GoTo ErrHandler
-    'This packet contains strings, make a copy of the data to prevent losses if it's not complete yet...
-    Dim Buffer As clsByteQueue: Set Buffer = New clsByteQueue
-    Call Buffer.CopyBuffer(incomingData)
-    
-    'Remove packet ID
-    Call Buffer.ReadByte
-    
-    Dim NumRecords As Byte
-    Dim i As Long
-    
-    NumRecords = Buffer.ReadByte
-    
-    'Se limpia el ListBox y se agregan los usuarios
-    frmPanelGm.lstUsers.Clear
-    For i = 1 To NumRecords
-        frmPanelGm.lstUsers.AddItem Buffer.ReadASCIIString
-    Next i
-    
-    'If we got here then packet is complete, copy data back to original queue
-    Call incomingData.CopyBuffer(Buffer)
-    
-ErrHandler:
-    Dim error As Long
-    error = Err.number
-On Error GoTo 0
-    
-    'Destroy auxiliar buffer
-    Set Buffer = Nothing
-
-    If error <> 0 Then _
-        Err.Raise error
-End Sub
-
-''
-' Handles the RecordDetails message.
-
-Private Sub HandleRecordDetails()
-'***************************************************
-'Author: Amraphen
-'Last Modification: 29/11/2010
-'
-'***************************************************
-    If incomingData.length < 2 Then
-        Err.Raise incomingData.NotEnoughDataErrCode
-        Exit Sub
-    End If
-    
-On Error GoTo ErrHandler
-    'This packet contains strings, make a copy of the data to prevent losses if it's not complete yet...
-    Dim Buffer As clsByteQueue: Set Buffer = New clsByteQueue
-    Dim tmpStr As String
-    Call Buffer.CopyBuffer(incomingData)
-    
-    'Remove packet ID
-    Call Buffer.ReadByte
-       
-    With frmPanelGm
-        .txtCreador.Text = Buffer.ReadASCIIString
-        .txtDescrip.Text = Buffer.ReadASCIIString
-        
-        'Status del pj
-        If Buffer.ReadBoolean Then
-            .lblEstado.ForeColor = vbGreen
-            .lblEstado.Caption = "ONLINE"
-        Else
-            .lblEstado.ForeColor = vbRed
-            .lblEstado.Caption = "OFFLINE"
-        End If
-        
-        'IP del personaje
-        tmpStr = Buffer.ReadASCIIString
-        If LenB(tmpStr) Then
-            .txtIP.Text = tmpStr
-        Else
-            .txtIP.Text = "Usuario offline"
-        End If
-        
-        'Tiempo online
-        tmpStr = Buffer.ReadASCIIString
-        If LenB(tmpStr) Then
-            .txtTimeOn.Text = tmpStr
-        Else
-            .txtTimeOn.Text = "Usuario offline"
-        End If
-        
-        'Observaciones
-        tmpStr = Buffer.ReadASCIIString
-        If LenB(tmpStr) Then
-            .txtObs.Text = tmpStr
-        Else
-            .txtObs.Text = "Sin observaciones"
-        End If
-    End With
-    
-    'If we got here then packet is complete, copy data back to original queue
-    Call incomingData.CopyBuffer(Buffer)
-    
-ErrHandler:
-    Dim error As Long
-    error = Err.number
-On Error GoTo 0
-    
-    'Destroy auxiliar buffer
-    Set Buffer = Nothing
-
-    If error <> 0 Then _
-        Err.Raise error
-End Sub
-
-
-''
-' Writes the "Moveitem" message to the outgoing data buffer.
-'
-Public Sub WriteMoveItem(ByVal originalSlot As Integer, ByVal newSlot As Integer, ByVal moveType As eMoveType)
-'***************************************************
-'Author: Budi
-'Last Modification: 05/01/2011
-'Writes the "MoveItem" message to the outgoing data buffer
-'***************************************************
-    With outgoingData
-        Call .WriteByte(ClientPacketID.MoveItem)
-        Call .WriteByte(originalSlot)
-        Call .WriteByte(newSlot)
-        Call .WriteByte(moveType)
-    End With
-End Sub
-

@@ -11,22 +11,37 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
+'**************************************************************
+' clsDialogs.cls - Chats over head manager.
+' Creates and manipulates chats over heads, rendering and updating them.
+'
+' Designed and implemented by Juan Martín Sotuyo Dodero (Maraxus)
+' (juansotuyo@gmail.com)
+'**************************************************************
+
+'**************************************************************************
+'This program is free software; you can redistribute it and/or modify
+'it under the terms of the Affero General Public License;
+'either version 1 of the License, or any later version.
+'
+'This program is distributed in the hope that it will be useful,
+'but WITHOUT ANY WARRANTY; without even the implied warranty of
+'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+'Affero General Public License for more details.
+'
+'You should have received a copy of the Affero General Public License
+'along with this program; if not, you can find it at http://www.affero.org/oagpl.html
+'**************************************************************************
+
+''
+' Creates and manipulates chats over heads, rendering and updating them.
+'
+' @file     clsDialogs.cls
+' @author   Juan Martín Sotuyo Dodero (Maraxus) juansotuyo@gmail.com
+' @version  1.0.0
+' @date     20070729
+
 Option Explicit
-
-' - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-' This program is free software; you can redistribute it and/or modify
-' it under the terms of the Affero General Public License;
-' either version 1 of the License, or any later version.
-'
-' This program is distributed in the hope that it will be useful,
-' but WITHOUT ANY WARRANTY; without even the implied warranty of
-' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-' Affero General Public License for more details.
-'
-' You should have received a copy of the Affero General Public License
-' along with this program; if not, you can find it at http://www.affero.org/oagpl.html
-' - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 Option Base 0
 
 ''
@@ -43,7 +58,7 @@ Private Const MS_PER_CHAR As Byte = 100
 
 ''
 ' Number of extra milliseconds to add to the lifetime of a new dialog
-Private Const MS_ADD_EXTRA As Integer = 2000
+Private Const MS_ADD_EXTRA As Integer = 5000
 
 ''
 ' The dialog structure
@@ -58,17 +73,14 @@ Private Const MS_ADD_EXTRA As Integer = 2000
 ' @param    renderable  Set to True if the chat should be rendered this frame, False otherwise
 '                           (used to skip dialogs from people outside render area).
 Private Type dialog
-    Transition  As Byte
-    TextLine()  As String
-    X           As Integer
-    Y           As Integer
-    StartTime   As Long
-    LifeTime    As Long
+    textLine()  As String
+    x           As Integer
+    y           As Integer
+    startTime   As Long
+    lifeTime    As Long
     CharIndex   As Integer
-    Color       As Long
-    Renderable  As Boolean
-    Mueve       As Byte
-    Spell       As Byte
+    color       As Long
+    renderable  As Boolean
 End Type
 
 ''
@@ -154,7 +166,7 @@ End Function
 ' @remarks  If there are no more free slots, and the char didn't have a previous dialog,
 '           the chat is ignored.
 
-Public Sub CreateDialog(ByRef chat As String, ByVal CharIndex As Integer, ByVal Color As Long)
+Public Sub CreateDialog(ByRef chat As String, ByVal CharIndex As Integer, ByVal color As Long)
 '**************************************************************
 'Author: Juan Martín Sotuyo Dodero
 'Last Modification: 08/29/07 by Rapsodius
@@ -180,14 +192,12 @@ Public Sub CreateDialog(ByRef chat As String, ByVal CharIndex As Integer, ByVal 
     End If
     
     With dialogs(slot)
-        .Transition = 255
         .CharIndex = CharIndex
-        .Color = ColorToDX8(Color)
-        .Renderable = False
-        .StartTime = GetTickCount()
-        .TextLine = FormatChat(chat)
-        .LifeTime = MS_ADD_EXTRA + (MS_PER_CHAR * Len(chat))
-        .Mueve = 10
+        .color = color
+        .renderable = False
+        .startTime = GetTickCount()
+        .textLine = FormatChat(chat)
+        .lifeTime = MS_ADD_EXTRA + (MS_PER_CHAR * Len(chat))
     End With
 End Sub
 
@@ -275,7 +285,7 @@ End Function
 ' @param    y           The Y coord where to start rendering.
 ' @param    charIndex   The character whose dialog's position is being updated.
 
-Public Sub UpdateDialogPos(ByVal X As Integer, ByVal Y As Integer, ByVal CharIndex As Integer)
+Public Sub UpdateDialogPos(ByVal x As Integer, ByVal y As Integer, ByVal CharIndex As Integer)
 '**************************************************************
 'Author: Juan Martín Sotuyo Dodero
 'Last Modify Date: 07/28/07
@@ -287,9 +297,9 @@ Public Sub UpdateDialogPos(ByVal X As Integer, ByVal Y As Integer, ByVal CharInd
     
     If slot >= 0 Then
         With dialogs(slot)
-            .X = X - (MAX_LENGTH \ 2) * 3
-            .Y = Y - (UBound(.TextLine()) * 3)
-            .Renderable = True
+            .x = x - (MAX_LENGTH \ 2) * 3
+            .y = y - (UBound(.textLine()) * 3)
+            .renderable = True
         End With
     End If
 End Sub
@@ -298,54 +308,35 @@ End Sub
 ' Displays all renderable dialogs on screen.
 
 Public Sub Render()
-    
+'**************************************************************
+'Author: Juan Martín Sotuyo Dodero
+'Last Modification: 08/29/07 by Rapsodius
+'Changed the way it gets rid of older dialogs.
+'**************************************************************
     Dim i As Long
     Dim j As Long
-    Dim Offset As Integer
+    Dim offset As Integer
     Dim removedDialogs As Long
-    
-    On Error Resume Next
     
     For i = 0 To dialogCount - 1
         'Decrease index to prevent jumping over a dialog
         'Crappy VB will cache the limit of the For loop, so even if it changed, it won't matter
         With dialogs(i - removedDialogs)
-            
-            If (GetTickCount() - .StartTime) >= .LifeTime Then
-                
-                If .Transition > 255 Then
-                    .Transition = .Transition + timerElapsedTime * 0.5
-                Else
-                    .Transition = 0
-                End If
-            
+            If (GetTickCount() - .startTime) >= .lifeTime Then
                 Call RemoveDialog(.CharIndex)
+                
                 removedDialogs = removedDialogs + 1
-                
-            ElseIf .Renderable Then
-            
-                If .Spell = 1 Then .LifeTime = 100
-                
-                If .Transition > 20 Then
-                    .Transition = .Transition - timerElapsedTime * 0.5
-                Else
-                    .Transition = 0
-                End If
-                                
-                Offset = -(usedFont.Size + 2) * UBound(.TextLine())
+            ElseIf .renderable Then
+                offset = -(usedFont.Size + 2) * UBound(.textLine())
                 
                 'Render it
-                If .X > 1 Then
-                    For j = 0 To UBound(.TextLine())
-                    
-                        Call Engine_RenderText(.X, .Y + Offset, .TextLine(j), .Color, 255 - .Transition)
-                        Offset = Offset + usedFont.Size + 5
-                        
-                    Next j
-                End If
+                For j = 0 To UBound(.textLine())
+                    Call RenderText(.x, .y + offset, .textLine(j), .color, usedFont)
+                    offset = offset + usedFont.Size + 5
+                Next j
                 
                 'Won't render it unless it's updated in next frmae
-                .Renderable = False
+                .renderable = False
             End If
         End With
     Next i
@@ -393,13 +384,13 @@ End Sub
 '
 ' @return   The font being used to render dialogs.
 
-Public Property Get Font() As StdFont
+Public Property Get font() As StdFont
 '**************************************************************
 'Author: Juan Martín Sotuyo Dodero
 'Last Modify Date: 07/28/07
 'Retrieves the font being used to render dialogs.
 '**************************************************************
-    Font = usedFont
+    font = usedFont
 End Property
 
 ''
@@ -407,7 +398,7 @@ End Property
 '
 ' @param    nValue  The new font to be used to render dialogs.
 
-Public Property Let Font(ByRef nValue As StdFont)
+Public Property Let font(ByRef nValue As StdFont)
 '**************************************************************
 'Author: Juan Martín Sotuyo Dodero
 'Last Modify Date: 07/28/07
@@ -415,7 +406,3 @@ Public Property Let Font(ByRef nValue As StdFont)
 '**************************************************************
     Set usedFont = nValue
 End Property
-
-
-
-

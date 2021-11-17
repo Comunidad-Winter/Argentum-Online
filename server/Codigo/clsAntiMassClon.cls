@@ -41,7 +41,7 @@ Attribute VB_Exposed = False
 Option Explicit
 
 Private Const MaximoPersonajesPorIP = 15
-Private m_coleccion As Collection
+Private m_coleccion As New Collection
 
 Public Function MaxPersonajes(sIp As String) As Boolean
     Dim i As Long
@@ -56,8 +56,7 @@ Public Function MaxPersonajes(sIp As String) As Boolean
     Next i
 
 #If SeguridadAlkon Then
-    Dim oIp As UserIpAdress
-    Set oIp = New UserIpAdress
+    Dim oIp As New UserIpAdress
     oIp.ip = sIp
     oIp.PersonajesCreados = 1
     m_coleccion.Add oIp
@@ -69,7 +68,7 @@ End Function
 
 Public Function VaciarColeccion()
 
-On Error GoTo ErrHandler
+On Error GoTo Errhandler
 
 Dim i As Integer
 
@@ -79,11 +78,8 @@ Next
 
 
 Exit Function
-ErrHandler:
+Errhandler:
     Call LogError("Error en RestarConexion " & Err.description)
 End Function
 
 
-Private Sub Class_Initialize()
-    Set m_coleccion = New Collection
-End Sub

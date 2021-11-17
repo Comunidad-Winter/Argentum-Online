@@ -132,10 +132,10 @@ Private clsFormulario As clsFormMovementManager
 
 Private cBotonAceptar As clsGraphicalButton
 
-Public LastButtonPressed As clsGraphicalButton
+Public LastPressed As clsGraphicalButton
 
 Private Sub aliados_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    LastButtonPressed.ToggleToNormal
+    LastPressed.ToggleToNormal
 End Sub
 
 Private Sub Form_Load()
@@ -154,7 +154,7 @@ Private Sub LoadButtons()
     GrhPath = DirGraficos
 
     Set cBotonAceptar = New clsGraphicalButton
-    Set LastButtonPressed = New clsGraphicalButton
+    Set LastPressed = New clsGraphicalButton
     
     Call cBotonAceptar.Initialize(imgAceptar, GrhPath & "BotonAceptarGuildNews.jpg", GrhPath & "BotonAceptarRolloverGuildNews.jpg", _
                                     GrhPath & "BotonAceptarClickGuildNews.jpg", Me)
@@ -162,11 +162,7 @@ Private Sub LoadButtons()
 End Sub
 
 Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    LastButtonPressed.ToggleToNormal
-End Sub
-
-Private Sub Form_Unload(Cancel As Integer)
-    bShowGuildNews = False
+    LastPressed.ToggleToNormal
 End Sub
 
 Private Sub imgAceptar_Click()
@@ -176,6 +172,6 @@ Private Sub imgAceptar_Click()
 End Sub
 
 Private Sub imgAceptar_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    LastButtonPressed.ToggleToNormal
+    LastPressed.ToggleToNormal
 End Sub
 

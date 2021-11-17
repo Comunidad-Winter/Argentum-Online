@@ -113,7 +113,6 @@ Public Sub SetResolution()
         CambiarResolucion = (oldResWidth <> 800 Or oldResHeight <> 600)
     End If
     
-    
     If CambiarResolucion Then
         
         With MidevM
@@ -128,7 +127,7 @@ Public Sub SetResolution()
         
         lRes = ChangeDisplaySettings(MidevM, CDS_TEST)
     Else
-        bNoResChange = False
+        bNoResChange = True
     End If
 End Sub
 
@@ -158,5 +157,3 @@ Public Sub ResetResolution()
         lRes = ChangeDisplaySettings(typDevM, CDS_TEST)
     End If
 End Sub
-
-

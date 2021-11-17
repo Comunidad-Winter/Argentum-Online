@@ -169,7 +169,7 @@ Private cBotonLiderGrupo As clsGraphicalButton
 Private cBotonExpulsar As clsGraphicalButton
 Private cBotonSalirParty As clsGraphicalButton
 
-Public LastButtonPressed As clsGraphicalButton
+Public LastPressed As clsGraphicalButton
 
 
 Private sPartyChat As String
@@ -179,36 +179,23 @@ Private Const OFFSET_BUTTONS As Integer = 43 ' pixels
 
 
 Private Sub Form_Load()
-        ' Handles Form movement (drag and drop).
-        '<EhHeader>
-        On Error GoTo Form_Load_Err
-        '</EhHeader>
-100     Set clsFormulario = New clsFormMovementManager
-102     clsFormulario.Initialize Me
+    ' Handles Form movement (drag and drop).
+    Set clsFormulario = New clsFormMovementManager
+    clsFormulario.Initialize Me
     
-104     lstMembers.Clear
+    lstMembers.Clear
         
-106     If EsPartyLeader Then
-108         Me.Picture = LoadPicture(App.path & "\graficos\VentanaPartyLider.jpg")
-110         Me.Height = LEADER_FORM_HEIGHT
-        Else
-112         Me.Picture = LoadPicture(App.path & "\graficos\VentanaPartyMiembro.jpg")
-114         Me.Height = NORMAL_FORM_HEIGHT
-        End If
+    If EsPartyLeader Then
+        Me.Picture = LoadPicture(App.path & "\graficos\VentanaPartyLider.jpg")
+        Me.Height = LEADER_FORM_HEIGHT
+    Else
+        Me.Picture = LoadPicture(App.path & "\graficos\VentanaPartyMiembro.jpg")
+        Me.Height = NORMAL_FORM_HEIGHT
+    End If
     
-116     Call LoadButtons
+    Call LoadButtons
 
-118     MirandoParty = True
-        '<EhFooter>
-        Exit Sub
-
-Form_Load_Err:
-        MsgBox Err.Description & vbCrLf & _
-               "in ARGENTUM.frmParty.Form_Load " & _
-               "at line " & Erl, _
-               vbExclamation + vbOKOnly, "Application Error"
-        Resume Next
-        '</EhFooter>
+    MirandoParty = True
 End Sub
 
 Private Sub LoadButtons()
@@ -223,7 +210,7 @@ Private Sub LoadButtons()
     Set cBotonExpulsar = New clsGraphicalButton
     Set cBotonSalirParty = New clsGraphicalButton
     
-    Set LastButtonPressed = New clsGraphicalButton
+    Set LastPressed = New clsGraphicalButton
     
     
     Call cBotonAgregar.Initialize(imgAgregar, GrhPath & "BotonAgregarParty.jpg", _
@@ -267,7 +254,7 @@ Private Sub LoadButtons()
 End Sub
 
 Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    LastButtonPressed.ToggleToNormal
+    LastPressed.ToggleToNormal
 End Sub
 
 Private Sub Form_Unload(Cancel As Integer)
@@ -344,7 +331,7 @@ End Sub
 Private Sub lstMembers_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
 
     If EsPartyLeader Then
-        LastButtonPressed.ToggleToNormal
+        LastPressed.ToggleToNormal
     End If
     
 End Sub
@@ -398,7 +385,7 @@ Private Sub SendTxt_KeyUp(KeyCode As Integer, Shift As Integer)
 End Sub
 
 Private Sub txtToAdd_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    LastButtonPressed.ToggleToNormal
+    LastPressed.ToggleToNormal
 End Sub
 
 Private Sub txtToAdd_KeyPress(KeyAscii As Integer)

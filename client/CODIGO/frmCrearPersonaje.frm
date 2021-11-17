@@ -223,6 +223,19 @@ Begin VB.Form frmCrearPersonaje
       Top             =   6360
       Width           =   615
    End
+   Begin VB.PictureBox picTemp 
+      AutoRedraw      =   -1  'True
+      BackColor       =   &H00000000&
+      Height          =   975
+      Left            =   7080
+      ScaleHeight     =   61
+      ScaleMode       =   3  'Pixel
+      ScaleWidth      =   37
+      TabIndex        =   15
+      Top             =   6360
+      Visible         =   0   'False
+      Width           =   615
+   End
    Begin VB.PictureBox picHead 
       Appearance      =   0  'Flat
       AutoRedraw      =   -1  'True
@@ -235,7 +248,7 @@ Begin VB.Form frmCrearPersonaje
       ScaleHeight     =   24
       ScaleMode       =   3  'Pixel
       ScaleWidth      =   24
-      TabIndex        =   27
+      TabIndex        =   28
       Top             =   5880
       Visible         =   0   'False
       Width           =   360
@@ -252,7 +265,7 @@ Begin VB.Form frmCrearPersonaje
       ScaleHeight     =   24
       ScaleMode       =   3  'Pixel
       ScaleWidth      =   24
-      TabIndex        =   28
+      TabIndex        =   29
       Top             =   5880
       Visible         =   0   'False
       Width           =   360
@@ -269,7 +282,7 @@ Begin VB.Form frmCrearPersonaje
       ScaleHeight     =   24
       ScaleMode       =   3  'Pixel
       ScaleWidth      =   24
-      TabIndex        =   29
+      TabIndex        =   30
       Top             =   5880
       Visible         =   0   'False
       Width           =   360
@@ -286,7 +299,7 @@ Begin VB.Form frmCrearPersonaje
       ScaleHeight     =   24
       ScaleMode       =   3  'Pixel
       ScaleWidth      =   24
-      TabIndex        =   30
+      TabIndex        =   31
       Top             =   5880
       Visible         =   0   'False
       Width           =   360
@@ -303,24 +316,10 @@ Begin VB.Form frmCrearPersonaje
       ScaleHeight     =   24
       ScaleMode       =   3  'Pixel
       ScaleWidth      =   24
-      TabIndex        =   26
+      TabIndex        =   27
       Top             =   5880
       Visible         =   0   'False
       Width           =   360
-   End
-   Begin VB.PictureBox picTemp 
-      AutoRedraw      =   -1  'True
-      BackColor       =   &H00000000&
-      Height          =   975
-      Left            =   7080
-      ScaleHeight     =   61
-      ScaleMode       =   3  'Pixel
-      ScaleWidth      =   37
-      TabIndex        =   32
-      TabStop         =   0   'False
-      Top             =   6360
-      Visible         =   0   'False
-      Width           =   615
    End
    Begin VB.Image imgArcoStar 
       Height          =   195
@@ -546,7 +545,7 @@ Begin VB.Form frmCrearPersonaje
       ForeColor       =   &H00FFFFFF&
       Height          =   375
       Left            =   4440
-      TabIndex        =   31
+      TabIndex        =   32
       Top             =   7395
       Width           =   1455
    End
@@ -557,8 +556,8 @@ Begin VB.Form frmCrearPersonaje
       Visible         =   0   'False
       X1              =   479
       X2              =   505
-      Y1              =   416
-      Y2              =   416
+      Y1              =   417
+      Y2              =   417
    End
    Begin VB.Line Line1 
       BorderColor     =   &H000000FF&
@@ -575,8 +574,8 @@ Begin VB.Form frmCrearPersonaje
       BorderStyle     =   3  'Dot
       Index           =   1
       Visible         =   0   'False
-      X1              =   504
-      X2              =   504
+      X1              =   505
+      X2              =   505
       Y1              =   392
       Y2              =   416
    End
@@ -606,7 +605,7 @@ Begin VB.Form frmCrearPersonaje
       Height          =   195
       Index           =   5
       Left            =   5445
-      TabIndex        =   25
+      TabIndex        =   26
       Top             =   4830
       Width           =   225
    End
@@ -626,7 +625,7 @@ Begin VB.Form frmCrearPersonaje
       Height          =   195
       Index           =   4
       Left            =   5445
-      TabIndex        =   24
+      TabIndex        =   25
       Top             =   4470
       Width           =   225
    End
@@ -646,7 +645,7 @@ Begin VB.Form frmCrearPersonaje
       Height          =   195
       Index           =   3
       Left            =   5445
-      TabIndex        =   23
+      TabIndex        =   24
       Top             =   4125
       Width           =   225
    End
@@ -666,7 +665,7 @@ Begin VB.Form frmCrearPersonaje
       Height          =   195
       Index           =   2
       Left            =   5445
-      TabIndex        =   22
+      TabIndex        =   23
       Top             =   3780
       Width           =   225
    End
@@ -686,7 +685,7 @@ Begin VB.Form frmCrearPersonaje
       Height          =   195
       Index           =   1
       Left            =   5445
-      TabIndex        =   21
+      TabIndex        =   22
       Top             =   3450
       Width           =   225
    End
@@ -707,7 +706,7 @@ Begin VB.Form frmCrearPersonaje
       Height          =   195
       Index           =   5
       Left            =   4950
-      TabIndex        =   20
+      TabIndex        =   21
       Top             =   4830
       Width           =   225
    End
@@ -728,7 +727,7 @@ Begin VB.Form frmCrearPersonaje
       Height          =   195
       Index           =   4
       Left            =   4950
-      TabIndex        =   19
+      TabIndex        =   20
       Top             =   4470
       Width           =   225
    End
@@ -749,7 +748,7 @@ Begin VB.Form frmCrearPersonaje
       Height          =   195
       Index           =   3
       Left            =   4950
-      TabIndex        =   18
+      TabIndex        =   19
       Top             =   4125
       Width           =   225
    End
@@ -770,7 +769,7 @@ Begin VB.Form frmCrearPersonaje
       Height          =   195
       Index           =   2
       Left            =   4950
-      TabIndex        =   17
+      TabIndex        =   18
       Top             =   3780
       Width           =   225
    End
@@ -791,7 +790,7 @@ Begin VB.Form frmCrearPersonaje
       Height          =   195
       Index           =   1
       Left            =   4950
-      TabIndex        =   16
+      TabIndex        =   17
       Top             =   3450
       Width           =   225
    End
@@ -815,7 +814,7 @@ Begin VB.Form frmCrearPersonaje
       ForeColor       =   &H00FFFFFF&
       Height          =   4935
       Left            =   9480
-      TabIndex        =   15
+      TabIndex        =   16
       Top             =   1800
       Width           =   1935
    End
@@ -1216,7 +1215,7 @@ Private cBotonAlineacion As clsGraphicalButton
 Private cBotonVolver As clsGraphicalButton
 Private cBotonCrear As clsGraphicalButton
 
-Public LastButtonPressed As clsGraphicalButton
+Public LastPressed As clsGraphicalButton
 
 Private picFullStar As Picture
 Private picHalfStar As Picture
@@ -1364,7 +1363,7 @@ Private Sub IniciarGraficos()
     Set cBotonVolver = New clsGraphicalButton
     Set cBotonCrear = New clsGraphicalButton
     
-    Set LastButtonPressed = New clsGraphicalButton
+    Set LastPressed = New clsGraphicalButton
     
     
     Call cBotonPasswd.Initialize(imgPasswd, "", GrhPath & "BotonContraseña.jpg", _
@@ -1511,10 +1510,10 @@ Function CheckData() As Boolean
         MsgBox "Seleccione el hogar del personaje."
         Exit Function
     End If
-    'Toqueteado x Salvito
+    
     Dim i As Integer
     For i = 1 To NUMATRIBUTOS
-        If Val(lblAtributos(i).Caption) = 0 Then
+        If UserAtributos(i) = 0 Then
             MsgBox "Los atributos del personaje son invalidos."
             Exit Function
         End If
@@ -1601,7 +1600,7 @@ Private Sub imgCrear_Click()
     For i = 1 To NUMATRIBUTES
         UserAtributos(i) = Val(lblAtributos(i).Caption)
     Next i
-         
+    
     UserHogar = lstHogar.ListIndex + 1
     
     If Not CheckData Then Exit Sub
@@ -1823,7 +1822,7 @@ Private Sub tAnimacion_Timer()
     UserHead = CheckCabeza(UserHead)
     
     Frame = Frame + 1
-    If Frame >= GrhData(currentGrh).numFrames Then Frame = 1
+    If Frame >= GrhData(currentGrh).NumFrames Then Frame = 1
     Call DrawImageInPicture(picPJ, Me.Picture, 0, 0, , , picPJ.Left, picPJ.Top)
     
     Grh = GrhData(currentGrh).Frames(Frame)
@@ -1832,17 +1831,17 @@ Private Sub tAnimacion_Timer()
         SR.Left = .sX
         SR.Top = .sY
         SR.Right = SR.Left + .pixelWidth
-        SR.bottom = SR.Top + .pixelHeight
+        SR.Bottom = SR.Top + .pixelHeight
         
         DR.Left = (picPJ.Width - .pixelWidth) \ 2 - 2
         DR.Top = (picPJ.Height - .pixelHeight) \ 2 - 2
         DR.Right = DR.Left + .pixelWidth
-        DR.bottom = DR.Top + .pixelHeight
+        DR.Bottom = DR.Top + .pixelHeight
         
         picTemp.BackColor = picTemp.BackColor
         
-        Call DrawGrhtoHdc(picTemp.hDC, Grh, SR, DR)
-        Call DrawTransparentGrhtoHdc(picPJ.hDC, picTemp.hDC, DR, DR, vbBlack)
+        Call DrawGrhtoHdc(picTemp.hdc, Grh, SR, DR)
+        Call DrawTransparentGrhtoHdc(picPJ.hdc, picTemp.hdc, DR, DR, vbBlack)
     End With
     
     Grh = HeadData(UserHead).Head(Dir).GrhIndex
@@ -1851,17 +1850,17 @@ Private Sub tAnimacion_Timer()
         SR.Left = .sX
         SR.Top = .sY
         SR.Right = SR.Left + .pixelWidth
-        SR.bottom = SR.Top + .pixelHeight
+        SR.Bottom = SR.Top + .pixelHeight
         
         DR.Left = (picPJ.Width - .pixelWidth) \ 2 - 2
-        DR.Top = DR.bottom + BodyData(UserBody).HeadOffset.Y - .pixelHeight
+        DR.Top = DR.Bottom + BodyData(UserBody).HeadOffset.Y - .pixelHeight
         DR.Right = DR.Left + .pixelWidth
-        DR.bottom = DR.Top + .pixelHeight
+        DR.Bottom = DR.Top + .pixelHeight
         
         picTemp.BackColor = picTemp.BackColor
         
-        Call DrawGrhtoHdc(picTemp.hDC, Grh, SR, DR)
-        Call DrawTransparentGrhtoHdc(picPJ.hDC, picTemp.hDC, DR, DR, vbBlack)
+        Call DrawGrhtoHdc(picTemp.hdc, Grh, SR, DR)
+        Call DrawTransparentGrhtoHdc(picPJ.hdc, picTemp.hdc, DR, DR, vbBlack)
     End With
 End Sub
 
@@ -1879,17 +1878,17 @@ Private Sub DrawHead(ByVal Head As Integer, ByVal PicIndex As Integer)
         SR.Left = .sX
         SR.Top = .sY
         SR.Right = SR.Left + .pixelWidth
-        SR.bottom = SR.Top + .pixelHeight
+        SR.Bottom = SR.Top + .pixelHeight
         
         DR.Left = (picHead(0).Width - .pixelWidth) \ 2 + 1
         DR.Top = 0
         DR.Right = DR.Left + .pixelWidth
-        DR.bottom = DR.Top + .pixelHeight
+        DR.Bottom = DR.Top + .pixelHeight
         
         picTemp.BackColor = picTemp.BackColor
         
-        Call DrawGrhtoHdc(picTemp.hDC, Grh, SR, DR)
-        Call DrawTransparentGrhtoHdc(picHead(PicIndex).hDC, picTemp.hDC, DR, DR, vbBlack)
+        Call DrawGrhtoHdc(picTemp.hdc, Grh, SR, DR)
+        Call DrawTransparentGrhtoHdc(picHead(PicIndex).hdc, picTemp.hdc, DR, DR, vbBlack)
     End With
     
 End Sub
@@ -1994,7 +1993,7 @@ Private Sub DarCuerpoYCabeza()
     
     currentGrh = BodyData(UserBody).Walk(Dir).GrhIndex
     If currentGrh > 0 Then _
-        tAnimacion.Interval = Round(GrhData(currentGrh).Speed / GrhData(currentGrh).numFrames)
+        tAnimacion.Interval = Round(GrhData(currentGrh).Speed / GrhData(currentGrh).NumFrames)
 End Sub
 
 Private Function CheckCabeza(ByVal Head As Integer) As Integer
@@ -2118,7 +2117,7 @@ Private Function CheckDir(ByRef Dir As E_Heading) As E_Heading
     
     currentGrh = BodyData(UserBody).Walk(Dir).GrhIndex
     If currentGrh > 0 Then _
-        tAnimacion.Interval = Round(GrhData(currentGrh).Speed / GrhData(currentGrh).numFrames)
+        tAnimacion.Interval = Round(GrhData(currentGrh).Speed / GrhData(currentGrh).NumFrames)
 
 End Function
 
@@ -2152,7 +2151,7 @@ Private Sub LoadHelp()
 End Sub
 
 Private Sub ClearLabel()
-    LastButtonPressed.ToggleToNormal
+    LastPressed.ToggleToNormal
     lblHelp = ""
 End Sub
 
@@ -2165,6 +2164,7 @@ Private Sub txtPasswd_MouseMove(Button As Integer, Shift As Integer, X As Single
 End Sub
 
 Public Sub UpdateStats()
+    
     Call UpdateRazaMod
     Call UpdateStars
 End Sub

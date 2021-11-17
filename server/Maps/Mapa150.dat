@@ -9,7 +9,6 @@ Zona=CIUDAD
 Restringir=No
 BackUp= 1
 Pk=0
-NoEncriptarMP=0
 
 [SONIDOS]
 Cantidad=6

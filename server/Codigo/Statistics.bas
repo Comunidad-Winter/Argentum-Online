@@ -162,18 +162,14 @@ Public Sub StoreFrag(ByVal killer As Integer, ByVal victim As Integer)
             Exit Sub
     End Select
     
-    If criminal(killer) Then
-        If esCaos(killer) Then
-            alignment = 2
-        Else
-            alignment = 3
-        End If
+    If UserList(killer).Faccion.ArmadaReal Then
+        alignment = 1
+    ElseIf UserList(killer).Faccion.FuerzasCaos Then
+        alignment = 2
+    ElseIf criminal(killer) Then
+        alignment = 3
     Else
-        If esArmada(killer) Then
-            alignment = 1
-        Else
-            alignment = 4
-        End If
+        alignment = 4
     End If
     
     fragLvlRaceData(clase).matrix(UserList(killer).Stats.ELV, raza) = fragLvlRaceData(clase).matrix(UserList(killer).Stats.ELV, raza) + 1

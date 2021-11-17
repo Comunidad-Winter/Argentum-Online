@@ -59,18 +59,7 @@ Option Explicit
 
 Private Const FRENTE = 1
 
-Private MaxElem As Integer
-
 Private Cola As Collection
-
-Public Property Let MaxLenght(ByVal Max As Integer)
-'***************************************************
-'Author: ZaMa
-'Last Modification: 14/11/2010
-'Sets the max queue lenght.
-'***************************************************
-    MaxElem = Max
-End Property
 
 Public Sub Reset()
 On Error Resume Next
@@ -94,16 +83,11 @@ Private Sub Class_Initialize()
 Set Cola = New Collection
 End Sub
 
-Public Function VerElemento(ByVal index As Integer, Optional ByVal ConvertUpper As Boolean = True) As String
+Public Function VerElemento(ByVal index As Integer) As String
 On Error Resume Next
     If IndexValido(index) Then
         'Pablo
-        If ConvertUpper Then
-            VerElemento = UCase$(Cola.Item(index))
-        Else
-            VerElemento = Cola.Item(index)
-        End If
-        
+        VerElemento = UCase$(Cola.Item(index))
         '/Pablo
         'VerElemento = Cola(Index)
     Else
@@ -112,33 +96,16 @@ On Error Resume Next
 End Function
 
 
-Public Sub Push(ByVal Detalle As String, Optional ByVal ConvertUpper As Boolean = True)
-'***************************************************
-'Author: Unknown
-'Last Modification: 14/11/2010
-'14/11/2010: ZaMa - Ahora se valida si supera un maximo previamente establecido.
-'***************************************************
+Public Sub Push(ByVal Nombre As String)
 On Error Resume Next
-    'Mete elemento en la cola
-    
-    Dim aux As String
-    aux = time$ & " "
-    
-    If ConvertUpper Then
-        aux = aux & UCase$(Detalle)
-    Else
-        aux = aux & Detalle
-    End If
-    
-    ' Validate that not exceed max lenght
-    If MaxElem <> 0 Then
-        If Cola.Count = MaxElem Then
-            Call Cola.Remove(FRENTE) ' Quito el primer elemento
-        End If
-    End If
-    
-    Call Cola.Add(aux)
-        
+'Mete elemento en la cola
+'Pablo
+Dim aux As String
+aux = time$ + " " + UCase$(Nombre)
+Call Cola.Add(aux)
+'/Pablo
+
+'Call Cola.Add(UCase$(Nombre))
 End Sub
 
 Public Function Pop() As String

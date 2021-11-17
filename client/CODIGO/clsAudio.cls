@@ -90,7 +90,7 @@ Private Type SoundBuffer
     X As Byte
     Y As Byte
     normalFq As Long
-    Buffer As DirectSoundSecondaryBuffer8
+    Buffer As DirectSoundBuffer
 End Type
 
 ''
@@ -111,8 +111,9 @@ Dim inited As Boolean
 
 ''
 'The one and only DirectSound object
-Dim DirectSound As DirectSound8
+Dim DirectSound As DirectSound
 
+''
 'Array of all existing sound buffers
 Dim DSBuffers(1 To NumSoundBuffers) As SoundBuffer
 
@@ -126,19 +127,19 @@ Dim SndVolume As Long
 
 ''
 'DirectMusic's Performance object
-Dim Performance As DirectMusicPerformance8
+Dim Performance As DirectMusicPerformance
 
 ''
 'Currently loaded segment
-Dim Segment As DirectMusicSegment8
+Dim Segment As DirectMusicSegment
 
 ''
 'The one and only DirectMusic Loader
-Dim Loader As DirectMusicLoader8
+Dim Loader As DirectMusicLoader
 
 ''
 'State of the currently loaded segment
-Dim SegState As DirectMusicSegmentState8
+Dim SegState As DirectMusicSegmentState
 
 ''
 'States wether music is supported by hardware or not
@@ -200,20 +201,11 @@ Private Sub Class_Terminate()
 '12/31/09 - Pato: Use StopWave method to prevent errors.
 '***************************************************
 On Local Error Resume Next
-
-    Dim LoopC As Long
-   
-    'Stop every channel being used and destroy the buffer
-    For LoopC = 1 To NumSoundBuffers
-        Call DSBuffers(LoopC).Buffer.Stop
-        Set DSBuffers(LoopC).Buffer = Nothing
-    Next LoopC
-   
     'Stop every channel being used and destroy the buffer
     Call StopWave
     
     'Stop music
-    If Not Segment Is Nothing Then Call Performance.StopEx(Segment, 0, DMUS_SEGF_DEFAULT)
+    Call Performance.Stop(Segment, SegState, 0, 0)
     
     Call Performance.CloseDown
     
@@ -236,7 +228,7 @@ End Sub
 '
 ' @return   True if no errors occured, false otherwise.
 
-Public Function Initialize(ByRef dx As DirectX8, ByVal hWnd As Long, ByVal sound_path As String, ByVal music_path As String) As Boolean
+Public Function Initialize(ByRef dX As DirectX7, ByVal hWnd As Long, ByVal sound_path As String, ByVal music_path As String) As Boolean
 '***************************************************
 'Author: Juan Martín Sotuyo Dodero (Maraxus)
 'Last Modification: 16/03/04
@@ -248,10 +240,10 @@ On Error GoTo ErrHandler
     If inited Then Exit Function
     
     'Validate DX object
-    If dx Is Nothing Then GoTo ErrHandler
+    If dX Is Nothing Then GoTo ErrHandler
     
     'Initialize DirectSound
-    Set DirectSound = dx.DirectSoundCreate("")
+    Set DirectSound = dX.DirectSoundCreate("")
     
     Call DirectSound.SetCooperativeLevel(hWnd, DSSCL_PRIORITY)
     
@@ -262,7 +254,7 @@ On Error GoTo ErrHandler
     SndVolume = 0
     
     'Initialize DirectMusic
-    Music = InitializedirectMusic(dx, hWnd)
+    Music = InitializedirectMusic(dX, hWnd)
     
     'Set music path
     MusicPath = music_path
@@ -292,29 +284,26 @@ End Function
 '
 ' @return   True if no errors occured, false otherwise.
 
-Private Function InitializedirectMusic(ByRef dx As DirectX8, ByVal hWnd As Long) As Boolean
+Private Function InitializedirectMusic(ByRef dX As DirectX7, ByVal hWnd As Long) As Boolean
 '***************************************************
 'Author: Juan Martín Sotuyo Dodero (Maraxus)
 'Last Modification: 16/03/04
 'Initialize DM. Returns false if music isn't supported by HW
 '***************************************************
 On Error GoTo ErrHandler
-    Dim mus_Params As DMUS_AUDIOPARAMS
     Set Loader = DirectX.DirectMusicLoaderCreate()
     
-    Set Performance = dx.DirectMusicPerformanceCreate()
-    Call Performance.InitAudio(hWnd, DMUS_AUDIOF_ALL, mus_Params, Nothing, DMUS_APATH_DYNAMIC_STEREO, 128)
+    Set Performance = dX.DirectMusicPerformanceCreate()
+    Call Performance.Init(DirectSound, hWnd)
     Call Performance.SetMasterAutoDownload(True)        'Enable auto download of instruments
     
     'Set to port default, 1 channel group is enough for MIDIs
-    Performance.SetMasterTempo 1
-    Performance.SetMasterVolume 1
+    Call Performance.SetPort(-1, 1)
     
     InitializedirectMusic = True
 Exit Function
 
 ErrHandler:
-    
 End Function
 
 ''
@@ -573,7 +562,7 @@ On Error GoTo ErrHandler
         .FileName = FileName
         .looping = (looping = LoopStyle.Enabled)
         
-        Set .Buffer = DirectSound.CreateSoundBufferFromFile(SoundPath & FileName, bufferDesc)
+        Set .Buffer = DirectSound.CreateSoundBufferFromFile(SoundPath & FileName, bufferDesc, waveFormat)
     End With
     
     LoadWave = i
@@ -709,9 +698,9 @@ On Error GoTo ErrHandler
     
     'Play it
     Call Segment.SetRepeats(Loops)
-
-    Set SegState = Performance.PlaySegmentEx(Segment, DMUS_SEGF_DEFAULT, 0)
-   
+    
+    Set SegState = Performance.PlaySegment(Segment, 0, 0)
+    
     PlayMIDI = True
 Exit Function
 
@@ -764,7 +753,7 @@ Public Sub StopMidi()
 '***************************************************
 On Error GoTo ErrHandler
     If PlayingMusic Then
-        Call Performance.StopEx(Segment, 0, DMUS_SEGF_DEFAULT)
+        Call Performance.Stop(Segment, SegState, 0, 0)
     End If
 Exit Sub
 
@@ -923,7 +912,7 @@ Public Function MusicMP3Load(ByVal FilePath As String, Optional ByVal Volume As 
     
     Set IBA = IMC
     
-    'If SoundVolume > 0 Then SoundVolume = 0
+    If SoundVolume > 0 Then SoundVolume = 0
     If Volume < -4000 Then Volume = -4000
     
     IBA.Volume = Volume
@@ -1163,7 +1152,3 @@ Public Property Get SoundEffectsActivated() As Boolean
 '***************************************************
     SoundEffectsActivated = sEffectsActivated
 End Property
-
-
-
-

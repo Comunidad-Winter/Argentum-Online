@@ -29,7 +29,7 @@ Attribute VB_Name = "General"
 
 Option Explicit
 
-Global LeerNPCs As clsIniManager
+Global LeerNPCs As New clsIniReader
 
 Sub DarCuerpoDesnudo(ByVal UserIndex As Integer, Optional ByVal Mimetizado As Boolean = False)
 '***************************************************
@@ -154,11 +154,10 @@ Sub LimpiarMundo()
 '01/14/2008: Marcos Martinez (ByVal) - La funcion FOR estaba mal. En ves de i habia un 1.
 '04/15/2008: (NicoNZ) - La funcion FOR estaba mal, de la forma que se hacia tiraba error.
 '***************************************************
-On Error GoTo ErrHandler
+On Error GoTo Errhandler
 
     Dim i As Integer
-    Dim d As cGarbage
-    Set d = New cGarbage
+    Dim d As New cGarbage
     
     For i = TrashCollector.Count To 1 Step -1
         Set d = TrashCollector(i)
@@ -171,7 +170,7 @@ On Error GoTo ErrHandler
     
     Exit Sub
 
-ErrHandler:
+Errhandler:
     Call LogError("Error producido en el sub LimpiarMundo: " & Err.description)
 End Sub
 
@@ -221,11 +220,12 @@ End Sub
 Sub Main()
 '***************************************************
 'Author: Unknown
-'Last Modification: 15/03/2011
-'15/03/2011: ZaMa - Modularice todo, para que quede mas claro.
+'Last Modification: -
+'
 '***************************************************
 
 On Error Resume Next
+    Dim f As Date
     
     ChDir App.Path
     ChDrive App.Path
@@ -233,118 +233,23 @@ On Error Resume Next
     Call LoadMotd
     Call BanIpCargar
     
-    frmMain.Caption = frmMain.Caption & " V." & App.Major & "." & App.Minor & "." & App.Revision
+    Prision.Map = 66
+    Libertad.Map = 66
     
-    ' Start loading..
-    frmCargando.Show
+    Prision.X = 75
+    Prision.Y = 47
+    Libertad.X = 75
+    Libertad.Y = 65
     
-    ' Constants & vars
-    frmCargando.Label1(2).Caption = "Cargando constantes..."
-    Call LoadConstants
-    DoEvents
     
-    ' Arrays
-    frmCargando.Label1(2).Caption = "Iniciando Arrays..."
-    Call LoadArrays
-    
-    ' Server.ini & Apuestas.dat
-    frmCargando.Label1(2).Caption = "Cargando Server.ini"
-    Call LoadSini
-    Call CargaApuestas
-    
-    ' Npcs.dat
-    frmCargando.Label1(2).Caption = "Cargando NPCs.Dat"
-    Call CargaNpcsDat
-
-    ' Obj.dat
-    frmCargando.Label1(2).Caption = "Cargando Obj.Dat"
-    Call LoadOBJData
-    
-    ' Hechizos.dat
-    frmCargando.Label1(2).Caption = "Cargando Hechizos.Dat"
-    Call CargarHechizos
-        
-    ' Objetos de Herreria
-    frmCargando.Label1(2).Caption = "Cargando Objetos de Herrería"
-    Call LoadArmasHerreria
-    Call LoadArmadurasHerreria
-    
-    ' Objetos de Capinteria
-    frmCargando.Label1(2).Caption = "Cargando Objetos de Carpintería"
-    Call LoadObjCarpintero
-    
-    ' Balance.dat
-    frmCargando.Label1(2).Caption = "Cargando Balance.Dat"
-    Call LoadBalance
-    
-    ' Armaduras faccionarias
-    frmCargando.Label1(2).Caption = "Cargando ArmadurasFaccionarias.dat"
-    Call LoadArmadurasFaccion
-    
-    ' Pretorianos
-    frmCargando.Label1(2).Caption = "Cargando Pretorianos.dat"
-    Call LoadPretorianData
-
-    ' Mapas
-    If BootDelBackUp Then
-        frmCargando.Label1(2).Caption = "Cargando BackUp"
-        Call CargarBackUp
-    Else
-        frmCargando.Label1(2).Caption = "Cargando Mapas"
-        Call LoadMapData
-    End If
-    
-    ' Map Sounds
-    Set SonidosMapas = New SoundMapInfo
-    Call SonidosMapas.LoadSoundMapInfo
-    
-    ' Home distance
-    Call generateMatrix(MATRIX_INITIAL_MAP)
-    
-    ' Connections
-    Call ResetUsersConnections
-    
-    ' Timers
-    Call InitMainTimers
-    
-    ' Sockets
-    Call SocketConfig
-    
-    ' End loading..
-    Unload frmCargando
-    
-    'Log start time
-    LogServerStartTime
-    
-    'Ocultar
-    If HideMe = 1 Then
-        Call frmMain.InitMain(1)
-    Else
-        Call frmMain.InitMain(0)
-    End If
-    
-    tInicioServer = GetTickCount() And &H7FFFFFFF
-    Call InicializaEstadisticas
-
-End Sub
-
-Private Sub LoadConstants()
-'*****************************************************************
-'Author: ZaMa
-'Last Modify Date: 15/03/2011
-'Loads all constants and general parameters.
-'*****************************************************************
-On Error Resume Next
-   
     LastBackup = Format(Now, "Short Time")
     Minutos = Format(Now, "Short Time")
     
-    ' Paths
     IniPath = App.Path & "\"
     DatPath = App.Path & "\Dat\"
-    CharPath = App.Path & "\Charfile\"
     
-    ' Skills by level
+    
+    
     LevelSkill(1).LevelValue = 3
     LevelSkill(2).LevelValue = 5
     LevelSkill(3).LevelValue = 7
@@ -396,14 +301,13 @@ On Error Resume Next
     LevelSkill(49).LevelValue = 100
     LevelSkill(50).LevelValue = 100
     
-    ' Races
+    
     ListaRazas(eRaza.Humano) = "Humano"
     ListaRazas(eRaza.Elfo) = "Elfo"
     ListaRazas(eRaza.Drow) = "Drow"
     ListaRazas(eRaza.Gnomo) = "Gnomo"
     ListaRazas(eRaza.Enano) = "Enano"
     
-    ' Classes
     ListaClases(eClass.Mage) = "Mago"
     ListaClases(eClass.Cleric) = "Clerigo"
     ListaClases(eClass.Warrior) = "Guerrero"
@@ -417,7 +321,6 @@ On Error Resume Next
     ListaClases(eClass.Worker) = "Trabajador"
     ListaClases(eClass.Pirat) = "Pirata"
     
-    ' Skills
     SkillsNames(eSkill.Magia) = "Magia"
     SkillsNames(eSkill.Robar) = "Robar"
     SkillsNames(eSkill.Tacticas) = "Evasión en combate"
@@ -439,81 +342,89 @@ On Error Resume Next
     SkillsNames(eSkill.Wrestling) = "Combate sin armas"
     SkillsNames(eSkill.Navegacion) = "Navegacion"
     
-    ' Attributes
     ListaAtributos(eAtributos.Fuerza) = "Fuerza"
     ListaAtributos(eAtributos.Agilidad) = "Agilidad"
     ListaAtributos(eAtributos.Inteligencia) = "Inteligencia"
     ListaAtributos(eAtributos.Carisma) = "Carisma"
     ListaAtributos(eAtributos.Constitucion) = "Constitucion"
     
-    ' Fishes
-    ListaPeces(1) = PECES_POSIBLES.PESCADO1
-    ListaPeces(2) = PECES_POSIBLES.PESCADO2
-    ListaPeces(3) = PECES_POSIBLES.PESCADO3
-    ListaPeces(4) = PECES_POSIBLES.PESCADO4
-
+    
+    frmCargando.Show
+    
+    'Call PlayWaveAPI(App.Path & "\wav\harp3.wav")
+    
+    frmMain.Caption = frmMain.Caption & " V." & App.Major & "." & App.Minor & "." & App.Revision
+    IniPath = App.Path & "\"
+    CharPath = App.Path & "\Charfile\"
+    
     'Bordes del mapa
     MinXBorder = XMinMapSize + (XWindow \ 2)
     MaxXBorder = XMaxMapSize - (XWindow \ 2)
     MinYBorder = YMinMapSize + (YWindow \ 2)
     MaxYBorder = YMaxMapSize - (YWindow \ 2)
+    DoEvents
     
-    Set Ayuda = New cCola
-    Set Denuncias = New cCola
-    Denuncias.MaxLenght = MAX_DENOUNCES
-
-    With Prision
-        .Map = 66
-        .X = 75
-        .Y = 47
-    End With
+    frmCargando.Label1(2).Caption = "Iniciando Arrays..."
     
-    With Libertad
-        .Map = 66
-        .X = 75
-        .Y = 65
-    End With
-
-    MaxUsers = 0
-
-    ' Initialize classes
-    Set WSAPISock2Usr = New Collection
-    Protocol.InitAuxiliarBuffer
-#If SeguridadAlkon Then
-    Set aDos = New clsAntiDoS
-#End If
-
-    Set aClon = New clsAntiMassClon
-    Set TrashCollector = New Collection
-
-End Sub
-
-Private Sub LoadArrays()
-'*****************************************************************
-'Author: ZaMa
-'Last Modify Date: 15/03/2011
-'Loads all arrays
-'*****************************************************************
-On Error Resume Next
-    ' Load Records
-    Call LoadRecords
-    ' Load guilds info
     Call LoadGuildsDB
-    ' Load spawn list
+    
+    
     Call CargarSpawnList
-    ' Load forbidden words
     Call CargarForbidenWords
-End Sub
+    '¿?¿?¿?¿?¿?¿?¿?¿ CARGAMOS DATOS DESDE ARCHIVOS ¿??¿?¿?¿?¿?¿?¿?¿
+    frmCargando.Label1(2).Caption = "Cargando Server.ini"
+    
+    MaxUsers = 0
+    Call LoadSini
+    Call CargaApuestas
+    
+    '*************************************************
+    frmCargando.Label1(2).Caption = "Cargando NPCs.Dat"
+    Call CargaNpcsDat
+    '*************************************************
+    
+    frmCargando.Label1(2).Caption = "Cargando Obj.Dat"
+    'Call LoadOBJData
+    Call LoadOBJData
+        
+    frmCargando.Label1(2).Caption = "Cargando Hechizos.Dat"
+    Call CargarHechizos
+        
+        
+    frmCargando.Label1(2).Caption = "Cargando Objetos de Herrería"
+    Call LoadArmasHerreria
+    Call LoadArmadurasHerreria
+    
+    frmCargando.Label1(2).Caption = "Cargando Objetos de Carpintería"
+    Call LoadObjCarpintero
+    
+    frmCargando.Label1(2).Caption = "Cargando Balance.Dat"
+    Call LoadBalance    '4/01/08 Pablo ToxicWaste
+    
+    frmCargando.Label1(2).Caption = "Cargando ArmadurasFaccionarias.dat"
+    Call LoadArmadurasFaccion
+    
+    If BootDelBackUp Then
+        
+        frmCargando.Label1(2).Caption = "Cargando BackUp"
+        Call CargarBackUp
+    Else
+        frmCargando.Label1(2).Caption = "Cargando Mapas"
+        Call LoadMapData
+    End If
+    
+    
+    Call SonidosMapas.LoadSoundMapInfo
 
-Private Sub ResetUsersConnections()
-'*****************************************************************
-'Author: ZaMa
-'Last Modify Date: 15/03/2011
-'Resets Users Connections.
-'*****************************************************************
-On Error Resume Next
-
-    Dim LoopC As Long
+    Call generateMatrix(MATRIX_INITIAL_MAP)
+    
+    'Comentado porque hay worldsave en ese mapa!
+    'Call CrearClanPretoriano(MAPA_PRETORIANO, ALCOBA2_X, ALCOBA2_Y)
+    '¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿
+    
+    Dim LoopC As Integer
+    
+    'Resetea las conexiones de los usuarios
     For LoopC = 1 To MaxUsers
         UserList(LoopC).ConnID = -1
         UserList(LoopC).ConnIDValida = False
@@ -521,16 +432,8 @@ On Error Resume Next
         Set UserList(LoopC).outgoingData = New clsByteQueue
     Next LoopC
     
-End Sub
-
-Private Sub InitMainTimers()
-'*****************************************************************
-'Author: ZaMa
-'Last Modify Date: 15/03/2011
-'Initializes Main Timers.
-'*****************************************************************
-On Error Resume Next
-
+    '¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿
+    
     With frmMain
         .AutoSave.Enabled = True
         .tLluvia.Enabled = True
@@ -548,16 +451,9 @@ On Error Resume Next
 #End If
     End With
     
-End Sub
-
-Private Sub SocketConfig()
-'*****************************************************************
-'Author: ZaMa
-'Last Modify Date: 15/03/2011
-'Sets socket config.
-'*****************************************************************
-On Error Resume Next
-
+    '¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿
+    'Configuracion de los sockets
+    
     Call SecurityIp.InitIpTables(1000)
     
 #If UsarQueSocket = 1 Then
@@ -592,54 +488,61 @@ On Error Resume Next
 #End If
     
     If frmMain.Visible Then frmMain.txStatus.Caption = "Escuchando conexiones entrantes ..."
+    '¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿
     
-End Sub
-
-Private Sub LogServerStartTime()
-'*****************************************************************
-'Author: ZaMa
-'Last Modify Date: 15/03/2011
-'Logs Server Start Time.
-'*****************************************************************
+    Unload frmCargando
+    
+    'Log
     Dim N As Integer
     N = FreeFile
     Open App.Path & "\logs\Main.log" For Append Shared As #N
     Print #N, Date & " " & time & " server iniciado " & App.Major & "."; App.Minor & "." & App.Revision
     Close #N
+    
+    'Ocultar
+    If HideMe = 1 Then
+        Call frmMain.InitMain(1)
+    Else
+        Call frmMain.InitMain(0)
+    End If
+    
+    tInicioServer = GetTickCount() And &H7FFFFFFF
+    Call InicializaEstadisticas
 
 End Sub
 
-Function FileExist(ByVal File As String, Optional FileType As VbFileAttribute = vbNormal) As Boolean
+Function FileExist(ByVal file As String, Optional FileType As VbFileAttribute = vbNormal) As Boolean
 '*****************************************************************
 'Se fija si existe el archivo
 '*****************************************************************
 
-    FileExist = LenB(dir$(File, FileType)) <> 0
+    FileExist = LenB(dir$(file, FileType)) <> 0
 End Function
 
 Function ReadField(ByVal Pos As Integer, ByRef Text As String, ByVal SepASCII As Byte) As String
 '*****************************************************************
+'Gets a field from a string
 'Author: Juan Martín Sotuyo Dodero (Maraxus)
 'Last Modify Date: 11/15/2004
 'Gets a field from a delimited string
 '*****************************************************************
 
     Dim i As Long
-    Dim lastPos As Long
+    Dim LastPos As Long
     Dim CurrentPos As Long
     Dim delimiter As String * 1
     
     delimiter = Chr$(SepASCII)
     
     For i = 1 To Pos
-        lastPos = CurrentPos
-        CurrentPos = InStr(lastPos + 1, Text, delimiter, vbBinaryCompare)
+        LastPos = CurrentPos
+        CurrentPos = InStr(LastPos + 1, Text, delimiter, vbBinaryCompare)
     Next i
     
     If CurrentPos = 0 Then
-        ReadField = mid$(Text, lastPos + 1, Len(Text) - lastPos)
+        ReadField = mid$(Text, LastPos + 1, Len(Text) - LastPos)
     Else
-        ReadField = mid$(Text, lastPos + 1, CurrentPos - lastPos - 1)
+        ReadField = mid$(Text, LastPos + 1, CurrentPos - LastPos - 1)
     End If
 End Function
 
@@ -660,7 +563,7 @@ Sub MostrarNumUsers()
 '
 '***************************************************
 
-    frmMain.txtNumUsers.Text = NumUsers
+    frmMain.CantUsuarios.Caption = "Número de usuarios jugando: " & NumUsers
 
 End Sub
 
@@ -672,7 +575,7 @@ Public Sub LogCriticEvent(desc As String)
 '
 '***************************************************
 
-On Error GoTo ErrHandler
+On Error GoTo Errhandler
 
     Dim nfile As Integer
     nfile = FreeFile ' obtenemos un canal
@@ -682,7 +585,7 @@ On Error GoTo ErrHandler
     
     Exit Sub
 
-ErrHandler:
+Errhandler:
 
 End Sub
 
@@ -693,7 +596,7 @@ Public Sub LogEjercitoReal(desc As String)
 '
 '***************************************************
 
-On Error GoTo ErrHandler
+On Error GoTo Errhandler
 
     Dim nfile As Integer
     nfile = FreeFile ' obtenemos un canal
@@ -703,7 +606,7 @@ On Error GoTo ErrHandler
     
     Exit Sub
 
-ErrHandler:
+Errhandler:
 
 End Sub
 
@@ -714,7 +617,7 @@ Public Sub LogEjercitoCaos(desc As String)
 '
 '***************************************************
 
-On Error GoTo ErrHandler
+On Error GoTo Errhandler
 
     Dim nfile As Integer
     nfile = FreeFile ' obtenemos un canal
@@ -724,7 +627,7 @@ On Error GoTo ErrHandler
 
 Exit Sub
 
-ErrHandler:
+Errhandler:
 
 End Sub
 
@@ -736,7 +639,7 @@ Public Sub LogIndex(ByVal index As Integer, ByVal desc As String)
 '
 '***************************************************
 
-On Error GoTo ErrHandler
+On Error GoTo Errhandler
 
     Dim nfile As Integer
     nfile = FreeFile ' obtenemos un canal
@@ -746,7 +649,7 @@ On Error GoTo ErrHandler
     
     Exit Sub
 
-ErrHandler:
+Errhandler:
 
 End Sub
 
@@ -758,7 +661,7 @@ Public Sub LogError(desc As String)
 '
 '***************************************************
 
-On Error GoTo ErrHandler
+On Error GoTo Errhandler
 
     Dim nfile As Integer
     nfile = FreeFile ' obtenemos un canal
@@ -768,7 +671,7 @@ On Error GoTo ErrHandler
     
     Exit Sub
 
-ErrHandler:
+Errhandler:
 
 End Sub
 
@@ -779,7 +682,7 @@ Public Sub LogStatic(desc As String)
 '
 '***************************************************
 
-On Error GoTo ErrHandler
+On Error GoTo Errhandler
 
     Dim nfile As Integer
     nfile = FreeFile ' obtenemos un canal
@@ -789,7 +692,7 @@ On Error GoTo ErrHandler
 
 Exit Sub
 
-ErrHandler:
+Errhandler:
 
 End Sub
 
@@ -800,7 +703,7 @@ Public Sub LogTarea(desc As String)
 '
 '***************************************************
 
-On Error GoTo ErrHandler
+On Error GoTo Errhandler
 
     Dim nfile As Integer
     nfile = FreeFile(1) ' obtenemos un canal
@@ -810,7 +713,7 @@ On Error GoTo ErrHandler
 
 Exit Sub
 
-ErrHandler:
+Errhandler:
 
 
 End Sub
@@ -869,7 +772,7 @@ Public Sub LogGM(Nombre As String, texto As String)
 '
 '***************************************************ç
 
-On Error GoTo ErrHandler
+On Error GoTo Errhandler
 
     Dim nfile As Integer
     nfile = FreeFile ' obtenemos un canal
@@ -880,7 +783,7 @@ On Error GoTo ErrHandler
     
     Exit Sub
 
-ErrHandler:
+Errhandler:
 
 End Sub
 
@@ -891,7 +794,7 @@ Public Sub LogAsesinato(texto As String)
 '
 '***************************************************
 
-On Error GoTo ErrHandler
+On Error GoTo Errhandler
     Dim nfile As Integer
     
     nfile = FreeFile ' obtenemos un canal
@@ -902,7 +805,7 @@ On Error GoTo ErrHandler
     
     Exit Sub
 
-ErrHandler:
+Errhandler:
 
 End Sub
 Public Sub logVentaCasa(ByVal texto As String)
@@ -912,7 +815,7 @@ Public Sub logVentaCasa(ByVal texto As String)
 '
 '***************************************************
 
-On Error GoTo ErrHandler
+On Error GoTo Errhandler
 
     Dim nfile As Integer
     nfile = FreeFile ' obtenemos un canal
@@ -925,7 +828,7 @@ On Error GoTo ErrHandler
     
     Exit Sub
 
-ErrHandler:
+Errhandler:
 
 End Sub
 Public Sub LogHackAttemp(texto As String)
@@ -935,7 +838,7 @@ Public Sub LogHackAttemp(texto As String)
 '
 '***************************************************
 
-On Error GoTo ErrHandler
+On Error GoTo Errhandler
 
     Dim nfile As Integer
     nfile = FreeFile ' obtenemos un canal
@@ -947,7 +850,7 @@ On Error GoTo ErrHandler
     
     Exit Sub
 
-ErrHandler:
+Errhandler:
 
 End Sub
 
@@ -958,7 +861,7 @@ Public Sub LogCheating(texto As String)
 '
 '***************************************************
 
-On Error GoTo ErrHandler
+On Error GoTo Errhandler
 
     Dim nfile As Integer
     nfile = FreeFile ' obtenemos un canal
@@ -968,7 +871,7 @@ On Error GoTo ErrHandler
     
     Exit Sub
 
-ErrHandler:
+Errhandler:
 
 End Sub
 
@@ -980,7 +883,7 @@ Public Sub LogCriticalHackAttemp(texto As String)
 '
 '***************************************************
 
-On Error GoTo ErrHandler
+On Error GoTo Errhandler
 
     Dim nfile As Integer
     nfile = FreeFile ' obtenemos un canal
@@ -992,7 +895,7 @@ On Error GoTo ErrHandler
     
     Exit Sub
 
-ErrHandler:
+Errhandler:
 
 End Sub
 
@@ -1003,7 +906,7 @@ Public Sub LogAntiCheat(texto As String)
 '
 '***************************************************
 
-On Error GoTo ErrHandler
+On Error GoTo Errhandler
 
     Dim nfile As Integer
     nfile = FreeFile ' obtenemos un canal
@@ -1014,7 +917,7 @@ On Error GoTo ErrHandler
     
     Exit Sub
 
-ErrHandler:
+Errhandler:
 
 End Sub
 
@@ -1188,7 +1091,7 @@ Public Sub EfectoLluvia(ByVal UserIndex As Integer)
 '
 '***************************************************
 
-On Error GoTo ErrHandler
+On Error GoTo Errhandler
 
     If UserList(UserIndex).flags.UserLogged Then
         If Intemperie(UserIndex) Then
@@ -1200,7 +1103,7 @@ On Error GoTo ErrHandler
     End If
     
     Exit Sub
-ErrHandler:
+Errhandler:
     LogError ("Error en EfectoLluvia")
 End Sub
 
@@ -1238,7 +1141,7 @@ Public Sub EfectoFrio(ByVal UserIndex As Integer)
         If .Counters.Frio < IntervaloFrio Then
             .Counters.Frio = .Counters.Frio + 1
         Else
-            If MapInfo(.Pos.Map).Terreno = eTerrain.terrain_nieve Then
+            If MapInfo(.Pos.Map).Terreno = Nieve Then
                 Call WriteConsoleMsg(UserIndex, "¡¡Estás muriendo de frío, abrigate o morirás!!", FontTypeNames.FONTTYPE_INFO)
                 modifi = Porcentaje(.Stats.MaxHp, 5)
                 .Stats.MinHp = .Stats.MinHp - modifi
@@ -1300,43 +1203,16 @@ End Sub
 Public Sub EfectoEstadoAtacable(ByVal UserIndex As Integer)
 '******************************************************
 'Author: ZaMa
-'Last Update: 18/09/2010 (ZaMa)
-'18/09/2010: ZaMa - Ahora se activa el seguro cuando dejas de ser atacable.
+'Last Update: 13/01/2010 (ZaMa)
 '******************************************************
 
     ' Si ya paso el tiempo de penalizacion
     If Not IntervaloEstadoAtacable(UserIndex) Then
         ' Deja de poder ser atacado
         UserList(UserIndex).flags.AtacablePor = 0
-        
-        ' Activo el seguro si deja de estar atacable
-        If Not UserList(UserIndex).flags.Seguro Then
-            Call WriteMultiMessage(UserIndex, eMessages.SafeModeOn)
-        End If
-        
         ' Send nick normal
         Call RefreshCharStatus(UserIndex)
     End If
-    
-End Sub
-
-''
-' Maneja el tiempo de arrivo al hogar
-'
-' @param UserIndex  El index del usuario a ser afectado por el /hogar
-'
-
-Public Sub TravelingEffect(ByVal UserIndex As Integer)
-'******************************************************
-'Author: ZaMa
-'Last Update: 01/06/2010 (ZaMa)
-'******************************************************
-
-    ' Si ya paso el tiempo de penalizacion
-    If IntervaloGoHome(UserIndex) Then
-        Call HomeArrival(UserIndex)
-    End If
-
 End Sub
 
 ''
@@ -1348,9 +1224,8 @@ End Sub
 Public Sub EfectoMimetismo(ByVal UserIndex As Integer)
 '******************************************************
 'Author: Unknown
-'Last Update: 16/09/2010 (ZaMa)
+'Last Update: 12/01/2010 (ZaMa)
 '12/01/2010: ZaMa - Los druidas pierden la inmunidad de ser atacados cuando pierden el efecto del mimetismo.
-'16/09/2010: ZaMa - Se recupera la apariencia de la barca correspondiente despues de terminado el mimetismo.
 '******************************************************
     Dim Barco As ObjData
     
@@ -1363,13 +1238,29 @@ Public Sub EfectoMimetismo(ByVal UserIndex As Integer)
             
             If .flags.Navegando Then
                 If .flags.Muerto = 0 Then
-                    Call ToggleBoatBody(UserIndex)
+                    If .Faccion.ArmadaReal = 1 Then
+                        .Char.body = iFragataReal
+                    ElseIf .Faccion.FuerzasCaos = 1 Then
+                        .Char.body = iFragataCaos
+                    Else
+                        Barco = ObjData(UserList(UserIndex).Invent.BarcoObjIndex)
+                        If criminal(UserIndex) Then
+                            If Barco.Ropaje = iBarca Then .Char.body = iBarcaPk
+                            If Barco.Ropaje = iGalera Then .Char.body = iGaleraPk
+                            If Barco.Ropaje = iGaleon Then .Char.body = iGaleonPk
+                        Else
+                            If Barco.Ropaje = iBarca Then .Char.body = iBarcaCiuda
+                            If Barco.Ropaje = iGalera Then .Char.body = iGaleraCiuda
+                            If Barco.Ropaje = iGaleon Then .Char.body = iGaleonCiuda
+                        End If
+                    End If
                 Else
                     .Char.body = iFragataFantasmal
-                    .Char.ShieldAnim = NingunEscudo
-                    .Char.WeaponAnim = NingunArma
-                    .Char.CascoAnim = NingunCasco
                 End If
+                
+                .Char.ShieldAnim = NingunEscudo
+                .Char.WeaponAnim = NingunArma
+                .Char.CascoAnim = NingunCasco
             Else
                 .Char.body = .CharMimetizado.body
                 .Char.Head = .CharMimetizado.Head
@@ -1393,8 +1284,8 @@ End Sub
 Public Sub EfectoInvisibilidad(ByVal UserIndex As Integer)
 '***************************************************
 'Author: Unknown
-'Last Modification: 16/09/2010 (ZaMa)
-'16/09/2010: ZaMa - Al perder el invi cuando navegas, no se manda el mensaje de sacar invi (ya estas visible).
+'Last Modification: -
+'
 '***************************************************
 
     With UserList(UserIndex)
@@ -1405,12 +1296,8 @@ Public Sub EfectoInvisibilidad(ByVal UserIndex As Integer)
             .flags.invisible = 0
             If .flags.Oculto = 0 Then
                 Call WriteConsoleMsg(UserIndex, "Has vuelto a ser visible.", FontTypeNames.FONTTYPE_INFO)
-                
-                ' Si navega ya esta visible..
-                If Not .flags.Navegando = 1 Then
-                    Call SetInvisible(UserIndex, .Char.CharIndex, False)
-                End If
-                
+                Call SetInvisible(UserIndex, .Char.CharIndex, False)
+                'Call SendData(SendTarget.ToPCArea, UserIndex, PrepareMessageSetInvisible(.Char.CharIndex, False))
             End If
         End If
     End With
@@ -1465,85 +1352,21 @@ End Sub
 Public Sub EfectoParalisisUser(ByVal UserIndex As Integer)
 '***************************************************
 'Author: Unknown
-'Last Modification: 02/12/2010
-'02/12/2010: ZaMa - Now non-magic clases lose paralisis effect under certain circunstances.
+'Last Modification: -
+'
 '***************************************************
 
     With UserList(UserIndex)
-    
         If .Counters.Paralisis > 0 Then
-        
-            Dim CasterIndex As Integer
-            CasterIndex = .flags.ParalizedByIndex
-        
-            ' Only aplies to non-magic clases
-            If .Stats.MaxMAN = 0 Then
-                ' Paralized by user?
-                If CasterIndex <> 0 Then
-                
-                    ' Close? => Remove Paralisis
-                    If UserList(CasterIndex).Name <> .flags.ParalizedBy Then
-                        Call RemoveParalisis(UserIndex)
-                        Exit Sub
-                        
-                    ' Caster dead? => Remove Paralisis
-                    ElseIf UserList(CasterIndex).flags.Muerto = 1 Then
-                        Call RemoveParalisis(UserIndex)
-                        Exit Sub
-                    
-                    ElseIf .Counters.Paralisis > IntervaloParalizadoReducido Then
-                        ' Out of vision range? => Reduce paralisis counter
-                        If Not InVisionRangeAndMap(UserIndex, UserList(CasterIndex).Pos) Then
-                            ' Aprox. 1500 ms
-                            .Counters.Paralisis = IntervaloParalizadoReducido
-                            Exit Sub
-                        End If
-                    End If
-                
-                ' Npc?
-                Else
-                    CasterIndex = .flags.ParalizedByNpcIndex
-                    
-                    ' Paralized by npc?
-                    If CasterIndex <> 0 Then
-                    
-                        If .Counters.Paralisis > IntervaloParalizadoReducido Then
-                            ' Out of vision range? => Reduce paralisis counter
-                            If Not InVisionRangeAndMap(UserIndex, Npclist(CasterIndex).Pos) Then
-                                ' Aprox. 1500 ms
-                                .Counters.Paralisis = IntervaloParalizadoReducido
-                                Exit Sub
-                            End If
-                        End If
-                    End If
-                    
-                End If
-            End If
-            
             .Counters.Paralisis = .Counters.Paralisis - 1
-
         Else
-            Call RemoveParalisis(UserIndex)
+            .flags.Paralizado = 0
+            .flags.Inmovilizado = 0
+            '.Flags.AdministrativeParalisis = 0
+            Call WriteParalizeOK(UserIndex)
         End If
     End With
 
-End Sub
-
-Public Sub RemoveParalisis(ByVal UserIndex As Integer)
-'***************************************************
-'Author: ZaMa
-'Last Modification: 20/11/2010
-'Removes paralisis effect from user.
-'***************************************************
-    With UserList(UserIndex)
-        .flags.Paralizado = 0
-        .flags.Inmovilizado = 0
-        .flags.ParalizedBy = vbNullString
-        .flags.ParalizedByIndex = 0
-        .flags.ParalizedByNpcIndex = 0
-        .Counters.Paralisis = 0
-        Call WriteParalizeOK(UserIndex)
-    End With
 End Sub
 
 Public Sub RecStamina(ByVal UserIndex As Integer, ByRef EnviarStats As Boolean, ByVal Intervalo As Integer)
@@ -1716,7 +1539,6 @@ Public Sub CargaNpcsDat()
     Dim npcfile As String
     
     npcfile = DatPath & "NPCs.dat"
-    Set LeerNPCs = New clsIniManager
     Call LeerNPCs.Initialize(npcfile)
 End Sub
 
@@ -1727,7 +1549,7 @@ Sub PasarSegundo()
 '
 '***************************************************
 
-On Error GoTo ErrHandler
+On Error GoTo Errhandler
     Dim i As Long
     
     For i = 1 To LastUser
@@ -1747,7 +1569,7 @@ On Error GoTo ErrHandler
     Next i
 Exit Sub
 
-ErrHandler:
+Errhandler:
     Call LogError("Error en PasarSegundo. Err: " & Err.description & " - " & Err.Number & " - UserIndex: " & i)
     Resume Next
 End Sub
@@ -1802,12 +1624,9 @@ Sub GuardarUsuarios()
     Dim i As Integer
     For i = 1 To LastUser
         If UserList(i).flags.UserLogged Then
-            Call SaveUser(i, CharPath & UCase$(UserList(i).Name) & ".chr", False)
+            Call SaveUser(i, CharPath & UCase$(UserList(i).name) & ".chr")
         End If
     Next i
-    
-    'se guardan los seguimientos
-    Call SaveRecords
     
     Call SendData(SendTarget.ToAll, 0, PrepareMessageConsoleMsg("Servidor> Personajes Grabados", FontTypeNames.FONTTYPE_SERVER))
     Call SendData(SendTarget.ToAll, 0, PrepareMessagePauseToggle())
@@ -1826,12 +1645,11 @@ Sub InicializaEstadisticas()
     Dim Ta As Long
     Ta = GetTickCount() And &H7FFFFFFF
     
-    Set EstadisticasWeb = New clsEstadisticasIPC
     Call EstadisticasWeb.Inicializa(frmMain.hWnd)
     Call EstadisticasWeb.Informar(CANTIDAD_MAPAS, NumMaps)
     Call EstadisticasWeb.Informar(CANTIDAD_ONLINE, NumUsers)
     Call EstadisticasWeb.Informar(UPTIME_SERVER, (Ta - tInicioServer) / 1000)
-    Call EstadisticasWeb.Informar(RECORD_USUARIOS, RECORDusuarios)
+    Call EstadisticasWeb.Informar(RECORD_USUARIOS, recordusuarios)
 
 End Sub
 

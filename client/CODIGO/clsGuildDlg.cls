@@ -13,20 +13,6 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-' - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-' This program is free software; you can redistribute it and/or modify
-' it under the terms of the Affero General Public License;
-' either version 1 of the License, or any later version.
-'
-' This program is distributed in the hope that it will be useful,
-' but WITHOUT ANY WARRANTY; without even the implied warranty of
-' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-' Affero General Public License for more details.
-'
-' You should have received a copy of the Affero General Public License
-' along with this program; if not, you can find it at http://www.affero.org/oagpl.html
-' - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 Private Const p_SEGUNDOS = 7
 
 Private p_CANTIDADDIALOGOS As Byte
@@ -41,10 +27,10 @@ Private p_Activo As Boolean
 
 Private usedFont As StdFont
 
-Public Property Let CantidadDialogos(ByVal V As Byte)
-    If V > 0 Then
-        ReDim Preserve p_Dialogos(1 To V) As t_GuildDlg
-        p_CANTIDADDIALOGOS = V
+Public Property Let CantidadDialogos(ByVal v As Byte)
+    If v > 0 Then
+        ReDim Preserve p_Dialogos(1 To v) As t_GuildDlg
+        p_CANTIDADDIALOGOS = v
     End If
 End Property
 
@@ -78,8 +64,8 @@ Public Property Get CantidadDialogos() As Byte
     CantidadDialogos = p_CANTIDADDIALOGOS
 End Property
 
-Public Property Let Activo(ByVal V As Boolean)
-    p_Activo = V
+Public Property Let Activo(ByVal v As Boolean)
+    p_Activo = v
 End Property
 
 Public Property Get Activo() As Boolean
@@ -103,9 +89,9 @@ Y = 250
     For i = 1 To p_CANTIDADDIALOGOS
         If Trim$(p_Dialogos(i).Texto) <> vbNullString Then
             If Left$(p_Dialogos(i).Texto, 1) = Chr(3) Then
-            '    Call Mod_TileEngine.RenderText(260, Y + (i * 10), mid(p_Dialogos(i).Texto, 2), vbGreen, usedFont)
+                Call Mod_TileEngine.RenderText(260, Y + (i * 10), mid(p_Dialogos(i).Texto, 2), vbGreen, usedFont)
             Else
-            '    Call Mod_TileEngine.RenderText(260, Y + (i * 10), p_Dialogos(i).Texto, vbYellow, usedFont)
+                Call Mod_TileEngine.RenderText(260, Y + (i * 10), p_Dialogos(i).Texto, vbYellow, usedFont)
             End If
         End If
     Next i
@@ -189,13 +175,13 @@ End Sub
 '
 ' @return   The font being used to render dialogs.
 
-Public Property Get Font() As StdFont
+Public Property Get font() As StdFont
 '**************************************************************
 'Author: Juan Martín Sotuyo Dodero
 'Last Modify Date: 04/27/06
 'Retrieves the font being used to render dialogs.
 '**************************************************************
-    Font = usedFont
+    font = usedFont
 End Property
 
 ''
@@ -203,7 +189,7 @@ End Property
 '
 ' @param    nValue  The new font to be used to render dialogs.
 
-Public Property Let Font(ByRef nValue As StdFont)
+Public Property Let font(ByRef nValue As StdFont)
 '**************************************************************
 'Author: Juan Martín Sotuyo Dodero
 'Last Modify Date: 04/27/06
@@ -211,4 +197,3 @@ Public Property Let Font(ByRef nValue As StdFont)
 '**************************************************************
     Set usedFont = nValue
 End Property
-

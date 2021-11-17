@@ -252,7 +252,7 @@ Private cBotonVender As clsGraphicalButton
 Private cBotonComprar As clsGraphicalButton
 Private cBotonCruz As clsGraphicalButton
 
-Public LastButtonPressed As clsGraphicalButton
+Public LastPressed As clsGraphicalButton
 
 Private Sub cantidad_Change()
     If Val(cantidad.Text) < 1 Then
@@ -305,7 +305,7 @@ Private Sub LoadButtons()
     Set cBotonComprar = New clsGraphicalButton
     Set cBotonCruz = New clsGraphicalButton
     
-    Set LastButtonPressed = New clsGraphicalButton
+    Set LastPressed = New clsGraphicalButton
     
     
     Call cBotonVender.Initialize(imgVender, GrhPath & "BotonVender.jpg", _
@@ -324,7 +324,7 @@ Private Sub LoadButtons()
 End Sub
 
 Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    LastButtonPressed.ToggleToNormal
+    LastPressed.ToggleToNormal
 End Sub
 
 ''
@@ -416,7 +416,7 @@ Private Sub picInvNpc_Click()
     Label1(0).Caption = NPCInventory(ItemSlot).Name
     Label1(1).Caption = "Precio: " & CalculateSellPrice(NPCInventory(ItemSlot).Valor, Val(cantidad.Text)) 'No mostramos numeros reales
     
-    If NPCInventory(ItemSlot).amount <> 0 Then
+    If NPCInventory(ItemSlot).Amount <> 0 Then
     
         Select Case NPCInventory(ItemSlot).OBJType
             Case eObjType.otWeapon
@@ -440,7 +440,7 @@ Private Sub picInvNpc_Click()
 End Sub
 
 Private Sub picInvNpc_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    LastButtonPressed.ToggleToNormal
+    LastPressed.ToggleToNormal
 End Sub
 
 
@@ -457,7 +457,7 @@ Private Sub picInvUser_Click()
     Label1(0).Caption = Inventario.ItemName(ItemSlot)
     Label1(1).Caption = "Precio: " & CalculateBuyPrice(Inventario.Valor(ItemSlot), Val(cantidad.Text)) 'No mostramos numeros reales
     
-    If Inventario.amount(ItemSlot) <> 0 Then
+    If Inventario.Amount(ItemSlot) <> 0 Then
     
         Select Case Inventario.OBJType(ItemSlot)
             Case eObjType.otWeapon
@@ -481,5 +481,5 @@ Private Sub picInvUser_Click()
 End Sub
 
 Private Sub picInvUser_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    LastButtonPressed.ToggleToNormal
+    LastPressed.ToggleToNormal
 End Sub

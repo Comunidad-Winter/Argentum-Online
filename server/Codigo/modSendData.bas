@@ -63,16 +63,15 @@ Public Enum SendTarget
     ToUsersAndRmsAndCounselorsAreaButGMs
 End Enum
 
-Public Sub SendData(ByVal sndRoute As SendTarget, ByVal sndIndex As Integer, ByVal sndData As String, _
-                    Optional ByVal IsDenounce As Boolean = False)
+Public Sub SendData(ByVal sndRoute As SendTarget, ByVal sndIndex As Integer, ByVal sndData As String)
 '**************************************************************
 'Author: Juan Martín Sotuyo Dodero (Maraxus) - Rewrite of original
-'Last Modify Date: 14/11/2010
-'Last modified by: ZaMa
-'14/11/2010: ZaMa - Now denounces can be desactivated.
+'Last Modify Date: 01/08/2007
+'Last modified by: (liquid)
 '**************************************************************
 On Error Resume Next
     Dim LoopC As Long
+    Dim Map As Integer
     
     Select Case sndRoute
         Case SendTarget.ToPCArea
@@ -83,14 +82,7 @@ On Error Resume Next
             For LoopC = 1 To LastUser
                 If UserList(LoopC).ConnID <> -1 Then
                     If UserList(LoopC).flags.Privilegios And (PlayerType.Admin Or PlayerType.Dios Or PlayerType.SemiDios Or PlayerType.Consejero) Then
-                        ' Denounces can be desactivated
-                        If IsDenounce Then
-                            If UserList(LoopC).flags.SendDenounces Then
-                                Call EnviarDatosASlot(LoopC, sndData)
-                            End If
-                        Else
-                            Call EnviarDatosASlot(LoopC, sndData)
-                        End If
+                        Call EnviarDatosASlot(LoopC, sndData)
                    End If
                 End If
             Next LoopC

@@ -65,9 +65,9 @@ Begin VB.Form frmBancoObj
       Appearance      =   0  'Flat
       BackColor       =   &H00000000&
       ForeColor       =   &H80000008&
-      Height          =   3840
+      Height          =   3795
       Left            =   540
-      ScaleHeight     =   3810
+      ScaleHeight     =   3765
       ScaleWidth      =   2400
       TabIndex        =   4
       Top             =   2400
@@ -77,9 +77,9 @@ Begin VB.Form frmBancoObj
       Appearance      =   0  'Flat
       BackColor       =   &H00000000&
       ForeColor       =   &H80000008&
-      Height          =   3840
+      Height          =   3795
       Left            =   4020
-      ScaleHeight     =   16.816
+      ScaleHeight     =   16.617
       ScaleMode       =   0  'User
       ScaleWidth      =   825.806
       TabIndex        =   3
@@ -280,7 +280,7 @@ Private cBotonRetirarOro As clsGraphicalButton
 Private cBotonDepositarOro As clsGraphicalButton
 Private cBotonCerrar As clsGraphicalButton
 
-Public LastButtonPressed As clsGraphicalButton
+Public LastPressed As clsGraphicalButton
 
 
 Public LasActionBuy As Boolean
@@ -331,7 +331,6 @@ Private Sub Form_Load()
     Me.Picture = LoadPicture(App.path & "\Graficos\Boveda.jpg")
     
     Call LoadButtons
-
     
 End Sub
 
@@ -340,14 +339,14 @@ Private Sub LoadButtons()
     Dim GrhPath As String
     
     GrhPath = DirGraficos
-    'CmdMoverBov(1).Picture = LoadPicture(App.path & "\Graficos\FlechaSubirObjeto.jpg")
-    'CmdMoverBov(0).Picture = LoadPicture(App.path & "\Graficos\FlechaBajarObjeto.jpg")
+    'CmdMoverBov(1).Picture = LoadPicture(App.path & "\Graficos\FlechaSubirObjeto.jpg") ' www.gs-zone.org
+    'CmdMoverBov(0).Picture = LoadPicture(App.path & "\Graficos\FlechaBajarObjeto.jpg") ' www.gs-zone.org
     
     Set cBotonRetirarOro = New clsGraphicalButton
     Set cBotonDepositarOro = New clsGraphicalButton
     Set cBotonCerrar = New clsGraphicalButton
     
-    Set LastButtonPressed = New clsGraphicalButton
+    Set LastPressed = New clsGraphicalButton
 
 
     Call cBotonDepositarOro.Initialize(imgDepositarOro, "", GrhPath & "BotonDepositaOroApretado.jpg", GrhPath & "BotonDepositaOroApretado.jpg", Me)
@@ -360,7 +359,7 @@ Private Sub LoadButtons()
 End Sub
 
 Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    Call LastButtonPressed.ToggleToNormal
+    Call LastPressed.ToggleToNormal
 End Sub
 
 Private Sub Image1_Click(Index As Integer)
@@ -430,7 +429,7 @@ Private Sub PicBancoInv_Click()
 End Sub
 
 Private Sub PicBancoInv_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    Call LastButtonPressed.ToggleToNormal
+    Call LastPressed.ToggleToNormal
 End Sub
 
 Private Sub PicInv_Click()
@@ -467,7 +466,7 @@ Private Sub PicInv_Click()
 End Sub
 
 Private Sub PicInv_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    Call LastButtonPressed.ToggleToNormal
+    Call LastPressed.ToggleToNormal
 End Sub
 
 Private Sub imgCerrar_Click()

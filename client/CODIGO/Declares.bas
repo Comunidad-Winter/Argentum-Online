@@ -34,45 +34,38 @@ Attribute VB_Name = "Mod_Declaraciones"
 Option Explicit
 
 'Objetos públicos
-Public DialogosClanes As clsGuildDlg
-Public Dialogos As clsDialogs
-Public Audio As clsAudio
-Public Inventario As clsGrapchicalInventory
-Public InvBanco(1) As clsGrapchicalInventory
-
+Public DialogosClanes As New clsGuildDlg
+Public Dialogos As New clsDialogs
+Public Audio As New clsAudio
+Public Inventario As New clsGrapchicalInventory
+Public InvBanco(1) As New clsGrapchicalInventory
 
 'Inventarios de comercio con usuario
-Public InvComUsu As clsGrapchicalInventory  ' Inventario del usuario visible en el comercio
-Public InvOroComUsu(2) As clsGrapchicalInventory  ' Inventarios de oro (ambos usuarios)
-Public InvOfferComUsu(1) As clsGrapchicalInventory  ' Inventarios de ofertas (ambos usuarios)
+Public InvComUsu As New clsGrapchicalInventory ' Inventario del usuario visible en el comercio
+Public InvOroComUsu(2) As New clsGrapchicalInventory ' Inventarios de oro (ambos usuarios)
+Public InvOfferComUsu(1) As New clsGrapchicalInventory ' Inventarios de ofertas (ambos usuarios)
 
-Public InvComNpc As clsGrapchicalInventory  ' Inventario con los items que ofrece el npc
+Public InvComNpc As New clsGrapchicalInventory ' Inventario con los items que ofrece el npc
 
 'Inventarios de herreria
 Public Const MAX_LIST_ITEMS As Byte = 4
-Public InvLingosHerreria(1 To MAX_LIST_ITEMS) As clsGrapchicalInventory
-Public InvMaderasCarpinteria(1 To MAX_LIST_ITEMS) As clsGrapchicalInventory
+Public InvLingosHerreria(1 To MAX_LIST_ITEMS) As New clsGrapchicalInventory
+Public InvMaderasCarpinteria(1 To MAX_LIST_ITEMS) As New clsGrapchicalInventory
                 
-Public SurfaceDB As New clsTexturemanager   'No va new porque es una interfaz, el new se pone al decidir que clase de objeto es
-Public CustomKeys As clsCustomKeys
-Public CustomMessages As clsCustomMessages
+Public SurfaceDB As clsSurfaceManager   'No va new porque es una interfaz, el new se pone al decidir que clase de objeto es
+Public CustomKeys As New clsCustomKeys
+Public CustomMessages As New clsCustomMessages
 
-Public incomingData As clsByteQueue
-Public outgoingData As clsByteQueue
+Public incomingData As New clsByteQueue
+Public outgoingData As New clsByteQueue
 
 ''
 'The main timer of the game.
-Public MainTimer As clsTimer
+Public MainTimer As New clsTimer
 
 #If SeguridadAlkon Then
-Public md5 As clsMD5
+Public md5 As New clsMD5
 #End If
-
-'Error code
-Public Const TOO_FAST As Long = 24036
-Public Const REFUSED As Long = 24061
-Public Const TIME_OUT As Long = 24060
-
 
 'Sonidos
 Public Const SND_CLICK As String = "click.Wav"
@@ -152,9 +145,9 @@ Public Const MP3_Inicio As Byte = 101
 Public RawServersList As String
 
 Public Type tColor
-    R As Byte
-    G As Byte
-    B As Byte
+    r As Byte
+    g As Byte
+    b As Byte
 End Type
 
 Public ColoresPJ(0 To 50) As tColor
@@ -180,6 +173,7 @@ Public UserCiego As Boolean
 Public UserEstupido As Boolean
 
 Public NoRes As Boolean 'no cambiar la resolucion
+Public GraphicsFile As String 'Que graficos.ind usamos
 
 Public RainBufferIndex As Long
 Public FogataBufferIndex As Long
@@ -361,7 +355,7 @@ End Enum
 
 Public Enum eMochilas
     Mediana = 1
-    Grande = 2
+    GRANDE = 2
 End Enum
 
 Public MaxInventorySlots As Byte
@@ -391,7 +385,7 @@ Public Enum eGMCommands
     SOSShowList             '/SHOW SOS
     SOSRemove               'SOSDONE
     GoToChar                '/IRA
-    Invisible               '/INVISIBLE
+    invisible               '/INVISIBLE
     GMPanel                 '/PANELGM
     RequestUserList         'LISTUSU
     Working                 '/TRABAJANDO
@@ -491,9 +485,6 @@ Public Enum eGMCommands
     ChangeMapInfoNoResu     '/MODMAPINFO RESUSINEFECTO
     ChangeMapInfoLand       '/MODMAPINFO TERRENO
     ChangeMapInfoZone       '/MODMAPINFO ZONA
-    ChangeMapInfoStealNpc   '/MODMAPINFO ROBONPCm
-    ChangeMapInfoNoOcultar  '/MODMAPINFO OCULTARSINEFECTO
-    ChangeMapInfoNoInvocar  '/MODMAPINFO INVOCARSINEFECTO
     SaveChars               '/GRABAR
     CleanSOS                '/BORRAR SOS
     ShowServerForm          '/SHOW INT
@@ -509,19 +500,6 @@ Public Enum eGMCommands
     Ignored                 '/IGNORADO
     CheckSlot               '/SLOT
     SetIniVar               '/SETINIVAR LLAVE CLAVE VALOR
-    CreatePretorianClan     '/CREARPRETORIANOS
-    RemovePretorianClan     '/ELIMINARPRETORIANOS
-    EnableDenounces         '/DENUNCIAS
-    ShowDenouncesList       '/SHOW DENUNCIAS
-    MapMessage              '/MAPMSG
-    SetDialog               '/SETDIALOG
-    Impersonate             '/IMPERSONAR
-    Imitate                 '/MIMETIZAR
-    RecordAdd
-    RecordRemove
-    RecordAddObs
-    RecordListRequest
-    RecordDetailsRequest
 End Enum
 
 '
@@ -631,11 +609,11 @@ End Enum
 
 'Inventario
 Type Inventory
-    objIndex As Integer
+    OBJIndex As Integer
     Name As String
     GrhIndex As Integer
     '[Alejo]: tipo de datos ahora es Long
-    amount As Long
+    Amount As Long
     '[/Alejo]
     Equipped As Byte
     Valor As Single
@@ -647,10 +625,10 @@ Type Inventory
 End Type
 
 Type NpCinV
-    objIndex As Integer
+    OBJIndex As Integer
     Name As String
     GrhIndex As Integer
-    amount As Integer
+    Amount As Integer
     Valor As Single
     OBJType As Integer
     MaxDef As Integer
@@ -688,7 +666,7 @@ End Type
 
 Type tItemsConstruibles
     Name As String
-    objIndex As Integer
+    OBJIndex As Integer
     GrhIndex As Integer
     LinH As Integer
     LinP As Integer
@@ -754,8 +732,6 @@ Public MirandoForo As Boolean
 Public MirandoAsignarSkills As Boolean
 Public MirandoEstadisticas As Boolean
 Public MirandoParty As Boolean
-Public MirandoCarpinteria As Boolean
-Public MirandoHerreria As Boolean
 '<-------------------------NUEVO-------------------------->
 
 Public UserClase As eClass
@@ -785,7 +761,7 @@ Public SkillPoints As Integer
 Public Alocados As Integer
 Public flags() As Integer
 Public Oscuridad As Integer
-Public logged As Boolean
+'Public logged As Boolean ' www.gs-zone.org
 
 Public UsingSkill As Integer
 
@@ -806,7 +782,7 @@ Public EstadoLogin As E_MODO
 Public Enum FxMeditar
     CHICO = 4
     MEDIANO = 5
-    Grande = 6
+    GRANDE = 6
     XGRANDE = 16
     XXGRANDE = 34
 End Enum
@@ -836,8 +812,6 @@ Public Enum eEditOptions
     eo_Sex
     eo_Raza
     eo_addGold
-    eo_Vida
-    eo_Poss
 End Enum
 
 ''
@@ -958,17 +932,11 @@ End Type
 Public Foros(0 To 2) As tForo
 
 ' Forum info handler
-Public clsForos As clsForum
+Public clsForos As New clsForum
 
-'FragShooter variables
-Public FragShooterCapturePending As Boolean
-Public FragShooterNickname As String
-Public FragShooterKilledSomeone As Boolean
-
-
+Public isCapturePending As Boolean
 Public Traveling As Boolean
 
-Public bShowGuildNews As Boolean
 Public GuildNames() As String
 Public GuildMembers() As String
 
@@ -1002,37 +970,3 @@ Public Const MADERA_GRH As Integer = 550
 Public Const MADERA_ELFICA_GRH As Integer = 1999
 
 Public picMouseIcon As Picture
-
-'***************** vbGore Declares - Particles
-Public ParticleOffsetX As Long
-Public ParticleOffsetY As Long
-Public LastOffsetX As Integer
-Public LastOffsetY As Integer
-Public LastTexture As Long
-Public PixelOffsetX As Integer
-Public PixelOffsetY As Integer
-Public minY As Integer          'Start Y pos on current screen + tilebuffer
-Public maxY As Integer          'End Y pos on current screen
-Public minX As Integer          'Start X pos on current screen
-Public maxX As Integer          'End X pos on current screen
-Public ScreenMinY As Integer    'Start Y pos on current screen
-Public ScreenMaxY As Integer    'End Y pos on current screen
-Public ScreenMinX As Integer    'Start X pos on current screen
-Public ScreenMaxX As Integer    'End X pos on current screen
-Public Const ScreenWidth As Long = 544 'Keep this identical to the value on the server!
-Public Const ScreenHeight As Long = 416 'Keep this identical to the value on the server!
-Public ParticleTexture(1 To 15) As Direct3DTexture8
-
-Public Const DegreeToRadian As Single = 0.01745329251994 'Pi / 180
-Public Const RadianToDegree As Single = 57.2958279087977 '180 / Pi
-
-Public OffsetCounterX As Single
-Public OffsetCounterY As Single
-'***************** vbGore Declares - Particles
-
-Public Enum eMoveType
-    Inventory = 1
-    Bank
-End Enum
-
-Public Const MP3_INITIAL_INDEX As Integer = 1000

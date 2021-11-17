@@ -231,37 +231,21 @@ Public Function GetMemberList() As String()
 End Function
 
 Public Sub ConectarMiembro(ByVal UserIndex As Integer)
-'***************************************************
-'Autor: Unknown (orginal version)
-'Last Modification: 28/05/2010
-'28/05/2010: ZaMa - No avisa cuando loguea un dios o admin.
-'***************************************************
     p_OnlineMembers.Add UserIndex
 
     With UserList(UserIndex)
-        ' No avisa cuando loguea un dios
-        If (.flags.Privilegios And (PlayerType.Admin Or PlayerType.Dios)) = 0 Then
-            Call SendData(SendTarget.ToDiosesYclan, .GuildIndex, PrepareMessageGuildChat(.Name & " se ha conectado."))
-        End If
+        Call SendData(SendTarget.ToDiosesYclan, .GuildIndex, PrepareMessageGuildChat(.name & " se ha conectado."))
     End With
 End Sub
 
 Public Sub DesConectarMiembro(ByVal UserIndex As Integer)
-'***************************************************
-'Autor: Unknown (orginal version)
-'Last Modification: 28/05/2010
-'28/05/2010: ZaMa - No avisa cuando desloguea un dios o admin.
-'***************************************************
 Dim i   As Integer
     For i = 1 To p_OnlineMembers.Count
         If p_OnlineMembers.Item(i) = UserIndex Then
             p_OnlineMembers.Remove i
             
             With UserList(UserIndex)
-                 ' No avisa cuando se desconecta un dios
-                If (.flags.Privilegios And (PlayerType.Admin Or PlayerType.Dios)) = 0 Then
-                    Call SendData(SendTarget.ToDiosesYclan, .GuildIndex, PrepareMessageGuildChat(.Name & " se ha desconectado."))
-                End If
+                Call SendData(SendTarget.ToDiosesYclan, .GuildIndex, PrepareMessageGuildChat(.name & " se ha desconectado."))
             End With
 
             Exit Sub

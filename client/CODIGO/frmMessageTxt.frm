@@ -173,7 +173,7 @@ Begin VB.Form frmMessageTxt
       Height          =   255
       Index           =   1
       Left            =   1200
-      TabIndex        =   1
+      TabIndex        =   2
       Top             =   600
       Width           =   3330
    End
@@ -193,7 +193,7 @@ Begin VB.Form frmMessageTxt
       Height          =   255
       Index           =   0
       Left            =   1200
-      TabIndex        =   0
+      TabIndex        =   1
       Top             =   180
       Width           =   3330
    End
@@ -213,7 +213,7 @@ Begin VB.Form frmMessageTxt
       Height          =   255
       Index           =   2
       Left            =   1200
-      TabIndex        =   2
+      TabIndex        =   0
       Top             =   1005
       Width           =   3330
    End
@@ -244,7 +244,7 @@ Private clsFormulario As clsFormMovementManager
 Private cBotonGuardar As clsGraphicalButton
 Private cBotonCancelar As clsGraphicalButton
 
-Public LastButtonPressed As clsGraphicalButton
+Public LastPressed As clsGraphicalButton
 
 Private Sub Form_Load()
     Dim i As Long
@@ -271,7 +271,7 @@ Private Sub LoadButtons()
     Set cBotonGuardar = New clsGraphicalButton
     Set cBotonCancelar = New clsGraphicalButton
     
-    Set LastButtonPressed = New clsGraphicalButton
+    Set LastPressed = New clsGraphicalButton
 
     Call cBotonGuardar.Initialize(imgGuardar, GrhPath & "BotonGuardarCustomMsg.jpg", GrhPath & "BotonGuardarRolloverCustomMsg.jpg", _
                                     GrhPath & "BotonGuardarClickCustomMsg.jpg", Me)
@@ -280,7 +280,7 @@ Private Sub LoadButtons()
 End Sub
 
 Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    LastButtonPressed.ToggleToNormal
+    LastPressed.ToggleToNormal
 End Sub
 
 Private Sub imgCancelar_Click()
@@ -307,5 +307,5 @@ ErrHandler:
 End Sub
 
 Private Sub messageTxt_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
-    LastButtonPressed.ToggleToNormal
+    LastPressed.ToggleToNormal
 End Sub

@@ -293,8 +293,6 @@ Dim Suerte As Byte
 Dim exito As Byte
 Dim Obj As Obj
 
-Dim SkillSupervivencia As Byte
-
 Dim Pos As WorldPos
 Pos.Map = Map
 Pos.X = X
@@ -311,15 +309,11 @@ With UserList(UserIndex)
         Exit Sub
     End If
     
-    SkillSupervivencia = .Stats.UserSkills(eSkill.Supervivencia)
-    
-    If SkillSupervivencia < 6 Then
+    If .Stats.UserSkills(Supervivencia) > 1 And .Stats.UserSkills(Supervivencia) < 6 Then
         Suerte = 3
-        
-    ElseIf SkillSupervivencia <= 10 Then
+    ElseIf .Stats.UserSkills(Supervivencia) >= 6 And .Stats.UserSkills(Supervivencia) <= 10 Then
         Suerte = 2
-        
-    Else
+    ElseIf .Stats.UserSkills(Supervivencia) >= 10 And .Stats.UserSkills(Supervivencia) Then
         Suerte = 1
     End If
     
@@ -335,8 +329,7 @@ With UserList(UserIndex)
             Call MakeObj(Obj, Map, X, Y)
             
             'Las fogatas prendidas se deben eliminar
-            Dim Fogatita As cGarbage
-            Set Fogatita = New cGarbage
+            Dim Fogatita As New cGarbage
             Fogatita.Map = Map
             Fogatita.X = X
             Fogatita.Y = Y

@@ -33,11 +33,11 @@ Option Explicit
 ' Modulo de declaraciones. Aca hay de todo.
 '
 #If SeguridadAlkon Then
-Public aDos As clsAntiDoS
+Public aDos As New clsAntiDoS
 #End If
 
-Public aClon As clsAntiMassClon
-Public TrashCollector As Collection
+Public aClon As New clsAntiMassClon
+Public TrashCollector As New Collection
 
 
 Public Const MAXSPAWNATTEMPS = 60
@@ -62,33 +62,12 @@ Public Const iFragataCaos = 189
 Public Const iBarca = 84
 Public Const iGalera = 85
 Public Const iGaleon = 86
-
-' Embarcaciones ciudas
 Public Const iBarcaCiuda = 395
-Public Const iBarcaCiudaAtacable = 552
-Public Const iGaleraCiuda = 397
-Public Const iGaleraCiudaAtacable = 560
-Public Const iGaleonCiuda = 399
-Public Const iGaleonCiudaAtacable = 556
-
-' Embarcaciones reales
-Public Const iBarcaReal = 550
-Public Const iBarcaRealAtacable = 553
-Public Const iGaleraReal = 558
-Public Const iGaleraRealAtacable = 561
-Public Const iGaleonReal = 554
-Public Const iGaleonRealAtacable = 557
-
-' Embarcaciones pk
 Public Const iBarcaPk = 396
+Public Const iGaleraCiuda = 397
 Public Const iGaleraPk = 398
+Public Const iGaleonCiuda = 399
 Public Const iGaleonPk = 400
-
-' Embarcaciones caos
-Public Const iBarcaCaos = 551
-Public Const iGaleraCaos = 559
-Public Const iGaleonCaos = 555
-
 
 Public Enum iMinerales
     HierroCrudo = 192
@@ -108,15 +87,6 @@ Public Enum PlayerType
     RoleMaster = &H20
     ChaosCouncil = &H40
     RoyalCouncil = &H80
-End Enum
-
-Public Enum ePrivileges
-    Admin = 1
-    Dios
-    Especial
-    SemiDios
-    Consejero
-    RoleMaster
 End Enum
 
 Public Enum eClass
@@ -140,8 +110,6 @@ Public Enum eCiudad
     cBanderbill
     cLindos
     cArghal
-    cArkhein
-    cLastCity
 End Enum
 
 Public Enum eRaza
@@ -255,22 +223,6 @@ Public Const Ciudad As String = "CIUDAD"
 Public Const Campo As String = "CAMPO"
 Public Const Dungeon As String = "DUNGEON"
 
-Public Enum eTerrain
-    terrain_bosque = 0
-    terrain_nieve = 1
-    terrain_desierto = 2
-    terrain_ciudad = 3
-    terrain_campo = 4
-    terrain_dungeon = 5
-End Enum
-
-Public Enum eRestrict
-    restrict_no = 0
-    restrict_newbie = 1
-    restrict_armada = 2
-    restrict_caos = 3
-    restrict_faccion = 4
-End Enum
 ' <<<<<< Targets >>>>>>
 Public Enum TargetType
     uUsuarios = 1
@@ -317,7 +269,6 @@ End Enum
 Public Const Guardias As Integer = 6
 
 Public Const MAX_ORO_EDIT As Long = 5000000
-Public Const MAX_VIDA_EDIT As Long = 30000
 
 
 Public Const STANDARD_BOUNTY_HUNTER_MESSAGE As String = "Se te ha otorgado un premio por ayudar al proyecto reportando bugs, el mismo está disponible en tu bóveda."
@@ -345,12 +296,6 @@ Public Const MAXCHARS As Integer = 10000
 Public Const HACHA_LEÑADOR As Integer = 127
 Public Const HACHA_LEÑA_ELFICA As Integer = 1005
 Public Const PIQUETE_MINERO As Integer = 187
-
-Public Const HACHA_LEÑADOR_NEWBIE As Integer = 561
-Public Const PIQUETE_MINERO_NEWBIE As Integer = 562
-Public Const CAÑA_PESCA_NEWBIE As Integer = 563
-Public Const SERRUCHO_CARPINTERO_NEWBIE As Integer = 564
-Public Const MARTILLO_HERRERO_NEWBIE As Integer = 565
 
 Public Const DAGA As Integer = 15
 Public Const FOGATA_APAG As Integer = 136
@@ -406,7 +351,7 @@ Public Const MAXSKILLPOINTS As Byte = 100
 
 ''
 ' Cantidad de Ciudades
-Public Const NUMCIUDADES As Byte = 6
+Public Const NUMCIUDADES As Byte = 5
 
 
 ''
@@ -451,10 +396,6 @@ Public Enum PECES_POSIBLES
     PESCADO4 = 546
 End Enum
 
-Public Const NUM_PECES As Integer = 4
-Public ListaPeces(1 To NUM_PECES) As Integer
-
-
 '%%%%%%%%%% CONSTANTES DE INDICES %%%%%%%%%%%%%%%
 Public Enum eSkill
     Magia = 1
@@ -498,7 +439,7 @@ Public Const AdicionalHPGuerrero As Byte = 2 'HP adicionales cuando sube de nive
 Public Const AdicionalHPCazador As Byte = 1 'HP adicionales cuando sube de nivel
 
 Public Const AumentoSTDef As Byte = 15
-Public Const AumentoStBandido As Byte = AumentoSTDef + 3
+Public Const AumentoStBandido As Byte = AumentoSTDef + 23
 Public Const AumentoSTLadron As Byte = AumentoSTDef + 3
 Public Const AumentoSTMago As Byte = AumentoSTDef - 1
 Public Const AumentoSTTrabajador As Byte = AumentoSTDef + 25
@@ -592,7 +533,6 @@ Public Enum eOBJType
     otManchas = 35          'No se usa
     otArbolElfico = 36
     otMochilas = 37
-    otYacimientoPez = 38
     otCualquiera = 1000
 End Enum
 
@@ -632,23 +572,6 @@ Public Const EXP_FALLO_SKILL As Byte = 20
 ' ************************ TIPOS *******************************
 ' **************************************************************
 ' **************************************************************
-
-Public Type tObservacion
-    Creador As String
-    Fecha As Date
-    
-    Detalles As String
-End Type
-
-Public Type tRecord
-    Usuario As String
-    Motivo As String
-    Creador As String
-    Fecha As Date
-    
-    NumObs As Byte
-    Obs() As tObservacion
-End Type
 
 Public Type tHechizo
     Nombre As String
@@ -808,7 +731,7 @@ End Type
 
 'Tipos de objetos
 Public Type ObjData
-    Name As String 'Nombre del obj
+    name As String 'Nombre del obj
     
     OBJType As eOBJType 'Tipo enum que determina cuales son las caract del obj
     
@@ -1143,11 +1066,9 @@ Public Type UserFlags
     Ignorado As Boolean
     
     EnConsulta As Boolean
-    SendDenounces As Boolean
     
     StatsChanged As Byte
     Privilegios As PlayerType
-    PrivEspecial As Boolean
     
     ValCoDe As Integer
     
@@ -1179,15 +1100,10 @@ Public Type UserFlags
     
     Mimetizado As Byte
     
-    CentinelaIndex As Byte ' Indice del centinela que lo revisa
-    CentinelaOK As Boolean
+    CentinelaOK As Boolean 'Centinela
     
     lastMap As Integer
     Traveling As Byte 'Travelin Band ¿?
-    
-    ParalizedBy As String
-    ParalizedByIndex As Integer
-    ParalizedByNpcIndex As Integer
 End Type
 
 Public Type UserCounters
@@ -1268,7 +1184,7 @@ End Type
 
 'Tipo de los Usuarios
 Public Type User
-    Name As String
+    name As String
     ID As Long
     
     showName As Boolean 'Permite que los GMs oculten su nick con el comando /SHOWNAME
@@ -1437,7 +1353,7 @@ End Type
 Public Const MAX_NPC_DROPS As Byte = 5
 
 Public Type npc
-    Name As String
+    name As String
     Char As Char 'Define como se vera
     desc As String
 
@@ -1495,9 +1411,6 @@ Public Type npc
     
     'Hogar
     Ciudad As Byte
-    
-    'Para diferenciar entre clanes
-    ClanIndex As Integer
 End Type
 
 '**********************************************************
@@ -1520,28 +1433,23 @@ End Type
 Type MapInfo
     NumUsers As Integer
     Music As String
-    Name As String
+    name As String
     StartPos As WorldPos
-    OnDeathGoTo As WorldPos
-    
     MapVersion As Integer
     Pk As Boolean
     MagiaSinEfecto As Byte
     NoEncriptarMP As Byte
-    
-    ' Anti Magias/Habilidades
     InviSinEfecto As Byte
     ResuSinEfecto As Byte
-    OcultarSinEfecto As Byte
-    InvocarSinEfecto As Byte
     
     RoboNpcsPermitido As Byte
     
     Terreno As String
     Zona As String
-    Restringir As Byte
+    Restringir As String
     BackUp As Byte
 End Type
+
 
 '********** V A R I A B L E S     P U B L I C A S ***********
 
@@ -1555,7 +1463,7 @@ Public ListaClases(1 To NUMCLASES) As String
 Public ListaAtributos(1 To NUMATRIBUTOS) As String
 
 
-Public RECORDusuarios As Long
+Public recordusuarios As Long
 
 '
 'Directorios
@@ -1605,7 +1513,6 @@ Public Minutos As String
 Public haciendoBK As Boolean
 Public PuedeCrearPersonajes As Integer
 Public ServerSoloGMs As Integer
-Public NumRecords As Integer
 
 ''
 'Esta activada la verificacion MD5 ?
@@ -1632,7 +1539,7 @@ Public ArmasHerrero() As Integer
 Public ArmadurasHerrero() As Integer
 Public ObjCarpintero() As Integer
 Public MD5s() As String
-Public BanIps As Collection
+Public BanIps As New Collection
 Public Parties(1 To MAX_PARTIES) As clsParty
 Public ModClase(1 To NUMCLASES) As ModClase
 Public ModRaza(1 To NUMRAZAS) As ModRaza
@@ -1641,11 +1548,10 @@ Public DistribucionEnteraVida(1 To 5) As Integer
 Public DistribucionSemienteraVida(1 To 4) As Integer
 Public Ciudades(1 To NUMCIUDADES) As WorldPos
 Public distanceToCities() As HomeDistance
-Public Records() As tRecord
 '*********************************************************
 
 Type HomeDistance
-    distanceToCity(1 To NUMCIUDADES) As Integer
+    distanceToCity(1 To 5) As Integer
 End Type
 
 Public Nix As WorldPos
@@ -1653,16 +1559,13 @@ Public Ullathorpe As WorldPos
 Public Banderbill As WorldPos
 Public Lindos As WorldPos
 Public Arghal As WorldPos
-Public Arkhein As WorldPos
-Public Nemahuak As WorldPos
 
 Public Prision As WorldPos
 Public Libertad As WorldPos
 
-Public Ayuda As cCola
-Public Denuncias As cCola
-Public ConsultaPopular As ConsultasPopulares
-Public SonidosMapas As SoundMapInfo
+Public Ayuda As New cCola
+Public ConsultaPopular As New ConsultasPopulares
+Public SonidosMapas As New SoundMapInfo
 
 Public Declare Function GetTickCount Lib "kernel32" () As Long
 
@@ -1820,9 +1723,6 @@ Public Enum eGMCommands
     ChangeMapInfoNoResu     '/MODMAPINFO RESUSINEFECTO
     ChangeMapInfoLand       '/MODMAPINFO TERRENO
     ChangeMapInfoZone       '/MODMAPINFO ZONA
-    ChangeMapInfoStealNpc   '/MODMAPINFO ROBONPC
-    ChangeMapInfoNoOcultar  '/MODMAPINFO OCULTARSINEFECTO
-    ChangeMapInfoNoInvocar  '/MODMAPINFO INVOCARSINEFECTO
     SaveChars               '/GRABAR
     CleanSOS                '/BORRAR SOS
     ShowServerForm          '/SHOW INT
@@ -1838,19 +1738,6 @@ Public Enum eGMCommands
     Ignored                 '/IGNORADO
     CheckSlot               '/SLOT
     SetIniVar               '/SETINIVAR LLAVE CLAVE VALOR
-    CreatePretorianClan     '/CREARPRETORIANOS
-    RemovePretorianClan     '/ELIMINARPRETORIANOS
-    EnableDenounces         '/DENUNCIAS
-    ShowDenouncesList       '/SHOW DENUNCIAS
-    MapMessage              '/MAPMSG
-    SetDialog               '/SETDIALOG
-    Impersonate             '/IMPERSONAR
-    Imitate                 '/MIMETIZAR
-    RecordAdd
-    RecordRemove
-    RecordAddObs
-    RecordListRequest
-    RecordDetailsRequest
 End Enum
 
 Public Const MATRIX_INITIAL_MAP As Integer = 1
@@ -1893,22 +1780,3 @@ Public Const GNOMO_M_ULTIMA_CABEZA As Integer = 484
 ' Por ahora la dejo constante.. SI se quisiera extender la propiedad de paralziar, se podria hacer
 ' una nueva variable en el dat.
 Public Const GUANTE_HURTO As Integer = 873
-
-Public Const ESPADA_VIKINGA As Integer = 123
-'''''''
-'' Pretorianos
-'''''''
-Public ClanPretoriano() As clsClanPretoriano
-
-Public Const MAX_DENOUNCES As Integer = 20
-
-'Mensajes de los NPCs enlistadores (Nobles):
-Public Const MENSAJE_REY_CAOS As String = "¿Esperabas pasar desapercibido, intruso? Los servidores del Demonio no son bienvenidos, ¡Guardias, a él!"
-Public Const MENSAJE_REY_CRIMINAL_NOENLISTABLE As String = "Tus pecados son grandes, pero aún así puedes redimirte. El pasado deja huellas, pero aún puedes limpiar tu alma."
-Public Const MENSAJE_REY_CRIMINAL_ENLISTABLE As String = "Limpia tu reputación y paga por los delitos cometidos. Un miembro de la Armada Real debe tener un comportamiento ejemplar."
-
-Public Const MENSAJE_DEMONIO_REAL As String = "Lacayo de Tancredo, ve y dile a tu gente que nadie pisará estas tierras si no se arrodilla ante mi."
-Public Const MENSAJE_DEMONIO_CIUDADANO_NOENLISTABLE As String = "Tu indecisión te ha condenado a una vida sin sentido, aún tienes elección... Pero ten mucho cuidado, mis hordas nunca descansan."
-Public Const MENSAJE_DEMONIO_CIUDADANO_ENLISTABLE As String = "Siento el miedo por tus venas. Deja de ser escoria y únete a mis filas, sabrás que es el mejor camino."
-
-Public Administradores As clsIniManager

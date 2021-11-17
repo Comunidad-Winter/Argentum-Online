@@ -132,10 +132,9 @@ End Sub
 Public Sub CheckUpdateNeededUser(ByVal UserIndex As Integer, ByVal Head As Byte, Optional ByVal ButIndex As Boolean = False)
 '**************************************************************
 'Author: Lucio N. Tourrilhes (DuNga)
-'Last Modify Date: 28/10/2010
+'Last Modify Date: 15/07/2009
 'Es la función clave del sistema de areas... Es llamada al mover un user
 '15/07/2009: ZaMa - Now it doesn't send an invisible admin char info
-'28/10/2010: ZaMa - Now it doesn't send a saling char invisible message.
 '**************************************************************
     If UserList(UserIndex).AreasInfo.AreaID = AreasInfo(UserList(UserIndex).Pos.X, UserList(UserIndex).Pos.Y) Then Exit Sub
     
@@ -213,32 +212,24 @@ Public Sub CheckUpdateNeededUser(ByVal UserIndex As Integer, ByVal Head As Byte,
                         If Not (UserList(TempInt).flags.AdminInvisible = 1) Then
                             Call MakeUserChar(False, UserIndex, TempInt, Map, X, Y)
                             
-                            ' Si esta navegando, siempre esta visible
-                            If UserList(TempInt).flags.Navegando = 0 Then
-                                'Si el user estaba invisible le avisamos al nuevo cliente de eso
-                                If UserList(TempInt).flags.invisible Or UserList(TempInt).flags.Oculto Then
-                                    If .flags.Privilegios And (PlayerType.User Or PlayerType.Consejero Or PlayerType.RoleMaster) Then
-                                        Call WriteSetInvisible(UserIndex, UserList(TempInt).Char.CharIndex, True)
-                                    End If
+                            'Si el user estaba invisible le avisamos al nuevo cliente de eso
+                            If UserList(TempInt).flags.invisible Or UserList(TempInt).flags.Oculto Then
+                                If .flags.Privilegios And (PlayerType.User Or PlayerType.Consejero Or PlayerType.RoleMaster) Then
+                                    Call WriteSetInvisible(UserIndex, UserList(TempInt).Char.CharIndex, True)
                                 End If
                             End If
                         End If
                         
-                    
                         ' Solo avisa al otro cliente si no es un admin invisible
                         If Not (.flags.AdminInvisible = 1) Then
                             Call MakeUserChar(False, TempInt, UserIndex, .Pos.Map, .Pos.X, .Pos.Y)
                             
-                            ' Si esta navegando, siempre esta visible
-                            If .flags.Navegando = 0 Then
-                                If .flags.invisible Or .flags.Oculto Then
-                                    If UserList(TempInt).flags.Privilegios And PlayerType.User Then
-                                        Call WriteSetInvisible(TempInt, .Char.CharIndex, True)
-                                    End If
+                            If .flags.invisible Or .flags.Oculto Then
+                                If UserList(TempInt).flags.Privilegios And PlayerType.User Then
+                                    Call WriteSetInvisible(TempInt, .Char.CharIndex, True)
                                 End If
                             End If
                         End If
-
                         
                         Call FlushBuffer(TempInt)
                     
@@ -375,8 +366,6 @@ Public Sub QuitarUser(ByVal UserIndex As Integer, ByVal Map As Integer)
 'Last Modify Date: Unknow
 '
 '**************************************************************
-On Error GoTo ErrorHandler
-
     Dim TempVal As Long
     Dim LoopC As Long
     
@@ -400,17 +389,6 @@ On Error GoTo ErrorHandler
     If TempVal > ConnGroups(Map).OptValue Then 'Nescesito Redim?
         ReDim Preserve ConnGroups(Map).UserEntrys(1 To TempVal) As Long
     End If
-    
-    Exit Sub
-    
-ErrorHandler:
-    
-    Dim UserName As String
-    If UserIndex > 0 Then UserName = UserList(UserIndex).Name
-
-    Call LogError("Error en QuitarUser " & Err.Number & ": " & Err.description & _
-                  ". User: " & UserName & "(" & UserIndex & ")")
-
 End Sub
 
 Public Sub AgregarUser(ByVal UserIndex As Integer, ByVal Map As Integer, Optional ByVal ButIndex As Boolean = False)

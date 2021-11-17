@@ -153,16 +153,16 @@ Trabajador=9.5
 
 [DISTRIBUCION]
 La suma de los "E" debe ser siempre 100.
-E1=10
+E1=20
 E2=20
-E3=40
+E3=20
 E4=20
-E5=10
+E5=20
 La suma de los "S" debe ser siempre 100.
-S1=10
-S2=40
-S3=40
-S4=10
+S1=25
+S2=25
+S3=25
+S4=25
 
 [EXTRA]
 PorcentajeRecuperoMana=6
