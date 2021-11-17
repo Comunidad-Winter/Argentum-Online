@@ -1,0 +1,9 @@
+ - 02/10/2008 Inicio del Changelog
+ - 09/03/2009 Agregada la nueva interfaz (Marco)
+ - 09/03/2009 Prescindir del archivo de configuracion AoUpdate.ini local (Pato)
+ - 14/05/2009 Arreglado el bug del ShellExecute, ahora se le pasa SW_SHOWNORMAL como parametro (Marco)
+ - 14/05/2009 Ahora el AoUpdate devuelve los parámetros que le pasaron (Pato)
+ - 25/05/2009 Fix al commit anterior
+ - 20/11/2009 Ahora si la página donde se alojan los archivos está offline, se accede a una mirror (Pato)
+ - 15/12/2009 Ahora los archivos pueden tener un flag critical, si es true se vuelve a abrir el AU. (Pato)
+ - 25/01/2010 Vole el control inet y puse un winsock manejado por la clase cDownload (Marco)

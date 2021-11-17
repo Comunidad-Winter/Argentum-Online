@@ -12,7 +12,7 @@
 '4.....Terreno.
 
 [INIT]
-NumeroHechizos=46
+NumeroHechizos=45
 
 
 [HECHIZO1]
@@ -93,7 +93,7 @@ ManaRequerido=10
 StaRequerido=1
 Target=3
 SubeHP=2
-MinHP=3
+MinHP=1
 MaxHP=5
 SubeMana=0
 MinMana=0
@@ -141,7 +141,7 @@ Resis=1
 '&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
 [HECHIZO3]
-Nombre=Curar Heridas Leves
+Nombre=Aura Sanadora
 Desc=Con este sencillo conjuro podrás efectuar la sanación inmediata de pequeñas heridas y devolver lentamente la salud a quien se lo lances. Suele ser de gran utilidad para los jóvenes aprendices de magia, para poder entrenar al resguardo del ataque de las fieras salvajes.
 PalabrasMagicas=CORP SANC
 HechizeroMsg=Le has curado algunas pequeñas heridas a 
@@ -267,7 +267,7 @@ Resis=1
 '&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
 [HECHIZO5]
-Nombre=Curar Heridas Graves
+Nombre=Aura Sanadora Avanzada
 Desc=Con esta milagrosa sanación para las heridas más profundas y dolorosas, podrás rápidamente devolver la salud a quienes agonizan. Se trata de un conjuro de una complejidad intermedia, pero que suele resultar fundamental para los jóvenes aventureros que desean recorrer el mundo y enfrentarse con sus peligros.
 PalabrasMagicas=EN CORP SANCTIS
 HechizeroMsg=Le has sanado graves heridas a 
@@ -454,11 +454,11 @@ Resis=1
 '&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
 [HECHIZO8]
-Nombre=Proyectil Mágico
+Nombre=Proyectil Etéreo
 Desc=Este rentable hechizo de ataque resulta el ideal para los niveles intermedios, pues les permitirá un gran poder de ataque que no sólo facilitará entrenar velozmente, si no que además, puede ser utilizado como una respetable arma en los combates contra tus adversarios.
 PalabrasMagicas=VAX IN TAR
-HechizeroMsg=Has lanzado un proyectil mágico sobre 
-TargetMsg=ha lanzado un proyectil mágico sobre ti.
+HechizeroMsg=Has lanzado un proyectil etéreo sobre 
+TargetMsg=ha lanzado un proyectil etéreo sobre ti.
 Tipo=1
 WAV=111
 FXgrh=10
@@ -1888,12 +1888,12 @@ Resis=0
 '&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
 [HECHIZO31]
-Nombre=Aturdir
+Nombre=Turbación
 Desc=Este sortilegio provocará que la víctima pierda momentáneamente todo tipo de sentido de la orientación.
 PalabrasMagicas=ASYNC GAM ALÛ
-HechizeroMsg=Has aturdido a 
-TargetMsg=te ha aturdido.
-PropioMsg=Te has aturdido.
+HechizeroMsg=Has lanzado el Conjuro de la Turbación sobre 
+TargetMsg=ha lanzado el Conjuro de la Turbación sobre ti.
+PropioMsg=Has lanzado el Conjuro de la Turbación sobre ti.
 Tipo=2
 WAV=17
 FXgrh=0
@@ -2422,12 +2422,12 @@ Resis=0
 '&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
 [HECHIZO41]
-Nombre=Desaturdir
-Desc=Con este conjuro podrás contrarrestar los nefastos efectos del hechizo aturdir.
+Nombre=Quitar la Turbación
+Desc=Con este conjuro podrás contrarrestar los nefastos efectos del hechizo de turbación.
 PalabrasMagicas=AN ASYNC GAM ALÛ
-HechizeroMsg=Le has quitado su aturdimiento a 
-TargetMsg=te ha quitado el aturdimiento.
-PropioMsg=Te has quitado el aturdimiento.
+HechizeroMsg=Le has quitado la turbación a 
+TargetMsg=te ha quitado la turbación.
+PropioMsg=Te has quitado la turbación.
 Tipo=2
 WAV=16
 FXgrh=0
@@ -2854,65 +2854,3 @@ itemindex=0
 StaffAffected=0
 NeedStaff=0
 Resis=1
-
-'&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-'&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-
-[HECHIZO46]
-Nombre=Invocar Mascota
-Desc=Podrás lograr que tu más lejana mascota regrese a tí.
-PalabrasMagicas=Tsälo Kai'Tor
-HechizeroMsg=Has invocado una mascota contra 
-TargetMsg=ha invocado una mascota sobre ti.
-Tipo=4
-WAV=17
-FXgrh=7
-Loops=0
-MinSkill=0
-ManaRequerido=0
-StaRequerido=131
-Target=4
-SubeHP=0
-MinHP=0
-MaxHP=0
-SubeMana=0
-MinMana=0
-MaxMana=0
-SubeSta=0
-MinSta=0
-MaxSta=0
-SubeHam=0
-MinHam=0
-MaxHam=0
-SubeSed=0
-MinSed=0
-MaxSed=0
-SubeAG=0
-MinAG=0
-MaxAG=0
-SubeFU=0
-MinFU=0
-MaxFU=0
-SubeCA=0
-MinCA=0
-MaxCA=0
-Invisibilidad=0
-Paraliza=0
-Inmoviliza=0
-RemoverParalisis=0
-RemoverEstupidez=0
-RemueveInvisibilidadParcial=0
-CuraVeneno=0
-Envenena=0
-Revivir=0
-Ceguera=0
-Estupidez=0
-Invoca=0
-Cant=0
-Warp=1
-Mimetiza=0
-Materializa=0
-itemindex=0
-StaffAffected=0
-NeedStaff=0
-Resis=0

@@ -1,6 +1,0 @@
-[History]
-1=#P0#=mb	#P1#=SwitchMap	#P2#=ARGENTUM/Mod_General/SwitchMap	#P3#=	#P4#=	#P5#=MembMethodPublic	#P6#=20210319165353	#P7#=0	#P8#=39	.
-2=#P0#=mb	#P1#=CheckKeys	#P2#=ARGENTUM/Mod_General/CheckKeys	#P3#=	#P4#=	#P5#=MembMethodPublic	#P6#=20210319164242	#P7#=0	#P8#=76	.
-3=#P0#=mb	#P1#=RenderScreen	#P2#=ARGENTUM/Mod_TileEngine/RenderScreen	#P3#=	#P4#=	#P5#=MembMethodPublic	#P6#=20210319142851	#P7#=0	#P8#=4	.
-4=#P0#=mb	#P1#=DrawImageInPicture	#P2#=ARGENTUM/Mod_TileEngine/DrawImageInPicture	#P3#=	#P4#=	#P5#=MembMethodPublic	#P6#=20210319142743	#P7#=0	#P8#=0	.
-5=#P0#=mb	#P1#=AddtoRichTextBox	#P2#=ARGENTUM/Mod_General/AddtoRichTextBox	#P3#=	#P4#=	#P5#=MembMethodPublic	#P6#=20210319124220	#P7#=0	#P8#=21	.

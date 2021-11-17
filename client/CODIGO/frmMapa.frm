@@ -1,44 +1,21 @@
 VERSION 5.00
 Begin VB.Form frmMapa 
-   BackColor       =   &H00000000&
+   BackColor       =   &H80000007&
    BorderStyle     =   0  'None
    Caption         =   "Form1"
-   ClientHeight    =   8850
+   ClientHeight    =   6780
    ClientLeft      =   0
    ClientTop       =   0
-   ClientWidth     =   8595
+   ClientWidth     =   8775
    ClipControls    =   0   'False
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   8850
-   ScaleWidth      =   8595
+   ScaleHeight     =   6780
+   ScaleWidth      =   8775
    ShowInTaskbar   =   0   'False
    StartUpPosition =   1  'CenterOwner
-   Begin VB.Image imgToogleMap 
-      Height          =   255
-      Index           =   1
-      Left            =   3840
-      MousePointer    =   99  'Custom
-      Top             =   120
-      Width           =   975
-   End
-   Begin VB.Image imgToogleMap 
-      Height          =   255
-      Index           =   0
-      Left            =   3960
-      MousePointer    =   99  'Custom
-      Top             =   7560
-      Width           =   735
-   End
-   Begin VB.Image imgCerrar 
-      Height          =   255
-      Left            =   8040
-      MousePointer    =   99  'Custom
-      Top             =   240
-      Width           =   255
-   End
    Begin VB.Label lblTexto 
       Alignment       =   2  'Center
       BackStyle       =   0  'Transparent
@@ -52,12 +29,24 @@ Begin VB.Form frmMapa
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H00FFFFFF&
+      ForeColor       =   &H8000000E&
       Height          =   975
-      Left            =   0
+      Left            =   240
       TabIndex        =   0
-      Top             =   7920
+      Top             =   5040
       Width           =   8175
+   End
+   Begin VB.Image imgMapDungeon 
+      Height          =   4935
+      Left            =   0
+      Top             =   0
+      Width           =   8775
+   End
+   Begin VB.Image imgMap 
+      Height          =   4935
+      Left            =   0
+      Top             =   0
+      Width           =   8775
    End
 End
 Attribute VB_Name = "frmMapa"
@@ -80,17 +69,6 @@ Attribute VB_Exposed = False
 '**************************************************************************
 
 Option Explicit
-
-Private clsFormulario As clsFormMovementManager
-
-Private Enum eMaps
-    ieGeneral
-    ieDungeon
-End Enum
-
-Private picMaps(1) As Picture
-
-Private CurrentMap As eMaps
 
 ''
 ' This form is used to show the world map.
@@ -133,18 +111,8 @@ Private Sub ToggleImgMaps()
 '
 '*************************************************
 
-    imgToogleMap(CurrentMap).Visible = False
-    
-    If CurrentMap = eMaps.ieGeneral Then
-        imgCerrar.Visible = False
-        CurrentMap = eMaps.ieDungeon
-    Else
-        imgCerrar.Visible = True
-        CurrentMap = eMaps.ieGeneral
-    End If
-    
-    imgToogleMap(CurrentMap).Visible = True
-    Me.Picture = picMaps(CurrentMap)
+    imgMap.Visible = Not imgMap.Visible
+    imgMapDungeon.Visible = Not imgMapDungeon.Visible
 End Sub
 
 ''
@@ -159,32 +127,37 @@ Private Sub Form_Load()
 
 On Error GoTo error
     
-    ' Handles Form movement (drag and drop).
-    Set clsFormulario = New clsFormMovementManager
-    clsFormulario.Initialize Me
-        
     'Cargamos las imagenes de los mapas
-    Set picMaps(eMaps.ieGeneral) = LoadPicture(DirGraficos & "mapa1.jpg")
-    Set picMaps(eMaps.ieDungeon) = LoadPicture(DirGraficos & "mapa2.jpg")
+    imgMap.Picture = LoadPicture(DirGraficos & "mapa1.jpg")
+    imgMapDungeon.Picture = LoadPicture(DirGraficos & "mapa2.jpg")
     
-    ' Imagen de fondo
-    CurrentMap = eMaps.ieGeneral
-    Me.Picture = picMaps(CurrentMap)
     
-    imgCerrar.MouseIcon = picMouseIcon
-    imgToogleMap(0).MouseIcon = picMouseIcon
-    imgToogleMap(1).MouseIcon = picMouseIcon
+    'Ajustamos el tamaño del formulario a la imagen más grande
+    If imgMap.Width > imgMapDungeon.Width Then
+        Me.Width = imgMap.Width
+    Else
+        Me.Width = imgMapDungeon.Width
+    End If
     
+    If imgMap.Height > imgMapDungeon.Height Then
+        Me.Height = imgMap.Height + lblTexto.Height
+    Else
+        Me.Height = imgMapDungeon.Height + lblTexto.Height
+    End If
+    
+    'Movemos ambas imágenes al centro del formulario
+    imgMap.Left = Me.Width * 0.5 - imgMap.Width * 0.5
+    imgMap.Top = (Me.Height - lblTexto.Height) * 0.5 - imgMap.Height * 0.5
+    
+    imgMapDungeon.Left = Me.Width * 0.5 - imgMapDungeon.Width * 0.5
+    imgMapDungeon.Top = (Me.Height - lblTexto.Height) * 0.5 - imgMapDungeon.Height * 0.5
+    
+    lblTexto.Top = Me.Height - lblTexto.Height
+    lblTexto.Left = Me.Width * 0.5 - lblTexto.Width * 0.5
+    
+    imgMapDungeon.Visible = False
     Exit Sub
 error:
     MsgBox Err.Description, vbInformation, "Error: " & Err.number
     Unload Me
-End Sub
-
-Private Sub imgCerrar_Click()
-    Unload Me
-End Sub
-
-Private Sub imgToogleMap_Click(Index As Integer)
-    ToggleImgMaps
 End Sub

@@ -1,7 +1,7 @@
 VERSION 5.00
 Begin VB.Form frmKeypad 
    BorderStyle     =   1  'Fixed Single
-   ClientHeight    =   3930
+   ClientHeight    =   3945
    ClientLeft      =   15
    ClientTop       =   15
    ClientWidth     =   7350
@@ -10,14 +10,11 @@ Begin VB.Form frmKeypad
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   262
-   ScaleMode       =   3  'Pixel
-   ScaleWidth      =   490
+   ScaleHeight     =   3945
+   ScaleWidth      =   7350
    StartUpPosition =   1  'CenterOwner
    Begin VB.TextBox txtPassword 
-      Appearance      =   0  'Flat
-      BackColor       =   &H00000000&
-      BorderStyle     =   0  'None
+      BackColor       =   &H00C0E0FF&
       BeginProperty Font 
          Name            =   "Courier"
          Size            =   15
@@ -27,38 +24,51 @@ Begin VB.Form frmKeypad
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H00FFFFFF&
-      Height          =   390
+      ForeColor       =   &H00000040&
+      Height          =   465
       IMEMode         =   3  'DISABLE
-      Left            =   1020
+      Left            =   960
       PasswordChar    =   "*"
       TabIndex        =   0
-      Top             =   405
-      Width           =   5025
+      Top             =   270
+      Width           =   5160
    End
-   Begin VB.Image imgCerrar 
-      Height          =   135
-      Left            =   7080
-      Top             =   120
-      Width           =   135
+   Begin VB.Label Label1 
+      BackStyle       =   0  'Transparent
+      Caption         =   "Ingrese el password de su personaje y presione <ENTER>"
+      BeginProperty Font 
+         Name            =   "MS Sans Serif"
+         Size            =   9.75
+         Charset         =   0
+         Weight          =   700
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H00000040&
+      Height          =   255
+      Left            =   615
+      TabIndex        =   1
+      Top             =   15
+      Width           =   6120
    End
    Begin VB.Image imgEspacio 
-      Height          =   405
+      Height          =   525
       Left            =   2160
       Top             =   3435
       Width           =   3000
    End
    Begin VB.Image imgMin 
-      Height          =   480
-      Left            =   6270
-      Top             =   3345
-      Width           =   960
+      Height          =   570
+      Left            =   5835
+      Top             =   3390
+      Width           =   1440
    End
    Begin VB.Image imgMay 
-      Height          =   480
-      Left            =   120
-      Top             =   3345
-      Width           =   960
+      Height          =   570
+      Left            =   90
+      Top             =   3390
+      Width           =   1305
    End
    Begin VB.Image imgKeyPad 
       Height          =   555
@@ -409,18 +419,10 @@ Attribute VB_Exposed = False
 
 Option Explicit
 
-Private clsFormulario As clsFormMovementManager
-
 Private Enum e_modo_keypad
-    MINUSCULA
-    MAYUSCULA
+    MAYUSCULA = 1
+    MINUSCULA = 2
 End Enum
-
-Private MinMayBack(1) As Picture
-Private cBotonMin As clsGraphicalButton
-Private cBotonMay As clsGraphicalButton
-
-Public LastPressed As clsGraphicalButton
 
 Private Const MinIndex = "1234567890-=\qwertyuiop[]asdfghjkl;'zxcvbnm,./"
 Private Const MayIndex = "!@#$%^&*()_+|QWERTYUIOP{}ASDFGHJKL:""ZXCVBNM<>?"
@@ -437,49 +439,12 @@ Dim j As Integer
 End Sub
 
 Private Sub Form_Load()
-    ' Handles Form movement (drag and drop).
-    Set clsFormulario = New clsFormMovementManager
-    clsFormulario.Initialize Me
-    
-    Dim GrhPath As String
-    GrhPath = DirGraficos
-    Set MinMayBack(0) = LoadPicture(GrhPath & "TecladoMinuscula.jpg")
-    Set MinMayBack(1) = LoadPicture(GrhPath & "TecladoMayuscula.jpg")
-    
-    Call LoadButtons
-    
-    Me.Picture = MinMayBack(e_modo_keypad.MINUSCULA)
-    
+    Me.Picture = LoadPicture(App.path & "\graficos\KeyPadMin.bmp")
     Modo = MINUSCULA
 End Sub
 
-Private Sub LoadButtons()
-    Dim GrhPath As String
-    
-    GrhPath = DirGraficos
-
-    Set cBotonMin = New clsGraphicalButton
-    Set cBotonMay = New clsGraphicalButton
-    
-    Set LastPressed = New clsGraphicalButton
-    
-    
-    Call cBotonMin.Initialize(imgMay, GrhPath & "BotonMay.jpg", _
-                                    GrhPath & "BotonMayRollover.jpg", _
-                                    GrhPath & "BotonMayClick.jpg", Me)
-
-    Call cBotonMay.Initialize(imgMin, GrhPath & "BotonMin.jpg", _
-                                    GrhPath & "BotonMinRollover.jpg", _
-                                    GrhPath & "BotonMinClick.jpg", Me)
-
-End Sub
-
-Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    LastPressed.ToggleToNormal
-End Sub
-
-Private Sub imgCerrar_Click()
-    Unload Me
+Private Sub Form_Unload(Cancel As Integer)
+    frmOldPersonaje.PasswordTxt.Text = Me.txtPassword.Text
 End Sub
 
 Private Sub imgEspacio_Click()
@@ -488,43 +453,33 @@ Private Sub imgEspacio_Click()
     Me.txtPassword.SetFocus
 End Sub
 
-Private Sub imgKeyPad_Click(Index As Integer)
+Private Sub imgKeyPad_Click(index As Integer)
     Call Audio.PlayWave(SND_CLICK)
-    
     If Modo = MAYUSCULA Then
-        Me.txtPassword.Text = Me.txtPassword.Text & mid$(MayIndex, Index + 1, 1)
+        Me.txtPassword.Text = Me.txtPassword.Text & mid$(MayIndex, index + 1, 1)
     Else
-        Me.txtPassword.Text = Me.txtPassword.Text & mid$(MinIndex, Index + 1, 1)
+        Me.txtPassword.Text = Me.txtPassword.Text & mid$(MinIndex, index + 1, 1)
     End If
-    
     Me.txtPassword.SetFocus
 End Sub
 
-Private Sub imgKeyPad_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
-    LastPressed.ToggleToNormal
-End Sub
-
 Private Sub imgMay_Click()
-    If Modo = MAYUSCULA Then Exit Sub
-    
-    'Call Audio.PlayWave(SND_CLICK)
-    Me.Picture = MinMayBack(e_modo_keypad.MAYUSCULA)  'LoadPicture(App.path & "\graficos\KeyPadMay.bmp")
+    Call Audio.PlayWave(SND_CLICK)
+    Me.Picture = LoadPicture(App.path & "\graficos\KeyPadMay.bmp")
     Modo = MAYUSCULA
     Me.txtPassword.SetFocus
 End Sub
 
 Private Sub imgMin_Click()
-    If Modo = MINUSCULA Then Exit Sub
-    
-    'Call Audio.PlayWave(SND_CLICK)
-    Me.Picture = MinMayBack(e_modo_keypad.MINUSCULA) 'LoadPicture(App.path & "\graficos\KeyPadMin.bmp")
+    Call Audio.PlayWave(SND_CLICK)
+    Me.Picture = LoadPicture(App.path & "\graficos\KeyPadMin.bmp")
     Modo = MINUSCULA
     Me.txtPassword.SetFocus
 End Sub
 
 Private Sub txtPassword_KeyPress(KeyAscii As Integer)
     If KeyAscii = 13 Then
-        frmConnect.txtPasswd.Text = Me.txtPassword.Text
+        frmOldPersonaje.PasswordTxt.Text = Me.txtPassword.Text
         Unload Me
     Else
         Me.txtPassword.Text = vbNullString

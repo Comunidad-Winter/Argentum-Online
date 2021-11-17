@@ -1,9 +1,10 @@
 VERSION 5.00
 Begin VB.Form frmMSG 
-   BorderStyle     =   0  'None
+   BorderStyle     =   1  'Fixed Single
+   Caption         =   "Mensajes de GMs"
    ClientHeight    =   3270
-   ClientLeft      =   120
-   ClientTop       =   45
+   ClientLeft      =   150
+   ClientTop       =   435
    ClientWidth     =   2445
    ClipControls    =   0   'False
    ControlBox      =   0   'False
@@ -19,36 +20,61 @@ Begin VB.Form frmMSG
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   218
-   ScaleMode       =   3  'Pixel
-   ScaleWidth      =   163
-   ShowInTaskbar   =   0   'False
+   ScaleHeight     =   3270
+   ScaleWidth      =   2445
    StartUpPosition =   1  'CenterOwner
-   Begin VB.ListBox List1 
-      Appearance      =   0  'Flat
-      BackColor       =   &H00000000&
+   Begin VB.CommandButton Command1 
+      Caption         =   "Cerrar"
       BeginProperty Font 
-         Name            =   "MS Sans Serif"
+         Name            =   "Tahoma"
          Size            =   8.25
          Charset         =   0
-         Weight          =   700
+         Weight          =   400
          Underline       =   0   'False
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H00FFFFFF&
-      Height          =   1785
-      Left            =   300
-      TabIndex        =   0
-      Top             =   615
-      Width           =   1845
+      Height          =   405
+      Left            =   180
+      MouseIcon       =   "frmMSG.frx":0000
+      MousePointer    =   99  'Custom
+      TabIndex        =   2
+      Top             =   2685
+      Width           =   1935
    End
-   Begin VB.Image imgCerrar 
-      Height          =   420
-      Left            =   375
-      Tag             =   "1"
-      Top             =   2640
-      Width           =   1710
+   Begin VB.ListBox List1 
+      BeginProperty Font 
+         Name            =   "MS Sans Serif"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Height          =   2010
+      Left            =   180
+      TabIndex        =   1
+      Top             =   450
+      Width           =   1980
+   End
+   Begin VB.Label Label1 
+      AutoSize        =   -1  'True
+      Caption         =   "Usuarios"
+      BeginProperty Font 
+         Name            =   "MS Sans Serif"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Height          =   195
+      Left            =   840
+      TabIndex        =   0
+      Top             =   120
+      Width           =   615
    End
    Begin VB.Menu menU_usuario 
       Caption         =   "Usuario"
@@ -103,12 +129,6 @@ Attribute VB_Exposed = False
 
 Option Explicit
 
-Private clsFormulario As clsFormMovementManager
-
-Private cBotonCerrar As clsGraphicalButton
-
-Public LastPressed As clsGraphicalButton
-
 Private Const MAX_GM_MSG = 300
 
 Private MisMSG(0 To MAX_GM_MSG) As String
@@ -122,79 +142,49 @@ If List1.ListCount < MAX_GM_MSG Then
 End If
 End Sub
 
+Private Sub Command1_Click()
+Me.Visible = False
+List1.Clear
+End Sub
+
 Private Sub Form_Deactivate()
-    ' Handles Form movement (drag and drop).
-    Set clsFormulario = New clsFormMovementManager
-    clsFormulario.Initialize Me
-    
-    Me.Visible = False
-    List1.Clear
+Me.Visible = False
+List1.Clear
 End Sub
 
 Private Sub Form_Load()
-    List1.Clear
-    
-    Me.Picture = LoadPicture(App.path & "\graficos\VentanaShowSos.jpg")
-    
-    Call LoadButtons
-End Sub
+List1.Clear
 
-Private Sub LoadButtons()
-    Dim GrhPath As String
-    
-    GrhPath = DirGraficos
-
-    Set cBotonCerrar = New clsGraphicalButton
-    
-    Set LastPressed = New clsGraphicalButton
-    
-    
-    Call cBotonCerrar.Initialize(imgCerrar, GrhPath & "BotonCerrarShowSos.jpg", _
-                                    GrhPath & "BotonCerrarRolloverShowSos.jpg", _
-                                    GrhPath & "BotonCerrarClickShowSos.jpg", Me)
-End Sub
-
-Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    LastPressed.ToggleToNormal
-End Sub
-
-Private Sub imgCerrar_Click()
-    Me.Visible = False
-    List1.Clear
 End Sub
 
 Private Sub list1_Click()
-    Dim ind As Integer
-    ind = Val(ReadField(2, List1.List(List1.ListIndex), Asc("-")))
+Dim ind As Integer
+ind = Val(ReadField(2, List1.List(List1.listIndex), Asc("-")))
 End Sub
 
-Private Sub List1_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    If Button = vbRightButton Then
-        PopUpMenu menU_usuario
-    End If
+Private Sub List1_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
+If Button = vbRightButton Then
+    PopUpMenu menU_usuario
+End If
 
-End Sub
-
-Private Sub List1_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    LastPressed.ToggleToNormal
 End Sub
 
 Private Sub mnuBorrar_Click()
-    If List1.ListIndex < 0 Then Exit Sub
+    If List1.listIndex < 0 Then Exit Sub
     'Pablo (ToxicWaste)
     Dim aux As String
-    aux = mid$(ReadField(1, List1.List(List1.ListIndex), Asc("-")), 10, Len(ReadField(1, List1.List(List1.ListIndex), Asc("-"))))
+    aux = mid$(ReadField(1, List1.List(List1.listIndex), Asc("-")), 10, Len(ReadField(1, List1.List(List1.listIndex), Asc("-"))))
     Call WriteSOSRemove(aux)
     '/Pablo (ToxicWaste)
     'Call WriteSOSRemove(List1.List(List1.listIndex))
     
-    List1.RemoveItem List1.ListIndex
+    List1.RemoveItem List1.listIndex
 End Sub
 
 Private Sub mnuIR_Click()
     'Pablo (ToxicWaste)
     Dim aux As String
-    aux = mid$(ReadField(1, List1.List(List1.ListIndex), Asc("-")), 10, Len(ReadField(1, List1.List(List1.ListIndex), Asc("-"))))
+    aux = mid$(ReadField(1, List1.List(List1.listIndex), Asc("-")), 10, Len(ReadField(1, List1.List(List1.listIndex), Asc("-"))))
     Call WriteGoToChar(aux)
     '/Pablo (ToxicWaste)
     'Call WriteGoToChar(ReadField(1, List1.List(List1.listIndex), Asc("-")))
@@ -204,7 +194,7 @@ End Sub
 Private Sub mnutraer_Click()
     'Pablo (ToxicWaste)
     Dim aux As String
-    aux = mid$(ReadField(1, List1.List(List1.ListIndex), Asc("-")), 10, Len(ReadField(1, List1.List(List1.ListIndex), Asc("-"))))
+    aux = mid$(ReadField(1, List1.List(List1.listIndex), Asc("-")), 10, Len(ReadField(1, List1.List(List1.listIndex), Asc("-"))))
     Call WriteSummonChar(aux)
     'Pablo (ToxicWaste)
     'Call WriteSummonChar(ReadField(1, List1.List(List1.listIndex), Asc("-")))

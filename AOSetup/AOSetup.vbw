@@ -1,0 +1,14 @@
+frmAOSetup = 0, 0, 0, 0, C, 25, 25, 759, 593, C
+chameleonButton = 0, 0, 0, 0, C, 100, 100, 834, 668, C
+PBarY = 50, 50, 784, 618, Z, 125, 125, 859, 693, C
+mod_DirectX = 0, 0, 0, 0, C
+mod_General = 0, 0, 0, 0, C
+frmLibrerias = 0, 0, 0, 0, C, 150, 150, 884, 718, C
+frmTestINET = 0, 0, 0, 0, C, 175, 175, 909, 743, C
+frmTestRICH = 0, 0, 0, 0, C, 200, 200, 934, 768, C
+frmTestCS = 0, 0, 0, 0, C, 225, 225, 959, 793, C
+DownloadForm = 0, 0, 0, 0, C, 250, 250, 984, 818, C
+mod_MD5 = 0, 0, 0, 0, C
+frmTestWS = 0, 0, 0, 0, C, 275, 275, 1009, 843, C
+frmAbout = 0, 0, 0, 0, C, 0, 0, 734, 568, C
+DownloadFormSimple = 0, 0, 0, 0, C, 25, 25, 759, 593, C

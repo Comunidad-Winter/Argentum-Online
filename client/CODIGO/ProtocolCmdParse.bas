@@ -67,10 +67,9 @@ End Sub
 Public Sub ParseUserCommand(ByVal RawCommand As String)
 '***************************************************
 'Author: Alejandro Santos (AlejoLp)
-'Last Modification: 16/11/2009
+'Last Modification: 26/03/2009
 'Interpreta, valida y ejecuta el comando ingresado
 '26/03/2009: ZaMa - Flexibilizo la cantidad de parametros de /nene,  /onlinemap y /telep
-'16/11/2009: ZaMa - Ahora el /ct admite radio
 '***************************************************
     Dim TmpArgos() As String
     
@@ -127,6 +126,9 @@ Public Sub ParseUserCommand(ByVal RawCommand As String)
         ' Comando normal
         
         Select Case Comando
+            Case "/SEG"
+                Call WriteSafeToggle
+                
             Case "/ONLINE"
                 Call WriteOnline
                 
@@ -137,7 +139,7 @@ Public Sub ParseUserCommand(ByVal RawCommand As String)
                     End With
                     Exit Sub
                 End If
-                If frmMain.macrotrabajo.Enabled Then Call frmMain.DesactivarMacroTrabajo
+                If frmMain.macrotrabajo.Enabled Then frmMain.DesactivarMacroTrabajo
                 Call WriteQuit
                 
             Case "/SALIRCLAN"
@@ -170,15 +172,6 @@ Public Sub ParseUserCommand(ByVal RawCommand As String)
                 End If
                 Call WritePetFollow
                 
-            Case "/LIBERAR"
-                If UserEstado = 1 Then 'Muerto
-                    With FontTypes(FontTypeNames.FONTTYPE_INFO)
-                        Call ShowConsoleMsg("¡¡Estás muerto!!", .red, .green, .blue, .bold, .italic)
-                    End With
-                    Exit Sub
-                End If
-                Call WriteReleasePet
-                
             Case "/ENTRENAR"
                 If UserEstado = 1 Then 'Muerto
                     With FontTypes(FontTypeNames.FONTTYPE_INFO)
@@ -208,9 +201,6 @@ Public Sub ParseUserCommand(ByVal RawCommand As String)
                 End If
                 Call WriteMeditate
         
-            Case "/CONSULTA"
-                Call WriteConsulta
-            
             Case "/RESUCITAR"
                 Call WriteResucitate
                 
@@ -282,26 +272,6 @@ Public Sub ParseUserCommand(ByVal RawCommand As String)
                     Exit Sub
                 End If
                 Call WritePartyJoin
-            
-            Case "/COMPARTIRNPC"
-                If UserEstado = 1 Then 'Muerto
-                    With FontTypes(FontTypeNames.FONTTYPE_INFO)
-                        Call ShowConsoleMsg("¡¡Estás muerto!!", .red, .green, .blue, .bold, .italic)
-                    End With
-                    Exit Sub
-                End If
-                
-                Call WriteShareNpc
-                
-            Case "/NOCOMPARTIRNPC"
-                If UserEstado = 1 Then 'Muerto
-                    With FontTypes(FontTypeNames.FONTTYPE_INFO)
-                        Call ShowConsoleMsg("¡¡Estás muerto!!", .red, .green, .blue, .bold, .italic)
-                    End With
-                    Exit Sub
-                End If
-                
-                Call WriteStopSharingNpc
                 
             Case "/ENCUESTA"
                 If CantidadArgumentos = 0 Then
@@ -429,16 +399,6 @@ Public Sub ParseUserCommand(ByVal RawCommand As String)
                     Call ShowConsoleMsg("Faltan parámetros. Utilice /apostar CANTIDAD.")
                 End If
                 
-            Case "/RETIRARFACCION"
-                If UserEstado = 1 Then 'Muerto
-                    With FontTypes(FontTypeNames.FONTTYPE_INFO)
-                        Call ShowConsoleMsg("¡¡Estás muerto!!", .red, .green, .blue, .bold, .italic)
-                    End With
-                    Exit Sub
-                End If
-                
-                Call WriteLeaveFaction
-                
             Case "/RETIRAR"
                 If UserEstado = 1 Then 'Muerto
                     With FontTypes(FontTypeNames.FONTTYPE_INFO)
@@ -446,8 +406,10 @@ Public Sub ParseUserCommand(ByVal RawCommand As String)
                     End With
                     Exit Sub
                 End If
-                
-                If notNullArguments Then
+                If CantidadArgumentos = 0 Then
+                    ' Version sin argumentos: LeaveFaction
+                    Call WriteLeaveFaction
+                Else
                     ' Version con argumentos: BankExtractGold
                     If ValidNumber(ArgumentosRaw, eNumber_Types.ent_Long) Then
                         Call WriteBankExtractGold(ArgumentosRaw)
@@ -456,7 +418,7 @@ Public Sub ParseUserCommand(ByVal RawCommand As String)
                         Call ShowConsoleMsg("Cantidad incorrecta. Utilice /retirar CANTIDAD.")
                     End If
                 End If
-
+    
             Case "/DEPOSITAR"
                 If UserEstado = 1 Then 'Muerto
                     With FontTypes(FontTypeNames.FONTTYPE_INFO)
@@ -464,7 +426,7 @@ Public Sub ParseUserCommand(ByVal RawCommand As String)
                     End With
                     Exit Sub
                 End If
-
+                
                 If notNullArguments Then
                     If ValidNumber(ArgumentosRaw, eNumber_Types.ent_Long) Then
                         Call WriteBankDepositGold(ArgumentosRaw)
@@ -487,13 +449,13 @@ Public Sub ParseUserCommand(ByVal RawCommand As String)
                 
             Case "/FUNDARCLAN"
                 If UserLvl >= 25 Then
-                    Call WriteGuildFundate
+                    frmEligeAlineacion.Show vbModeless, frmMain
                 Else
                     Call ShowConsoleMsg("Para fundar un clan tenés que ser nivel 25 y tener 90 skills en liderazgo.")
                 End If
             
             Case "/FUNDARCLANGM"
-                Call WriteGuildFundation(eClanType.ct_GM)
+                Call WriteGuildFundate(eClanType.ct_GM)
             
             Case "/ECHARPARTY"
                 If notNullArguments Then
@@ -932,27 +894,16 @@ Public Sub ParseUserCommand(ByVal RawCommand As String)
                 End If
                 
             Case "/CT"
-                If notNullArguments And CantidadArgumentos >= 3 Then
-                    If ValidNumber(ArgumentosAll(0), eNumber_Types.ent_Integer) And ValidNumber(ArgumentosAll(1), eNumber_Types.ent_Byte) And _
-                        ValidNumber(ArgumentosAll(2), eNumber_Types.ent_Byte) Then
-                        
-                        If CantidadArgumentos = 3 Then
-                            Call WriteTeleportCreate(ArgumentosAll(0), ArgumentosAll(1), ArgumentosAll(2))
-                        Else
-                            If ValidNumber(ArgumentosAll(3), eNumber_Types.ent_Byte) Then
-                                Call WriteTeleportCreate(ArgumentosAll(0), ArgumentosAll(1), ArgumentosAll(2), ArgumentosAll(3))
-                            Else
-                                'No es numerico
-                                Call ShowConsoleMsg("Valor incorrecto. Utilice /ct MAPA X Y RADIO(Opcional).")
-                            End If
-                        End If
+                If notNullArguments And CantidadArgumentos = 3 Then
+                    If ValidNumber(ArgumentosAll(0), eNumber_Types.ent_Integer) And ValidNumber(ArgumentosAll(1), eNumber_Types.ent_Byte) And ValidNumber(ArgumentosAll(2), eNumber_Types.ent_Byte) Then
+                        Call WriteTeleportCreate(ArgumentosAll(0), ArgumentosAll(1), ArgumentosAll(2))
                     Else
                         'No es numerico
-                        Call ShowConsoleMsg("Valor incorrecto. Utilice /ct MAPA X Y RADIO(Opcional).")
+                        Call ShowConsoleMsg("Valor incorrecto. Utilice /ct MAPA X Y.")
                     End If
                 Else
                     'Avisar que falta el parametro
-                    Call ShowConsoleMsg("Faltan parámetros. Utilice /ct MAPA X Y RADIO(Opcional).")
+                    Call ShowConsoleMsg("Faltan parámetros. Utilice /ct MAPA X Y.")
                 End If
                 
             Case "/DT"
@@ -1533,9 +1484,6 @@ Public Sub ParseUserCommand(ByVal RawCommand As String)
                     Call ShowConsoleMsg("Prámetros incorrectos. Utilice /SETINIVAR LLAVE CLAVE VALOR")
                 End If
             
-            Case "/HOGAR"
-                Call WriteHome
-                
 #If SeguridadAlkon Then
             Case Else
                 Call ParseUserCommandEx(Comando, CantidadArgumentos, ArgumentosAll, ArgumentosRaw)

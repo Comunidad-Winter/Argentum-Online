@@ -1,11 +1,11 @@
 VERSION 5.00
 Begin VB.Form frmPeaceProp 
-   BorderStyle     =   0  'None
+   BorderStyle     =   1  'Fixed Single
    Caption         =   "Ofertas de paz"
-   ClientHeight    =   3285
-   ClientLeft      =   0
-   ClientTop       =   -105
-   ClientWidth     =   5070
+   ClientHeight    =   2895
+   ClientLeft      =   45
+   ClientTop       =   330
+   ClientWidth     =   4980
    ClipControls    =   0   'False
    ControlBox      =   0   'False
    BeginProperty Font 
@@ -20,16 +20,44 @@ Begin VB.Form frmPeaceProp
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   219
-   ScaleMode       =   3  'Pixel
-   ScaleWidth      =   338
-   ShowInTaskbar   =   0   'False
+   ScaleHeight     =   2895
+   ScaleWidth      =   4980
    StartUpPosition =   1  'CenterOwner
-   Begin VB.ListBox lista 
-      Appearance      =   0  'Flat
-      BackColor       =   &H00000000&
+   Begin VB.CommandButton Command4 
+      Caption         =   "Rechazar"
+      Height          =   495
+      Left            =   3720
+      MouseIcon       =   "frmPeaceProp.frx":0000
+      MousePointer    =   99  'Custom
+      TabIndex        =   4
+      Top             =   2280
+      Width           =   975
+   End
+   Begin VB.CommandButton Command3 
+      Caption         =   "Aceptar"
+      Height          =   495
+      Left            =   2520
+      MouseIcon       =   "frmPeaceProp.frx":0152
+      MousePointer    =   99  'Custom
+      TabIndex        =   3
+      Top             =   2280
+      Width           =   975
+   End
+   Begin VB.CommandButton Command2 
+      Caption         =   "Detalles"
+      Height          =   495
+      Left            =   1320
+      MouseIcon       =   "frmPeaceProp.frx":02A4
+      MousePointer    =   99  'Custom
+      TabIndex        =   2
+      Top             =   2280
+      Width           =   975
+   End
+   Begin VB.CommandButton Command1 
+      Cancel          =   -1  'True
+      Caption         =   "Cerrar"
       BeginProperty Font 
-         Name            =   "MS Sans Serif"
+         Name            =   "Tahoma"
          Size            =   8.25
          Charset         =   0
          Weight          =   700
@@ -37,38 +65,31 @@ Begin VB.Form frmPeaceProp
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H00FFFFFF&
-      Height          =   1785
-      ItemData        =   "frmPeaceProp.frx":0000
-      Left            =   240
-      List            =   "frmPeaceProp.frx":0002
+      Height          =   495
+      Left            =   120
+      MouseIcon       =   "frmPeaceProp.frx":03F6
+      MousePointer    =   99  'Custom
+      TabIndex        =   1
+      Top             =   2280
+      Width           =   975
+   End
+   Begin VB.ListBox lista 
+      BeginProperty Font 
+         Name            =   "MS Sans Serif"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Height          =   2010
+      ItemData        =   "frmPeaceProp.frx":0548
+      Left            =   120
+      List            =   "frmPeaceProp.frx":054A
       TabIndex        =   0
-      Top             =   600
-      Width           =   4620
-   End
-   Begin VB.Image imgRechazar 
-      Height          =   480
-      Left            =   3840
-      Top             =   2520
-      Width           =   960
-   End
-   Begin VB.Image imgAceptar 
-      Height          =   480
-      Left            =   2640
-      Top             =   2520
-      Width           =   960
-   End
-   Begin VB.Image imgDetalle 
-      Height          =   480
-      Left            =   1440
-      Top             =   2520
-      Width           =   960
-   End
-   Begin VB.Image imgCerrar 
-      Height          =   480
-      Left            =   240
-      Top             =   2520
-      Width           =   960
+      Top             =   120
+      Width           =   4695
    End
 End
 Attribute VB_Name = "frmPeaceProp"
@@ -110,112 +131,47 @@ Attribute VB_Exposed = False
 
 Option Explicit
 
-Private clsFormulario As clsFormMovementManager
-
-Private cBotonAceptar As clsGraphicalButton
-Private cBotonCerrar As clsGraphicalButton
-Private cBotonDetalles As clsGraphicalButton
-Private cBotonRechazar As clsGraphicalButton
-
-Public LastPressed As clsGraphicalButton
-
-
-Private TipoProp As TIPO_PROPUESTA
+Private tipoprop As TIPO_PROPUESTA
 
 Public Enum TIPO_PROPUESTA
     ALIANZA = 1
     PAZ = 2
 End Enum
 
-
-Private Sub Form_Load()
-    ' Handles Form movement (drag and drop).
-    Set clsFormulario = New clsFormMovementManager
-    clsFormulario.Initialize Me
-    
-    Call LoadBackGround
-    Call LoadButtons
-End Sub
-
-Private Sub LoadButtons()
-    Dim GrhPath As String
-    
-    GrhPath = DirGraficos
-
-    Set cBotonAceptar = New clsGraphicalButton
-    Set cBotonCerrar = New clsGraphicalButton
-    Set cBotonDetalles = New clsGraphicalButton
-    Set cBotonRechazar = New clsGraphicalButton
-    
-    Set LastPressed = New clsGraphicalButton
-    
-    
-    Call cBotonAceptar.Initialize(imgAceptar, GrhPath & "BotonAceptarOferta.jpg", _
-                                    GrhPath & "BotonAceptarRolloverOferta.jpg", _
-                                    GrhPath & "BotonAceptarClickOferta.jpg", Me)
-
-    Call cBotonCerrar.Initialize(imgCerrar, GrhPath & "BotonCerrarOferta.jpg", _
-                                    GrhPath & "BotonCerrarRolloverOferta.jpg", _
-                                    GrhPath & "BotonCerrarClickOferta.jpg", Me)
-
-    Call cBotonDetalles.Initialize(imgDetalle, GrhPath & "BotonDetallesOferta.jpg", _
-                                    GrhPath & "BotonDetallesRolloverOferta.jpg", _
-                                    GrhPath & "BotonDetallesClickOferta.jpg", Me)
-
-    Call cBotonRechazar.Initialize(imgRechazar, GrhPath & "BotonRechazarOferta.jpg", _
-                                    GrhPath & "BotonRechazarRolloverOferta.jpg", _
-                                    GrhPath & "BotonRechazarClickOferta.jpg", Me)
-
-
-End Sub
-
-Private Sub LoadBackGround()
-    If TipoProp = TIPO_PROPUESTA.ALIANZA Then
-        Me.Picture = LoadPicture(DirGraficos & "VentanaOfertaAlianza.jpg")
-    Else
-        Me.Picture = LoadPicture(DirGraficos & "VentanaOfertaPaz.jpg")
-    End If
-End Sub
-
 Public Property Let ProposalType(ByVal nValue As TIPO_PROPUESTA)
-    TipoProp = nValue
+    tipoprop = nValue
 End Property
 
-Private Sub imgAceptar_Click()
-
-    If TipoProp = PAZ Then
-        Call WriteGuildAcceptPeace(lista.List(lista.ListIndex))
-    Else
-        Call WriteGuildAcceptAlliance(lista.List(lista.ListIndex))
-    End If
-    
-    Me.Hide
-    
-    Unload Me
-
-End Sub
-
-Private Sub imgCerrar_Click()
+Private Sub Command1_Click()
     Unload Me
 End Sub
 
-Private Sub imgDetalle_Click()
-    If TipoProp = PAZ Then
-        Call WriteGuildPeaceDetails(lista.List(lista.ListIndex))
-    Else
-        Call WriteGuildAllianceDetails(lista.List(lista.ListIndex))
-    End If
+Private Sub Command2_Click()
+'Me.Visible = False
+If tipoprop = PAZ Then
+    Call WriteGuildPeaceDetails(lista.List(lista.listIndex))
+Else
+    Call WriteGuildAllianceDetails(lista.List(lista.listIndex))
+End If
 End Sub
 
-Private Sub imgRechazar_Click()
-
-    If TipoProp = PAZ Then
-        Call WriteGuildRejectPeace(lista.List(lista.ListIndex))
+Private Sub Command3_Click()
+    'Me.Visible = False
+    If tipoprop = PAZ Then
+        Call WriteGuildAcceptPeace(lista.List(lista.listIndex))
     Else
-        Call WriteGuildRejectAlliance(lista.List(lista.ListIndex))
+        Call WriteGuildAcceptAlliance(lista.List(lista.listIndex))
     End If
-    
     Me.Hide
-    
+    Unload Me
+End Sub
+
+Private Sub Command4_Click()
+    If tipoprop = PAZ Then
+        Call WriteGuildRejectPeace(lista.List(lista.listIndex))
+    Else
+        Call WriteGuildRejectAlliance(lista.List(lista.listIndex))
+    End If
+    Me.Hide
     Unload Me
 End Sub

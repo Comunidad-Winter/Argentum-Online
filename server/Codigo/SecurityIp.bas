@@ -226,12 +226,6 @@ Private Sub AddNewIpLimiteConexiones(ByVal ip As Long, ByVal index As Long)
 End Sub
 
 Public Sub IpRestarConexion(ByVal ip As Long)
-'***************************************************
-'Author: Unknown
-'Last Modification: -
-'
-'***************************************************
-
 Dim key As Long
     Debug.Print "resta conexion a " & ip
     
@@ -311,13 +305,9 @@ Dim Middle As Long
     End Select
 End Function
 
-Public Function DumpTables()
-'***************************************************
-'Author: Unknown
-'Last Modification: -
-'
-'***************************************************
 
+
+Public Function DumpTables()
 Dim i As Integer
 
     For i = 0 To MaxConTablesEntry * 2 - 1 Step 2

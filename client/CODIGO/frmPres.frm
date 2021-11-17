@@ -7,11 +7,10 @@ Begin VB.Form frmPres
    ClientLeft      =   0
    ClientTop       =   0
    ClientWidth     =   4680
-   ControlBox      =   0   'False
+   ClipControls    =   0   'False
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   NegotiateMenus  =   0   'False
    ScaleHeight     =   3195
    ScaleWidth      =   4680
    ShowInTaskbar   =   0   'False
@@ -58,12 +57,13 @@ Attribute VB_Exposed = False
 'La Plata - Pcia, Buenos Aires - Republica Argentina
 'Código Postal 1900
 'Pablo Ignacio Márquez
+
 Option Explicit
 
 Dim puedo As Boolean
 
-Private Sub Form_KeyUp(KeyCode As Integer, Shift As Integer)
-    If KeyCode = 27 Then If puedo Then Unload Me
+Private Sub Form_KeyPress(KeyAscii As Integer)
+    If KeyAscii = 27 Then If puedo Then Unload Me
 End Sub
 
 Private Sub Form_Load()
@@ -75,19 +75,13 @@ End Sub
 Private Sub Timer1_Timer()
 Static ticks As Long
 
-Dim PresPath As String
-
 ticks = ticks + 1
 
 If ticks = 1 Then
-    PresPath = DirGraficos & "HostingAlkon.jpg"
-    Me.Picture = LoadPicture(PresPath)
+    Me.Picture = LoadPicture(App.path & "\Graficos\argentum.jpg")
     puedo = True
-
-ElseIf ticks = 2 Then
-    PresPath = DirGraficos & "Presentacion" & RandomNumber(5, 8) & ".jpg"
-    Me.Picture = LoadPicture(PresPath)
-    
+'ElseIf ticks = 2 Then
+'    Me.Picture = LoadPicture(App.path & "\Graficos\newfinal.jpg")
 Else
     Unload Me
 End If

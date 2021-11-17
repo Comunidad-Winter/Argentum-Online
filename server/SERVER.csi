@@ -1,8 +1,0 @@
-[History]
-1=#P0#=mb	#P1#=SendToMap	#P2#=ServidorArgentum/modSendData/SendToMap	#P3#=	#P4#=	#P5#=MembMethodPublic	#P6#=20210319115532	#P7#=0	#P8#=1	.
-2=#P0#=mb	#P1#=SendToUserAreaButindex	#P2#=ServidorArgentum/modSendData/SendToUserAreaButindex	#P3#=	#P4#=	#P5#=MembMethodPublic	#P6#=20210319115224	#P7#=0	#P8#=0	.
-3=#P0#=mb	#P1#=SendToUserArea	#P2#=ServidorArgentum/modSendData/SendToUserArea	#P3#=	#P4#=	#P5#=MembMethodPublic	#P6#=20210319115152	#P7#=0	#P8#=26	.
-4=#P0#=mb	#P1#=LoadMapData	#P2#=ServidorArgentum/ES/LoadMapData	#P3#=	#P4#=	#P5#=MembMethodPublic	#P6#=20210319114855	#P7#=0	#P8#=7	.
-5=#P0#=mb	#P1#=Main	#P2#=ServidorArgentum/General/Main	#P3#=	#P4#=	#P5#=MembMethodPublic	#P6#=20210319114736	#P7#=0	#P8#=193	.
-6=#P0#=mb	#P1#=IrUsuarioCercano	#P2#=ServidorArgentum/AI/IrUsuarioCercano	#P3#=	#P4#=	#P5#=MembMethodPublic	#P6#=20210319114354	#P7#=0	#P8#=25	.
-7=#P0#=mb	#P1#=InfoHechizo	#P2#=ServidorArgentum/modHechizos/InfoHechizo	#P3#=	#P4#=	#P5#=MembMethodPublic	#P6#=20200902205752	#P7#=0	#P8#=32	.

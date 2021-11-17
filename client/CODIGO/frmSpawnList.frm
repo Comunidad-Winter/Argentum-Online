@@ -1,24 +1,22 @@
 VERSION 5.00
 Begin VB.Form frmSpawnList 
-   BorderStyle     =   0  'None
+   BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Invocar"
    ClientHeight    =   3465
-   ClientLeft      =   0
-   ClientTop       =   -105
+   ClientLeft      =   45
+   ClientTop       =   330
    ClientWidth     =   3300
    ClipControls    =   0   'False
    ControlBox      =   0   'False
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   231
-   ScaleMode       =   3  'Pixel
-   ScaleWidth      =   220
+   ScaleHeight     =   3465
+   ScaleWidth      =   3300
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
-   Begin VB.ListBox lstCriaturas 
-      Appearance      =   0  'Flat
-      BackColor       =   &H00000000&
+   Begin VB.CommandButton Command1 
+      Caption         =   "Spawn"
       BeginProperty Font 
          Name            =   "MS Sans Serif"
          Size            =   8.25
@@ -28,24 +26,57 @@ Begin VB.Form frmSpawnList
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H00FFFFFF&
-      Height          =   2175
-      Left            =   420
+      Height          =   390
+      Left            =   345
+      MouseIcon       =   "frmSpawnList.frx":0000
+      MousePointer    =   99  'Custom
+      TabIndex        =   2
+      Top             =   2985
+      Width           =   1650
+   End
+   Begin VB.CommandButton Command2 
+      Caption         =   "Salir"
+      BeginProperty Font 
+         Name            =   "MS Sans Serif"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   700
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Height          =   390
+      Left            =   2025
+      MouseIcon       =   "frmSpawnList.frx":0152
+      MousePointer    =   99  'Custom
+      TabIndex        =   1
+      Top             =   2985
+      Width           =   810
+   End
+   Begin VB.ListBox lstCriaturas 
+      Height          =   2400
+      Left            =   345
       TabIndex        =   0
-      Top             =   495
-      Width           =   2355
+      Top             =   480
+      Width           =   2490
    End
-   Begin VB.Image imgSalir 
-      Height          =   375
-      Left            =   360
-      Top             =   2910
-      Width           =   855
-   End
-   Begin VB.Image imgInvocar 
-      Height          =   375
-      Left            =   1500
-      Top             =   2910
-      Width           =   1335
+   Begin VB.Label Label1 
+      AutoSize        =   -1  'True
+      Caption         =   "Selecciona la criatura:"
+      BeginProperty Font 
+         Name            =   "MS Sans Serif"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   700
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Height          =   195
+      Left            =   645
+      TabIndex        =   3
+      Top             =   75
+      Width           =   1935
    End
 End
 Attribute VB_Name = "frmSpawnList"
@@ -87,55 +118,15 @@ Attribute VB_Exposed = False
 
 Option Explicit
 
-Private clsFormulario As clsFormMovementManager
-
-Private cBotonInvocar As clsGraphicalButton
-Private cBotonSalir As clsGraphicalButton
-
-Public LastPressed As clsGraphicalButton
-
-Private Sub Form_Load()
-    ' Handles Form movement (drag and drop).
-    Set clsFormulario = New clsFormMovementManager
-    clsFormulario.Initialize Me
-    
-    Me.Picture = LoadPicture(App.path & "\graficos\VentanaInvocar.jpg")
-    
-    Call LoadButtons
+Private Sub Command1_Click()
+    Call WriteSpawnCreature(lstCriaturas.listIndex + 1)
 End Sub
 
-Private Sub LoadButtons()
-    Dim GrhPath As String
-    
-    GrhPath = DirGraficos
-
-    Set cBotonInvocar = New clsGraphicalButton
-    Set cBotonSalir = New clsGraphicalButton
-    
-    Set LastPressed = New clsGraphicalButton
-    
-    
-    Call cBotonInvocar.Initialize(imgInvocar, GrhPath & "BotonInvocar.jpg", _
-                                    GrhPath & "BotonInvocarRollover.jpg", _
-                                    GrhPath & "BotonInvocarClick.jpg", Me)
-
-    Call cBotonSalir.Initialize(imgSalir, GrhPath & "BotonSalirInvocar.jpg", _
-                                    GrhPath & "BotonSalirRolloverInvocar.jpg", _
-                                    GrhPath & "BotonSalirClickInvocar.jpg", Me)
-End Sub
-
-Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    LastPressed.ToggleToNormal
-End Sub
-
-Private Sub imgInvocar_Click()
-    Call WriteSpawnCreature(lstCriaturas.ListIndex + 1)
-End Sub
-
-Private Sub imgSalir_Click()
+Private Sub Command2_Click()
     Unload Me
 End Sub
 
-Private Sub lstCriaturas_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    LastPressed.ToggleToNormal
+Private Sub Form_Deactivate()
+    'Me.SetFocus
 End Sub
+

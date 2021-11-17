@@ -1,5 +1,5 @@
 [INIT]
-NumArmas=26
+NumArmas=27
 
 [Arma1] ' Daga
 Index=15
@@ -61,8 +61,8 @@ Index=403
 [Arma20] ' Hacha Larga de Guerra
 Index=126
 
-[Arma21] ' Martillo de Herrero
-Index=389
+[Arma21] ' Báculo Engarzado
+Index=660
 
 [Arma22] ' Vara de Mago
 Index=400
@@ -78,3 +78,6 @@ Index=198
 
 [Arma26] ' Hacha de Leñador
 Index=127
+
+[Arma27] ' Martillo de Herrero
+Index=389

@@ -49,12 +49,6 @@ Public Sub Initialize()
 End Sub
 
 Public Sub UserConnected(ByVal UserIndex As Integer)
-'***************************************************
-'Author: Unknown
-'Last Modification: -
-'
-'***************************************************
-
     'A new user connected, load it's trainning time count
     trainningInfo(UserIndex).trainningTime = val(GetVar(CharPath & UCase$(UserList(UserIndex).name) & ".chr", "RESEARCH", "TrainningTime", 30))
     
@@ -62,12 +56,6 @@ Public Sub UserConnected(ByVal UserIndex As Integer)
 End Sub
 
 Public Sub UserDisconnected(ByVal UserIndex As Integer)
-'***************************************************
-'Author: Unknown
-'Last Modification: -
-'
-'***************************************************
-
     With trainningInfo(UserIndex)
         'Update trainning time
         .trainningTime = .trainningTime + ((GetTickCount() And &H7FFFFFFF) - .startTick) / 1000
@@ -80,12 +68,6 @@ Public Sub UserDisconnected(ByVal UserIndex As Integer)
 End Sub
 
 Public Sub UserLevelUp(ByVal UserIndex As Integer)
-'***************************************************
-'Author: Unknown
-'Last Modification: -
-'
-'***************************************************
-
     Dim handle As Integer
     handle = FreeFile()
     
@@ -104,12 +86,6 @@ Public Sub UserLevelUp(ByVal UserIndex As Integer)
 End Sub
 
 Public Sub StoreFrag(ByVal killer As Integer, ByVal victim As Integer)
-'***************************************************
-'Author: Unknown
-'Last Modification: -
-'
-'***************************************************
-
     Dim clase As Integer
     Dim raza As Integer
     Dim alignment As Integer
@@ -180,12 +156,6 @@ Public Sub StoreFrag(ByVal killer As Integer, ByVal victim As Integer)
 End Sub
 
 Public Sub DumpStatistics()
-'***************************************************
-'Author: Unknown
-'Last Modification: -
-'
-'***************************************************
-
     Dim handle As Integer
     handle = FreeFile()
     
@@ -524,19 +494,13 @@ Public Sub DumpStatistics()
 End Sub
 
 Public Sub ParseChat(ByRef S As String)
-'***************************************************
-'Author: Unknown
-'Last Modification: -
-'
-'***************************************************
-
     Dim i As Long
-    Dim key As Integer
+    Dim Key As Integer
     
     For i = 1 To Len(S)
-        key = Asc(mid$(S, i, 1))
+        Key = Asc(mid$(S, i, 1))
         
-        keyOcurrencies(key) = keyOcurrencies(key) + 1
+        keyOcurrencies(Key) = keyOcurrencies(Key) + 1
     Next i
     
     'Add a NULL-terminated to consider that possibility too....

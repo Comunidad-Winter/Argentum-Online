@@ -1,0 +1,4 @@
+# Se comparan las versiones de los archivos locales (que se encuentra en AoUpdate.ini) con los archivos del servidor, se checkean md5s y se vuelven a bajar los archivos si fallan.
+# Para los archivos que no son .Ao, se comparan las versiones, si son distintas se bajan y se parchea, se hace un md5 y se compara con el del server.
+# Para los .Ao Se compara la versión con la del server, si la diferencia es  5, se bajan todos los parches y se parchea en orden, luego se checkean md5. Si falla el md5 se baja todo el .Ao completo. Si la diferencia es  5, se baja todo el .Ao completo. Se compara el md5 con el del server.
+# Las cosas descargadas irían en TEMP, los parches en la carpeta PATCHES, generarían el .Ao en la carpeta que indica el sInfo
