@@ -11,9 +11,13 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'Argentum Online 0.11.2
+'Argentum Online 0.9.0.9
 '
 'Copyright (C) 2002 Márquez Pablo Ignacio
+'Copyright (C) 2002 Otto Perez
+'Copyright (C) 2002 Aaron Perkins
+'Copyright (C) 2002 Matías Fernando Pequeño
+'
 'This program is free software; you can redistribute it and/or modify
 'it under the terms of the GNU General Public License as published by
 'the Free Software Foundation; either version 2 of the License, or
@@ -71,22 +75,22 @@ Public CantidadDialogos As Integer
 
 Private Function PrimerIndiceVacio() As Integer
 On Error Resume Next
-Dim I As Integer, j As Integer
+Dim i As Integer, j As Integer
 Dim flag As Boolean
 
-I = 1
+i = 1
 j = 1
 
-Do While I <= MAX_DIALOGOS And Not flag
-     If (Dialogos(I).Vida < Dialogos(j).Vida) Then
-         j = I
+Do While i <= MAX_DIALOGOS And Not flag
+     If (Dialogos(i).Vida < Dialogos(j).Vida) Then
+         j = i
      End If
-    flag = (Dialogos(I).Vida = 0)
-    If Not flag Then I = I + 1
+    flag = (Dialogos(i).Vida = 0)
+    If Not flag Then i = i + 1
 Loop
 
 If flag Then
-    PrimerIndiceVacio = I
+    PrimerIndiceVacio = i
 Else
     PrimerIndiceVacio = j
 End If
@@ -97,18 +101,18 @@ End Function
 '¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?
 '¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?Formatea la cadena S¿?¿?¿?¿?¿?¿?¿?¿?
 '¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?
-Private Function DarFormato(s As String, I As Integer, k As Integer, anti As Integer, Dialgi As Integer)
+Private Function DarFormato(s As String, i As Integer, k As Integer, anti As Integer, Dialgi As Integer)
 On Error Resume Next
-If anti + I <= Len(s) + 1 Then
-    If ((I >= MAXLONG) And Mid$(s, anti + I, 1) = " ") Or (anti + I = Len(s)) Then
-        Dialogos(Dialgi).Formato(k) = Mid(s, anti, I + 1)
+If anti + i <= Len(s) + 1 Then
+    If ((i >= MAXLONG) And mid$(s, anti + i, 1) = " ") Or (anti + i = Len(s)) Then
+        Dialogos(Dialgi).Formato(k) = mid(s, anti, i + 1)
         k = k + 1
-        anti = anti + I + 1
-        I = 0
+        anti = anti + i + 1
+        i = 0
     Else
-        I = I + 1
+        i = i + 1
     End If
-    Call DarFormato(s, I, k, anti, Dialgi)
+    Call DarFormato(s, i, k, anti, Dialgi)
 End If
 
 End Function
@@ -128,16 +132,16 @@ On Error Resume Next
   If (Len(Dialogos(Dialgi).Texto) > MAXLONG) And HayEspacio(Dialogos(Dialgi).Texto) Then
                 Dim j As Integer
                 ReDim Dialogos(Dialgi).Formato(0 To (Len(Dialogos(Dialgi).Texto) \ (MAXLONG \ 2)))
-                Dim I As Integer, k As Integer, anti As Integer
+                Dim i As Integer, k As Integer, anti As Integer
                 anti = 1
                 k = 0
-                I = 0
-                Call DarFormato(Dialogos(Dialgi).Texto, I, k, anti, Dialgi)
-                I = 0
-                Do While Dialogos(Dialgi).Formato(I) <> "" And I < UBound(Dialogos(Dialgi).Formato)
-                 I = I + 1
+                i = 0
+                Call DarFormato(Dialogos(Dialgi).Texto, i, k, anti, Dialgi)
+                i = 0
+                Do While Dialogos(Dialgi).Formato(i) <> "" And i < UBound(Dialogos(Dialgi).Formato)
+                 i = i + 1
                 Loop
-                ReDim Preserve Dialogos(Dialgi).Formato(0 To I - 1)
+                ReDim Preserve Dialogos(Dialgi).Formato(0 To i - 1)
                 Dialogos(Dialgi).Formateado = True
   End If
 End Sub
@@ -175,17 +179,17 @@ End Sub
 Private Function BuscarUserIndex(User As Integer, MiUser As Integer) As Boolean
 On Error Resume Next
 If CantidadDialogos > 0 Then
-    Dim I As Integer
+    Dim i As Integer
     Dim flag As Boolean
-    I = 1
+    i = 1
     
-    Do While I <= MAX_DIALOGOS And Not flag
-           flag = (Dialogos(I).UserIndex = User)
-           If Not flag Then I = I + 1
+    Do While i <= MAX_DIALOGOS And Not flag
+           flag = (Dialogos(i).UserIndex = User)
+           If Not flag Then i = i + 1
     Loop
     
     If flag Then
-            MiUser = I
+            MiUser = i
             BuscarUserIndex = True
     Else
             BuscarUserIndex = False
@@ -194,10 +198,10 @@ End If
 
 End Function
 
-Public Sub Update_Dialog_Pos(X As Integer, Y As Integer, Index As Integer)
+Public Sub Update_Dialog_Pos(X As Integer, Y As Integer, index As Integer)
 On Error Resume Next
 Dim MiUserIndex As Integer
-If BuscarUserIndex(Index, MiUserIndex) Then
+If BuscarUserIndex(index, MiUserIndex) Then
   If Dialogos(MiUserIndex).Vida > 0 Then
         If Dialogos(MiUserIndex).Formateado Then
             Dialogos(MiUserIndex).X = X - (MAXLONG \ 2) * 3
@@ -228,24 +232,28 @@ If BuscarUserIndex(Index, MiUserIndex) Then
   End If
 End If
 End Sub
+
 Public Sub DrawText(lngXPos As Integer, lngYPos As Integer, strText As String, lngColor As Long)
 On Error Resume Next
 
    If strText <> "" Then
+        
         BackBufferSurface.SetFontTransparency True
         BackBufferSurface.SetForeColor vbBlack
-        BackBufferSurface.SetFont frmMain.Font
+        BackBufferSurface.SetFont frmMain.font
+        
         BackBufferSurface.DrawText lngXPos - 2, lngYPos - 1, strText, False
         
         BackBufferSurface.SetFontTransparency True
         BackBufferSurface.SetForeColor lngColor
         
-        BackBufferSurface.SetFont frmMain.Font
+        BackBufferSurface.SetFont frmMain.font
         
         
         BackBufferSurface.DrawText lngXPos, lngYPos, strText, False
    End If
    
+
 End Sub
 
 Public Sub DrawTextBig(lngXPos As Integer, lngYPos As Integer, strText As String, lngColor As Long)
@@ -254,12 +262,12 @@ On Error Resume Next
    If strText <> "" Then
         BackBufferSurface.SetFontTransparency True
         BackBufferSurface.SetForeColor vbBlack
-        BackBufferSurface.SetFont frmMain.Font
+        BackBufferSurface.SetFont frmMain.font
         BackBufferSurface.DrawText lngXPos - 2, lngYPos - 1, strText, False
         
         BackBufferSurface.SetFontTransparency True
         BackBufferSurface.SetForeColor lngColor
-        BackBufferSurface.SetFont frmMSG.Font
+        BackBufferSurface.SetFont frmMSG.font
         BackBufferSurface.DrawText lngXPos, lngYPos, strText, False
    End If
    
@@ -267,48 +275,48 @@ End Sub
 
 Public Sub MostrarTexto()
 On Error Resume Next
-Dim I As Integer
+Dim i As Integer
 'For i = 1 To CantidadDialogos
-I = 1
-Do While I <= CantidadDialogos And I <= MAX_DIALOGOS
-    If Dialogos(I).Vida > 0 Then
-        If Dialogos(I).Formateado Then
+i = 1
+Do While i <= CantidadDialogos And i <= MAX_DIALOGOS
+    If Dialogos(i).Vida > 0 Then
+        If Dialogos(i).Formateado Then
             Dim j As Integer, desp As Integer
-            desp = (-frmMain.Font.Size) * UBound(Dialogos(I).Formato) - 5
-            For j = 0 To UBound(Dialogos(I).Formato)
-             DrawText Dialogos(I).X, Dialogos(I).Y + desp, Dialogos(I).Formato(j), Dialogos(I).Color
-             desp = desp + (frmMain.Font.Size) + 5
+            desp = (-frmMain.font.Size) * UBound(Dialogos(i).Formato) - 5
+            For j = 0 To UBound(Dialogos(i).Formato)
+             DrawText Dialogos(i).X, Dialogos(i).Y + desp, Dialogos(i).Formato(j), Dialogos(i).Color
+             desp = desp + (frmMain.font.Size) + 5
             Next
          Else
-            DrawText Dialogos(I).X, Dialogos(I).Y, Dialogos(I).Texto, Dialogos(I).Color
+            DrawText Dialogos(i).X, Dialogos(i).Y, Dialogos(i).Texto, Dialogos(i).Color
          End If
     Else
-      Dialogos(I).Texto = ""
-      Dialogos(I).UserIndex = 0
-      Dialogos(I).Formateado = False
-      Dialogos(I).Delay = 0
+      Dialogos(i).Texto = ""
+      Dialogos(i).UserIndex = 0
+      Dialogos(i).Formateado = False
+      Dialogos(i).Delay = 0
     End If
-    I = I + 1
+    i = i + 1
 Loop
 'Next
 End Sub
 
 Public Sub QuitarDialogo(ByVal CharIndex As Integer)
 On Error Resume Next
-Dim I As Integer
+Dim i As Integer
 
-If BuscarUserIndex(CharIndex, I) Then
-      Dialogos(I).Vida = 0
-      Dialogos(I).Texto = ""
-      Dialogos(I).UserIndex = 0
-      Dialogos(I).Formateado = False
-      Dialogos(I).Delay = 0
+If BuscarUserIndex(CharIndex, i) Then
+      Dialogos(i).Vida = 0
+      Dialogos(i).Texto = ""
+      Dialogos(i).UserIndex = 0
+      Dialogos(i).Formateado = False
+      Dialogos(i).Delay = 0
       CantidadDialogos = CantidadDialogos - 1
       
-      If I = UltimoDialogo Then
-        Do While Dialogos(I).Vida = 0
-                I = I - 1
-                If I < 1 Then
+      If i = UltimoDialogo Then
+        Do While Dialogos(i).Vida = 0
+                i = i - 1
+                If i < 1 Then
                     UltimoDialogo = 0
                     CantidadDialogos = 0
                     Exit Sub
@@ -325,15 +333,15 @@ Public Sub BorrarDialogos()
 
 On Error Resume Next
 
-Dim I As Integer
+Dim i As Integer
 
-For I = 1 To MAX_DIALOGOS
-      Dialogos(I).Vida = 0
-      Dialogos(I).Texto = ""
-      Dialogos(I).UserIndex = 0
-      Dialogos(I).Formateado = False
-      Dialogos(I).Delay = 0
-Next I
+For i = 1 To MAX_DIALOGOS
+      Dialogos(i).Vida = 0
+      Dialogos(i).Texto = ""
+      Dialogos(i).UserIndex = 0
+      Dialogos(i).Formateado = False
+      Dialogos(i).Delay = 0
+Next i
 
 End Sub
 

@@ -11,7 +11,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'Argentum Online 0.11.20
+'Argentum Online 0.9.0.2
 'Copyright (C) 2002 Márquez Pablo Ignacio
 '
 'This program is free software; you can redistribute it and/or modify
@@ -40,34 +40,32 @@ Attribute VB_Exposed = False
 'La Plata - Pcia, Buenos Aires - Republica Argentina
 'Código Postal 1900
 'Pablo Ignacio Márquez
-
-
 Option Explicit
 
 Private Const MaximoPersonajesPorIP = 15
 Private m_coleccion As New Collection
 
 Public Function MaxPersonajes(sIp As String) As Boolean
-Dim i As Integer
+    Dim i As Long
 
-For i = 1 To m_coleccion.Count
+    For i = 1 To m_coleccion.Count
         If m_coleccion.Item(i).ip = sIp Then
             m_coleccion.Item(i).PersonajesCreados = m_coleccion.Item(i).PersonajesCreados + 1
             MaxPersonajes = (m_coleccion.Item(i).PersonajesCreados > MaximoPersonajesPorIP)
             If MaxPersonajes Then m_coleccion.Item(i).PersonajesCreados = 16
             Exit Function
         End If
-        
-Next
+    Next i
 
-           Dim oIp As New UserIpAdress
-           oIp.ip = sIp
-           oIp.PersonajesCreados = 1
-           m_coleccion.Add oIp
-           MaxPersonajes = False
-           Exit Function
- 
+#If SeguridadAlkon Then
+    Dim oIp As New UserIpAdress
+    oIp.ip = sIp
+    oIp.PersonajesCreados = 1
+    m_coleccion.Add oIp
+#End If
 
+    MaxPersonajes = False
+    Exit Function
 End Function
 
 Public Function VaciarColeccion()

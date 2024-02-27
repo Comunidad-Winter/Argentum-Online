@@ -1,11 +1,10 @@
 'NPCs Hostiles
 [INIT]
 NumNPCs=88
-
 'incluidos los preto
 
-[NPC500] 'Murcielago
-Name=Murcielago
+[NPC500]
+Name=Murciélago
 Head=0
 Body=9
 Heading=3
@@ -26,8 +25,7 @@ PoderEvasion=10
 DEF=0
 NROITEMS=0
 
-
-[NPC501] 'Lobo
+[NPC501]
 Name=Lobo
 Head=0
 Body=10
@@ -37,7 +35,7 @@ Alineacion=2
 Attackable=1
 Comercia=0
 Hostile=1
-GiveEXP=98
+GiveEXP=100
 GiveGLD=0
 MinHP=75
 MaxHP=75
@@ -51,17 +49,17 @@ Snd2=9
 NROITEMS=1
 Obj1=414-1
 
-[NPC502] 'Zombie
+[NPC502]
 Name=Zombie
-Head=0
-Body=11
+Head=507
+Body=196
 Heading=3
 Movement=3
 Alineacion=2
 Attackable=1
 Comercia=0
 Hostile=1
-GiveEXP=171
+GiveEXP=175
 GiveGLD=21
 MinHP=250
 MaxHP=250
@@ -73,8 +71,7 @@ PoderAtaque=100
 PoderEvasion=20
 SND2=33
 
-
-[NPC503] 'Esqueleto
+[NPC503]
 Name=Esqueleto
 Head=0
 Body=12
@@ -95,7 +92,7 @@ NROITEMS=0
 PoderAtaque=30
 PoderEvasion=30
 
-[NPC504] 'Serpiente cobra
+[NPC504]
 Name=Serpiente
 Head=0
 Body=13
@@ -115,8 +112,9 @@ DEF=0
 NROITEMS=0
 PoderAtaque=10
 PoderEvasion=0
+SND2=103
 
-[NPC505] 'Goblin
+[NPC505]
 Name=Goblin
 Head=0
 Body=14
@@ -137,9 +135,8 @@ NROITEMS=0
 PoderAtaque=60
 PoderEvasion=40
 
-
-[NPC506] 'Gallo
-Name=Gallo salvaje
+[NPC506]
+Name=Gallo Salvaje
 Desc=
 Head=0
 Body=5
@@ -161,19 +158,20 @@ NROITEMS=1
 Obj1=26-1
 PoderAtaque=3
 PoderEvasion=3
+SND3=67
 
-[NPC507] 'Zombie
+[NPC507]
 Name=Lord Zombie
-Head=0
-Body=11
+Head=508
+Body=197
 Heading=3
 Movement=3
 Alineacion=2
 Attackable=1
 Comercia=0
 Hostile=1
-GiveEXP=323
-GiveGLD=20
+GiveEXP=355
+GiveGLD=50
 MinHP=350
 MaxHP=350
 MaxHIT=25
@@ -184,8 +182,7 @@ PoderAtaque=150
 PoderEvasion=35
 SND2=33
 
-
-[NPC508] 'Esqueleto
+[NPC508]
 Name=Esqueleto Guerrero
 Head=0
 Body=12
@@ -195,8 +192,8 @@ Alineacion=2
 Attackable=1
 Comercia=0
 Hostile=1
-GiveEXP=138
-GiveGLD=8
+GiveEXP=155
+GiveGLD=25
 MinHP=150
 MaxHP=150
 MaxHIT=18
@@ -205,8 +202,8 @@ DEF=19
 PoderAtaque=60
 PoderEvasion=50
 
-[NPC509] 'dragon
-Name=Dragon rojo
+[NPC509]
+Name=Dragón Rojo
 Head=0
 Body=41
 Heading=3
@@ -216,17 +213,17 @@ Attackable=1
 Comercia=0
 Hostile=1
 GolpeExacto=1
-GiveEXP=3000
-GiveGLD=1500
-MinHP=3000
-MaxHP=3000
+GiveEXP=8500
+GiveGLD=1000
+MinHP=5000
+MaxHP=5000
 MaxHIT=300
 MinHIT=250
 DEF=50
 PoderAtaque=380
 PoderEvasion=250
 
-[NPC510] 'Araña gigante
+[NPC510]
 Name=Araña Gigante
 Head=0
 Body=42
@@ -236,8 +233,8 @@ Alineacion=2
 Attackable=1
 Comercia=0
 Hostile=1
-GiveEXP=1252
-GiveGLD=176
+GiveEXP=1452
+GiveGLD=175
 MinHP=1000
 MaxHP=1000
 MaxHIT=100
@@ -248,8 +245,8 @@ PoderAtaque=150
 PoderEvasion=70
 
 '<------------------ RESPAWN EN EL MISMO LUGAR ------------------->
-[NPC511] 'Murcielago
-Name=Murcielago
+[NPC511]
+Name=Murciélago
 Head=0
 Body=9
 Heading=3
@@ -270,7 +267,7 @@ PoderEvasion=10
 DEF=0
 NROITEMS=0
 
-[NPC512] 'Lobo
+[NPC512]
 Name=Lobo
 Head=0
 Body=10
@@ -280,7 +277,7 @@ Alineacion=2
 Attackable=1
 Comercia=0
 Hostile=1
-GiveEXP=98
+GiveEXP=100
 GiveGLD=0
 MinHP=75
 MaxHP=75
@@ -294,20 +291,18 @@ Snd2=9
 NROITEMS=1
 Obj1=414-1
 
-
-
-[NPC513] 'Zombie
+[NPC513]
 Name=Zombie
-Head=0
-Body=11
+Head=507
+Body=196
 Heading=3
 Movement=3
 Alineacion=2
 Attackable=1
 Comercia=0
 Hostile=1
-GiveEXP=191
-GiveGLD=26
+GiveEXP=175
+GiveGLD=21
 MinHP=250
 MaxHP=250
 MaxHIT=12
@@ -318,7 +313,7 @@ PoderAtaque=100
 PoderEvasion=20
 SND2=33
 
-[NPC514] 'Esqueleto
+[NPC514]
 Name=Esqueleto
 Head=0
 Body=12
@@ -329,9 +324,9 @@ Attackable=1
 Comercia=0
 Hostile=1
 GiveEXP=47
-GiveGLD=5
-MinHP=40
-MaxHP=30
+GiveGLD=8
+MinHP=50
+MaxHP=50
 MaxHIT=8
 MinHIT=1
 DEF=10
@@ -339,7 +334,7 @@ NROITEMS=0
 PoderAtaque=50
 PoderEvasion=50
 
-[NPC515] 'Serpiente cobra
+[NPC515]
 Name=Serpiente
 Head=0
 Body=13
@@ -359,10 +354,11 @@ DEF=0
 NROITEMS=0
 PoderAtaque=10
 PoderEvasion=0
+SND2=103
 
-[NPC516] 'Goblin
+[NPC516] 'Goblin (NO RESPAWN) no deja oro, exp bajada (npc para entrenador)
+ReSpawn=1
 Name=Goblin
-Info=Goblin sin oro
 Head=0
 Body=14
 Heading=3
@@ -382,8 +378,8 @@ NROITEMS=0
 PoderAtaque=50
 PoderEvasion=40
 
-[NPC517] 'Gallo
-Name=Gallo salvaje
+[NPC517]
+Name=Gallo Salvaje
 Desc=
 Head=0
 Body=5
@@ -405,19 +401,20 @@ NROITEMS=1
 Obj1=26-1
 PoderAtaque=3
 PoderEvasion=0
+SND3=67
 
-[NPC518] 'Zombie
+[NPC518]
 Name=Lord Zombie
-Head=0
-Body=11
+Head=509
+Body=197
 Heading=3
 Movement=3
 Alineacion=2
 Attackable=1
 Comercia=0
 Hostile=1
-GiveEXP=323
-GiveGLD=36
+GiveEXP=355
+GiveGLD=50
 MinHP=350
 MaxHP=350
 MaxHIT=25
@@ -428,8 +425,7 @@ PoderAtaque=150
 PoderEvasion=35
 SND2=33
 
-
-[NPC519] 'Esqueleto
+[NPC519]
 Name=Esqueleto Guerrero
 Head=0
 Body=12
@@ -439,8 +435,8 @@ Alineacion=2
 Attackable=1
 Comercia=0
 Hostile=1
-GiveEXP=138
-GiveGLD=15
+GiveEXP=155
+GiveGLD=25
 MinHP=150
 MaxHP=150
 MaxHIT=18
@@ -449,13 +445,9 @@ DEF=19
 PoderAtaque=60
 PoderEvasion=50
 
-'<------------------ RESPAWN EN EL MISMO LUGAR ------------------->
-
-
 '<------------------ NO RESPAWN ------------------->
-
-[NPC520] 'dragon
-Name=Dragon rojo
+[NPC520]
+Name=Dragón Rojo
 Respawn=1
 Info=No Respawn
 Head=0
@@ -477,8 +469,8 @@ DEF=20
 PoderAtaque=300
 PoderEvasion=250
 
-[NPC521] 'Araña gigante
-Name=Araña gigante
+[NPC521]
+Name=Araña Gigante
 Respawn=1
 Info=No Respawn
 Head=0
@@ -500,12 +492,12 @@ Veneno=1
 PoderAtaque=200
 PoderEvasion=70
 
-[NPC522] 'Orco
+[NPC522]
 Name=Orco
 Info=No Respawn
 ReSpawn=1
 Head=0
-Body=43
+Body=185
 Heading=3
 Movement=3
 Alineacion=2
@@ -522,11 +514,11 @@ DEF=30
 PoderAtaque=100
 PoderEvasion=75
 
-[NPC523] 'Orco
+[NPC523]
 Name=Orco
 Info=Respawn
 Head=0
-Body=43
+Body=185
 Heading=3
 Movement=3
 Alineacion=2
@@ -543,7 +535,7 @@ DEF=30
 PoderAtaque=100
 PoderEvasion=75
 
-[NPC524] 'Orco
+[NPC524]
 Name=Jefe Orco
 Info=Jefe orco del fuerte --- No Respawn
 ReSpawn=1
@@ -567,9 +559,8 @@ DEF=30
 PoderAtaque=250
 PoderEvasion=200
 
-
-[NPC525] 'Aguila
-Name=Aguila
+[NPC525]
+Name=Águila
 Head=0
 Body=9
 Heading=3
@@ -589,10 +580,10 @@ PoderAtaque=15
 PoderEvasion=30
 DEF=0
 NROITEMS=0
+SND3=53
 
-
-[NPC526] 'Araña gigante
-Name=Araña gigante
+[NPC526]
+Name=Araña Gigante
 Info=Llave dungeon malaheing- No Respawn
 ReSpawn=1
 Head=0
@@ -616,8 +607,8 @@ Veneno=1
 PoderAtaque=200
 PoderEvasion=150
 
-[NPC527] 'dragon
-Name=Dragon rojo
+[NPC527]
+Name=Dragón Rojo
 Info=Llave dungeon malaheing -- No Respawn
 ReSpawn=1
 Head=0
@@ -640,8 +631,8 @@ Obj1=182-1-0
 PoderAtaque=300
 PoderEvasion=250
 
-[NPC528] 'Araña gigante
-Name=Araña gigante
+[NPC528]
+Name=Araña Gigante
 Info=Respawn mismo lugar
 ReSpawn=1
 Head=0
@@ -652,8 +643,8 @@ Alineacion=2
 Attackable=1
 Comercia=0
 Hostile=1
-GiveEXP=1252
-GiveGLD=176
+GiveEXP=1452
+GiveGLD=175
 MinHP=1000
 MaxHP=1000
 MaxHIT=100
@@ -664,8 +655,8 @@ PosOrig=1
 PoderAtaque=150
 PoderEvasion=70
 
-[NPC529] 'Escorpion
-Name=Escorpion
+[NPC529]
+Name=Escorpión
 Head=0
 Body=51
 Heading=3
@@ -685,7 +676,7 @@ Veneno=1
 PoderAtaque=30
 PoderEvasion=10
 
-[NPC530] 'Bandido
+[NPC530]
 Name=Bandido
 Head=2
 Body=47
@@ -705,7 +696,7 @@ MinHIT=15
 PoderAtaque=70
 PoderEvasion=50
 
-[NPC531] 'Caballero klox
+[NPC531]
 Name=Asesino
 Head=201
 Body=48
@@ -716,18 +707,18 @@ Comercia=0
 Hostile=1
 Alineacion=2
 ReSpawn=0
-GiveEXP=1262
+GiveEXP=1500
 GiveGLD=200
-MinHP=700
-MaxHP=700
+MinHP=850
+MaxHP=850
 MaxHIT=139
 MinHIT=15
 Nroitems=1
 PoderAtaque=200
 PoderEvasion=200
 
-[NPC532] 'Aguila
-Name=Aguila
+[NPC532]
+Name=Águila
 Head=0
 Body=59
 Heading=3
@@ -744,8 +735,9 @@ MinHIT=1
 PoderAtaque=15
 PoderEvasion=30
 Domable=87
+SND3=53
 
-[NPC533] 'Cuervo
+[NPC533]
 Name=Cuervo
 Head=0
 Body=68
@@ -763,8 +755,9 @@ MinHIT=4
 PoderAtaque=25
 PoderEvasion=35
 Domable=50
+SND3=62
 
-[NPC534] 'Hormiga Gigante
+[NPC534]
 Name=Hormiga Gigante
 Head=0
 Body=69
@@ -773,7 +766,7 @@ Movement=3
 Attackable=1
 Hostile=1
 Alineacion=2
-GiveEXP=419
+GiveEXP=500
 GiveGLD=100
 MinHP=400
 MaxHP=400
@@ -783,7 +776,7 @@ PoderAtaque=150
 PoderEvasion=100
 Def=5
 
-[NPC535] 'Hormiga
+[NPC535]
 Name=Hormiga
 Head=0
 Body=70
@@ -802,7 +795,7 @@ PoderAtaque=5
 PoderEvasion=3
 Domable=5
 
-[NPC536] 'Rata
+[NPC536]
 Name=Rata Gigante
 Head=0
 Body=71
@@ -824,7 +817,7 @@ NROEXP=2
 EXP1=Crick Crick
 EXP2=Clir chuik
 
-[NPC537] 'Beholder
+[NPC537]
 Name=Beholder
 Head=0
 Body=72
@@ -833,17 +826,17 @@ Movement=3
 Attackable=1
 Hostile=1
 Alineacion=2
-GiveEXP=2200
+GiveEXP=2500
 GiveGLD=360
-MinHP=1000
-MaxHP=1000
+MinHP=1400
+MaxHP=1400
 MaxHIT=300
 MinHIT=45
 PoderAtaque=350
 PoderEvasion=200
 
-[NPC538] 'Oso pardo
-Name=Oso pardo
+[NPC538]
+Name=Oso Pardo
 Head=0
 Body=73
 Heading=3
@@ -851,10 +844,10 @@ Movement=3
 Attackable=1
 Hostile=1
 Alineacion=2
-GiveEXP=800
+GiveEXP=850
 GiveGLD=0
-MinHP=515
-MaxHP=515
+MinHP=600
+MaxHP=600
 MaxHIT=100
 MinHIT=65
 PoderAtaque=250
@@ -862,8 +855,8 @@ PoderEvasion=65
 NROITEMS=1
 Obj1=415-1
 
-[NPC539] 'Torguga gigante
-Name=Tortuga gigante
+[NPC539]
+Name=Tortuga Gigante
 Head=0
 Body=74
 Heading=3
@@ -871,10 +864,10 @@ Movement=3
 Attackable=1
 Hostile=1
 Alineacion=2
-GiveEXP=450
+GiveEXP=500
 GiveGLD=0
-MinHP=600
-MaxHP=600
+MinHP=550
+MaxHP=550
 MaxHIT=45
 MinHIT=35
 PoderAtaque=100
@@ -882,7 +875,7 @@ PoderEvasion=45
 NROITEMS=1
 Obj1=404-1
 
-[NPC540] 'Duende
+[NPC540]
 Name=Duende
 Head=0
 Body=75
@@ -892,7 +885,7 @@ Alineacion=2
 Attackable=1
 Comercia=0
 Hostile=1
-GiveEXP=158
+GiveEXP=245
 GiveGLD=23
 MinHP=210
 MaxHP=210
@@ -903,7 +896,7 @@ NROITEMS=0
 PoderAtaque=80
 PoderEvasion=60
 
-[NPC541] ' Ogro
+[NPC541]
 Name=Ogro
 Head=0
 Body=76
@@ -913,10 +906,10 @@ Alineacion=2
 Attackable=1
 Comercia=0
 Hostile=1
-GiveEXP=3161
+GiveEXP=3500
 GiveGLD=462
-MinHP=2000
-MaxHP=2000
+MinHP=2250
+MaxHP=2250
 MaxHIT=232
 MinHIT=88
 DEF=10
@@ -925,7 +918,7 @@ Obj1=398-1
 PoderAtaque=260
 PoderEvasion=230
 
-[NPC542] ' Dragon Rojo
+[NPC542]
 Name=Gran Dragón Rojo
 NpcType=6
 Body=82
@@ -935,7 +928,7 @@ Alineacion=2
 Hostile=1
 Attackable=1
 AfectaParalisis=1
-GiveEXP=260000
+GiveEXP=265000
 GiveGLD=0
 MinHP=200000
 MaxHP=200000
@@ -958,7 +951,7 @@ LanzaSpells=2
 Sp1=15
 Sp2=25
 
-[NPC543] ' Demonio
+[NPC543]
 Name=Demonio
 NpcType=6
 Body=83
@@ -968,19 +961,19 @@ Alineacion=2
 Hostile=1
 Attackable=1
 ReSpawn=0
-GiveEXP=12500
-GiveGLD=4500
+GiveEXP=14200
+GiveGLD=6000
 MinHP=15000
 MaxHP=15000
 MaxHIT=350
 MinHIT=75
 DEF=0
 PoderAtaque=230
-PoderEvasion=180
+PoderEvasion=220
 
-[NPC544] 'Lobo
+[NPC544] 'Lobo (domable)
 Name=Lobo
-Info= DOOOMABLE
+Info=DOMABLE
 Head=0
 Body=10
 Heading=3
@@ -989,7 +982,7 @@ Alineacion=2
 Attackable=1
 Comercia=0
 Hostile=1
-GiveEXP=98
+GiveEXP=100
 GiveGLD=0
 MinHP=75
 MaxHP=75
@@ -1004,8 +997,7 @@ NROITEMS=1
 Obj1=414-1
 Domable=162
 
-
-[NPC545] 'Lobo magico (NO DEJA PIEL)
+[NPC545] 'Lobo (NO RESPAWN) no deja piel, exp bajada (npc para entrenador)
 Name=Lobo
 Respawn=1
 Head=0
@@ -1028,11 +1020,11 @@ PoderEvasion=25
 Snd1=35
 Snd2=9
 
-[NPC546] ' Zombie magico (NO DEJA ORO)
+[NPC546] 'Zombie (NO RESPAWN) no deja oro
 Name=Zombie
 Respawn=1
-Head=0
-Body=11
+Head=507
+Body=196
 Heading=3
 Movement=3
 Alineacion=2
@@ -1051,7 +1043,7 @@ PoderAtaque=100
 PoderEvasion=20
 SND2=33
 
-[NPC547] ' Dragon Rojo magico (NO DEJA ORO)
+[NPC547] 'Dragón Rojo (NO RESPAWN) no deja oro
 Name=Dragón Rojo
 Respawn=1
 NpcType=6
@@ -1077,8 +1069,7 @@ LanzaSpells=2
 Sp1=15
 Sp2=25
 
-
-[NPC548] ' Leviatan
+[NPC548]
 Name=Leviatán
 NpcType=6
 Body=99
@@ -1087,7 +1078,7 @@ Movement=3
 Alineacion=2
 Hostile=1
 Attackable=1
-GiveEXP=8000
+GiveEXP=8500
 GiveGLD=2100
 MinHP=6000
 MaxHP=6000
@@ -1099,10 +1090,10 @@ PoderEvasion=180
 AguaValida=1
 TierraInvalida=1
 
-[NPC549] 'Orco
-Name=Orco brujo
+[NPC549]
+Name=Orco Brujo
 Head=0
-Body=43
+Body=186
 Heading=3
 Movement=3
 Alineacion=2
@@ -1111,8 +1102,8 @@ Comercia=0
 Hostile=1
 GiveEXP=1500
 GiveGLD=750
-MinHP=1200
-MaxHP=1200
+MinHP=1500
+MaxHP=1500
 MaxHIT=250
 MinHIT=75
 DEF=30
@@ -1121,7 +1112,7 @@ PoderEvasion=160
 LanzaSpells=1
 Sp1=8
 
-[NPC550] 
+[NPC550]
 Name=Bruja
 Head=271
 Body=125
@@ -1131,7 +1122,7 @@ Alineacion=2
 Attackable=1
 Comercia=0
 Hostile=1
-GiveEXP=3000
+GiveEXP=6100
 GiveGLD=1000
 MinHP=4200
 MaxHP=4200
@@ -1145,8 +1136,8 @@ Sp1=8
 Sp2=9
 Sp3=15
 
-[NPC551] 
-Name=Mago malvado
+[NPC551]
+Name=Mago Malvado
 Head=401
 Body=135
 Heading=3
@@ -1155,8 +1146,8 @@ Alineacion=2
 Attackable=1
 Comercia=0
 Hostile=1
-GiveEXP=2000
-GiveGLD=1800
+GiveEXP=4000
+GiveGLD=1500
 MinHP=3000
 MaxHP=3000
 MaxHIT=126
@@ -1169,7 +1160,7 @@ Sp1=8
 Sp2=9
 Sp3=15
 
-[NPC552] 
+[NPC552]
 Name=Golem
 Head=0
 Body=141
@@ -1179,8 +1170,8 @@ Alineacion=2
 Attackable=1
 Comercia=0
 Hostile=1
-GiveEXP=30000
-GiveGLD=8000
+GiveEXP=40000
+GiveGLD=0
 MinHP=49000
 MaxHP=49000
 MaxHIT=600
@@ -1188,8 +1179,12 @@ MinHIT=300
 DEF=30
 PoderAtaque=220
 PoderEvasion=50
+NROITEMS=3
+OBJ1=12-5000
+OBJ2=12-5000
+OBJ3=12-5000
 
-[NPC553] 
+[NPC553]
 Name=Medusa
 Body=151
 Heading=3
@@ -1198,7 +1193,7 @@ Alineacion=2
 Attackable=1
 Comercia=0
 Hostile=1
-GiveEXP=10000
+GiveEXP=12250
 GiveGLD=4000
 MinHP=6500
 MaxHP=6500
@@ -1212,7 +1207,7 @@ Sp1=15
 Sp2=23
 Sp3=9
 
-[NPC554] 
+[NPC554]
 Name=Liche
 Head=0
 Body=149
@@ -1222,37 +1217,37 @@ Alineacion=2
 Attackable=1
 Comercia=0
 Hostile=1
-GiveEXP=2000
-GiveGLD=800
-MinHP=1800
-MaxHP=1800
+GiveEXP=3000
+GiveGLD=1000
+MinHP=2000
+MaxHP=2000
 MaxHIT=250
 MinHIT=120
 DEF=30
 PoderAtaque=220
 PoderEvasion=190
 
-[NPC555] 
+[NPC555]
 Name=Lord Orco
 Head=0
-Body=148
+Body=187
 Heading=3
 Movement=3
 Alineacion=2
 Attackable=1
 Comercia=0
 Hostile=1
-GiveEXP=1500
-GiveGLD=600
-MinHP=1460
-MaxHP=1460
+GiveEXP=2500
+GiveGLD=800
+MinHP=1750
+MaxHP=1750
 MaxHIT=200
 MinHIT=200
 DEF=30
 PoderAtaque=170
 PoderEvasion=100
 
-[NPC556] 
+[NPC556]
 Name=Quark
 Head=0
 Body=146
@@ -1272,7 +1267,7 @@ DEF=30
 PoderAtaque=65
 PoderEvasion=25
 
-[NPC557] 'Jabalí Salvaje
+[NPC557]
 Name=Jabalí Salvaje
 Head=0
 Body=150
@@ -1290,8 +1285,7 @@ MinHIT=65
 PoderAtaque=130
 PoderEvasion=70
 
-
-[NPC558] ' Dark mOrGoLoCk
+[NPC558]
 Name=Dark mOrGoLoCk
 NpcType=6
 Head=101
@@ -1312,7 +1306,7 @@ DEF=10
 PoderAtaque=350
 PoderEvasion=300
 
-[NPC559] ' Dark NuKeR
+[NPC559]
 Name=Dark NuKeR
 NpcType=6
 Head=102
@@ -1333,7 +1327,7 @@ DEF=10
 PoderAtaque=350
 PoderEvasion=300
 
-[NPC560] ' Dark Ger
+[NPC560]
 Name=Dark Ger
 NpcType=6
 Head=202
@@ -1354,7 +1348,7 @@ DEF=10
 PoderAtaque=400
 PoderEvasion=350
 
-[NPC561] ' Dark Tharon
+[NPC561]
 Name=Dark Tharon
 NpcType=6
 Head=401
@@ -1375,7 +1369,7 @@ DEF=10
 PoderAtaque=350
 PoderEvasion=300
 
-[NPC562] ' Dark Jennifer
+[NPC562]
 Name=Dark Jennifer
 NpcType=6
 Head=72
@@ -1396,7 +1390,7 @@ DEF=10
 PoderAtaque=350
 PoderEvasion=300
 
-[NPC563] 'Goblin NO RESPAWN
+[NPC563] 'Goblin (NO RESPAWN) no deja oro (npc no usado)
 ReSpawn=1
 Name=Goblin
 Head=0
@@ -1417,9 +1411,9 @@ NROITEMS=0
 PoderAtaque=60
 PoderEvasion=40
 
-[NPC564] 'Escorpion NO RESPAWN
+[NPC564] 'Escorpión (NO RESPAWN) no deja oro (npc para entrenador)
 ReSpawn=1
-Name=Escorpion
+Name=Escorpión
 Head=0
 Body=51
 Heading=3
@@ -1427,7 +1421,6 @@ Movement=3
 Attackable=1
 Hostile=1
 Alineacion=2
-ReSpawn=0
 GiveEXP=32
 MinHP=32
 MaxHP=32
@@ -1437,7 +1430,7 @@ Veneno=1
 PoderAtaque=30
 PoderEvasion=10
 
-[NPC565] 'Serpiente cobra NO RESPAWN
+[NPC565] 'Serpiente (NO RESPAWN) npc para entrenador
 ReSpawn=1
 Name=Serpiente
 Head=0
@@ -1457,10 +1450,11 @@ DEF=0
 NROITEMS=0
 PoderAtaque=10
 PoderEvasion=0
+SND2=103
 
-[NPC566] 'Murcielago NO RESPAWN
+[NPC566] 'Murciélago (NO RESPAWN) npc para entrenador
 ReSpawn=1
-Name=Murcielago
+Name=Murciélago
 Head=0
 Body=9
 Heading=3
@@ -1469,7 +1463,6 @@ Attackable=1
 Comercia=0
 Hostile=1
 Alineacion=2
-ReSpawn=0
 GiveEXP=12
 GiveGLD=0
 MinHP=10
@@ -1481,9 +1474,8 @@ PoderEvasion=10
 DEF=0
 NROITEMS=0
 
-
-[NPC567] 'Duende
-Name=Duende Magico
+[NPC567]
+Name=Duende Mágico
 Head=0
 Body=75
 Heading=3
@@ -1505,7 +1497,7 @@ NROITEMS=0
 PoderAtaque=80
 PoderEvasion=60
 
-[NPC568] ' Galeon Pirata
+[NPC568]
 Name=Galeón Pirata
 Body=86
 Heading=3
@@ -1513,10 +1505,10 @@ Movement=3
 Alineacion=2
 Hostile=1
 Attackable=1
-GiveEXP=7000
+GiveEXP=6000
 GiveGLD=0
-MinHP=4200
-MaxHP=4200
+MinHP=4000
+MaxHP=4000
 MaxHIT=250
 MinHIT=200
 DEF=0
@@ -1525,7 +1517,7 @@ PoderEvasion=150
 AguaValida=1
 TierraInvalida=1
 
-[NPC569] ' Galeon Fantasmal
+[NPC569]
 Name=Galeón Fantasmal
 Body=87
 Heading=3
@@ -1535,8 +1527,8 @@ Hostile=1
 Attackable=1
 GiveEXP=10000
 GiveGLD=0
-MinHP=6000
-MaxHP=6000
+MinHP=7000
+MaxHP=7000
 MaxHIT=350
 MinHIT=150
 LanzaSpells=1
@@ -1548,7 +1540,7 @@ AguaValida=1
 TierraInvalida=1
 NPCType=6
 
-[NPC570] 
+[NPC570]
 Name=No ves nada interesante
 Body=0
 respawn=0
@@ -1574,9 +1566,8 @@ SND1=30
 SND2=31
 SND3=32
 
-
-[NPC571] 
-Name=Espiritu Indomable
+[NPC571]
+Name=Espíritu Indomable
 respawn=0
 Body=0
 Head=0
@@ -1601,8 +1592,8 @@ NROITEMS=1
 Obj1=612-1
 AguaValida=1
 
-[NPC573] 'Murcielago
-Name=Arbol Encantado
+[NPC573]
+Name=Árbol Encantado
 Desc=¡Odio los leñadores!
 Head=0
 Body=25
@@ -1625,7 +1616,7 @@ DEF=0
 NROITEMS=0
 Veneno=1
 
-[NPC574] 'Ent Movimiento normal 50 leña
+[NPC574] 'Ent Movimiento normal
 Name=Ucorno
 Head=0
 Body=25
@@ -1651,9 +1642,8 @@ NROITEMS=1
 Obj1=58-50
 Veneno=1
 
-
-[NPC575] 'Ent de movimiento camuflado 50 de madera
-Name=Arbol de Jungla
+[NPC575] 'Ent de movimiento camuflado
+Name=Árbol de Jungla
 Head=0
 Body=25
 Heading=3
@@ -1678,9 +1668,8 @@ NROITEMS=1
 Obj1=58-10
 Veneno=1
 
-
-[NPC576] 'Murcielago
-Name=Arbol de Jungla
+[NPC576]
+Name=Árbol de Jungla
 Head=0
 Body=25
 Heading=4
@@ -1702,7 +1691,7 @@ DEF=0
 NROITEMS=0
 Veneno=1
 
-[NPC577] 
+[NPC577]
 Name=Alma Putrefacta
 Desc=Soy un esclavo del mi señor del mal
 Body=145
@@ -1727,7 +1716,7 @@ SND1=30
 SND2=31
 SND3=32
 
-[NPC578] 'Cerdo
+[NPC578]
 Name=Cerdo Salvaje
 Desc=Oink Oink
 Head=0
@@ -1748,7 +1737,7 @@ ReSpawn=0
 NROITEMS=1
 Obj1=27-1
 
-[NPC579] 'Vaca
+[NPC579]
 Name=Vaca Salvaje
 Desc= Muuuuu
 Head=0
@@ -1798,8 +1787,8 @@ SND2=31
 SND3=32
 AguaValida=1
 
-[NPC581] 'Gallo mistico :O
-Name=Gallo salvaje
+[NPC581] 'Gallo Místico :O
+Name=Gallo Salvaje
 Desc=
 Head=0
 Body=5
@@ -1822,9 +1811,10 @@ Obj1=620-1
 Obj2=165-1
 PoderAtaque=3
 PoderEvasion=3
+SND3=67
 
-[NPC582] 
-Name=Enano de las profundidades
+[NPC582]
+Name=Enano de las Profundidades
 Head=304
 Body=54
 Heading=3
@@ -1834,21 +1824,20 @@ Alineacion=2
 Attackable=1
 Comercia=0
 Hostile=1
-GiveEXP=5000
+GiveEXP=2275
 GiveGLD=1000
 MinHP=3000
 MaxHP=3000
-MaxHIT=115
-MinHIT=65
+MaxHIT=165
+MinHIT=93
 DEF=30
 PoderAtaque=200
 PoderEvasion=140
 NROITEMS=1
 Obj1=3-1
 
-
 [NPC583] 
-Name=Liche infernal
+Name=Liche Infernal
 Head=0
 Body=149
 Heading=3
@@ -1874,8 +1863,6 @@ NROITEMS=1
 Obj1=674-1
 AfectaParalisis=1
 
-
-
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ''''''''''''''''''''''NPCS PRETORIANOS''''''''''''''''''''''''''''
@@ -1883,7 +1870,7 @@ AfectaParalisis=1
 '''''''''''''no cambiar los indices asignados!!'''''''''''''''''''
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-[NPC900] 'NPC
+[NPC900]
 Name=Sacerdote Pretoriano
 NpcType=6
 Head=74
@@ -1915,8 +1902,7 @@ Obj2=37-300
 Obj3=38-300
 Obj4=361-1
 
-
-[NPC901] 'NPC
+[NPC901]
 Name=Guerrero Pretoriano
 NpcType=6
 Head=7
@@ -1941,14 +1927,12 @@ NROITEMS=7
 Obj1=129-1
 Obj2=195-1
 Obj3=131-1
-Obj4=133-1
+Obj4=128-1
 Obj5=36-30
 Obj6-39-30
 Obj7-38-300
 
-
-
-[NPC902] ' Mago Pretoriano
+[NPC902]
 Name=Mago Pretoriano
 NpcType=6
 Head=104
@@ -1977,10 +1961,7 @@ Obj2=37-400	'Pociones Azules
 Obj3=660-1
 Obj4=662-1
 
-
-
-
-[NPC903] ' Cazador pretoriano
+[NPC903]
 Name=Cazador Pretoriano
 'NpcType=6
 Head=301
@@ -2007,11 +1988,11 @@ Obj2=665-1
 Obj3=553-125
 Obj4=648-1
 Obj5=131-1
-Obj6=133-1
+Obj6=128-1
 Obj7=36-20
 Obj8=39-20
 
-[NPC904] ' Rey Pretoriano
+[NPC904]
 Name=Rey Pretoriano
 'NpcType=6
 Head=14
@@ -2043,4 +2024,3 @@ Obj1=646-1
 Obj2=403-1
 Obj3=12-10000
 Obj4=12-10000
-

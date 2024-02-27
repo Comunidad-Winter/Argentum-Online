@@ -24,14 +24,56 @@ Begin VB.Form frmOpciones
    ScaleWidth      =   4680
    ShowInTaskbar   =   0   'False
    StartUpPosition =   1  'CenterOwner
-   Begin VB.CommandButton Command3 
-      Caption         =   "a"
-      Height          =   375
-      Left            =   120
+   Begin VB.Frame Frame1 
+      BackColor       =   &H00000000&
+      Caption         =   "Diálogos de clan"
+      ForeColor       =   &H00FFFFFF&
+      Height          =   750
+      Left            =   255
       TabIndex        =   4
-      Top             =   120
-      Visible         =   0   'False
-      Width           =   375
+      Top             =   1665
+      Width           =   4230
+      Begin VB.TextBox txtCantMensajes 
+         Alignment       =   2  'Center
+         Height          =   285
+         Left            =   2925
+         MaxLength       =   1
+         TabIndex        =   7
+         Text            =   "5"
+         Top             =   315
+         Width           =   450
+      End
+      Begin VB.OptionButton optPantalla 
+         BackColor       =   &H00000000&
+         Caption         =   "En pantalla,"
+         ForeColor       =   &H00FFFFFF&
+         Height          =   270
+         Left            =   1770
+         TabIndex        =   6
+         Top             =   315
+         Value           =   -1  'True
+         Width           =   1560
+      End
+      Begin VB.OptionButton optConsola 
+         BackColor       =   &H00000000&
+         Caption         =   "En consola"
+         ForeColor       =   &H00FFFFFF&
+         Height          =   270
+         Left            =   105
+         TabIndex        =   5
+         Top             =   315
+         Width           =   1560
+      End
+      Begin VB.Label Label2 
+         BackStyle       =   0  'Transparent
+         Caption         =   "mensajes"
+         ForeColor       =   &H00FFFFFF&
+         Height          =   240
+         Left            =   3480
+         TabIndex        =   8
+         Top             =   345
+         Width           =   750
+      End
    End
    Begin VB.CommandButton Command2 
       Caption         =   "Cerrar"
@@ -44,7 +86,7 @@ Begin VB.Form frmOpciones
       Width           =   2790
    End
    Begin VB.CommandButton Command1 
-      Caption         =   "FX Activados"
+      Caption         =   "Sonidos Activados"
       Height          =   345
       Index           =   1
       Left            =   960
@@ -91,9 +133,13 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-'Argentum Online 0.11.2
+'Argentum Online 0.9.0.9
 '
 'Copyright (C) 2002 Márquez Pablo Ignacio
+'Copyright (C) 2002 Otto Perez
+'Copyright (C) 2002 Aaron Perkins
+'Copyright (C) 2002 Matías Fernando Pequeño
+'
 'This program is free software; you can redistribute it and/or modify
 'it under the terms of the GNU General Public License as published by
 'the Free Software Foundation; either version 2 of the License, or
@@ -121,33 +167,34 @@ Attribute VB_Exposed = False
 'Código Postal 1900
 'Pablo Ignacio Márquez
 
+Option Explicit
 
-Private Sub Command1_Click(Index As Integer)
+Private Sub Command1_Click(index As Integer)
 
-Call PlayWaveDS(SND_CLICK)
+Call Audio.PlayWave(SND_CLICK)
 
-Select Case Index
+Select Case index
     Case 0
-        If Musica = 0 Then
-            Musica = 1
+        If Musica Then
+            Musica = False
             Command1(0).Caption = "Musica Desactivada"
-            Stop_Midi
+            Audio.StopMidi
         Else
-            Musica = 0
+            Musica = True
             Command1(0).Caption = "Musica Activada"
-            Call CargarMIDI(DirMidi & "2.mid")
-            Play_Midi
-            
+            Call Audio.PlayMIDI(CStr(currentMidi) & ".mid")
         End If
     Case 1
     
-        If Fx = 0 Then
-            Fx = 1
-            Command1(1).Caption = "FX Desactivados"
-            
+        If Sound Then
+            Sound = False
+            Command1(1).Caption = "Sonidos Desactivados"
+            Call Audio.StopWave
+            RainBufferIndex = 0
+            frmMain.IsPlaying = PlayLoop.plNone
         Else
-            Fx = 0
-            Command1(1).Caption = "FX Activados"
+            Sound = True
+            Command1(1).Caption = "Sonidos Activados"
         End If
 End Select
 End Sub
@@ -156,40 +203,33 @@ Private Sub Command2_Click()
 Me.Visible = False
 End Sub
 
-Private Sub Command3_Click()
-#If ConAlfaB = 1 Then
-
-bNoche = Not bNoche
-SurfaceDB.EfectoPred = IIf(bNoche, 1, 0)
-SurfaceDB.BorrarTodo
-
-#Else
-
-MsgBox "Que hacés ?"
-
-#End If
-End Sub
-
 Private Sub Form_Load()
-If Musica = 0 Then
-    Command1(0).Caption = "Musica Activada"
-Else
-    Command1(0).Caption = "Musica Desactivada"
-End If
-
-If Fx = 0 Then
-    Command1(1).Caption = "FX Activados"
-Else
-    Command1(1).Caption = "FX Desactivados"
-End If
-
+    If Musica Then
+        Command1(0).Caption = "Musica Activada"
+    Else
+        Command1(0).Caption = "Musica Desactivada"
+    End If
+    
+    If Sound Then
+        Command1(1).Caption = "Sonidos Activados"
+    Else
+        Command1(1).Caption = "Sonidos Desactivados"
+    End If
 End Sub
 
+Private Sub optConsola_Click()
+    DialogosClanes.Activo = False
+End Sub
 
-Function RandomNumber(ByVal LowerBound As Variant, ByVal UpperBound As Variant) As Single
+Private Sub optPantalla_Click()
+    DialogosClanes.Activo = True
+End Sub
 
-Randomize Timer
-
-RandomNumber = (UpperBound - LowerBound + 1) * Rnd + LowerBound
-
-End Function
+Private Sub txtCantMensajes_LostFocus()
+    txtCantMensajes.Text = Trim$(txtCantMensajes.Text)
+    If IsNumeric(txtCantMensajes.Text) Then
+        DialogosClanes.CantidadDialogos = Trim$(txtCantMensajes.Text)
+    Else
+        txtCantMensajes.Text = 5
+    End If
+End Sub

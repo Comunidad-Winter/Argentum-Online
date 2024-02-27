@@ -11,37 +11,6 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'Argentum Online 0.11.20
-'Copyright (C) 2002 Márquez Pablo Ignacio
-'
-'This program is free software; you can redistribute it and/or modify
-'it under the terms of the GNU General Public License as published by
-'the Free Software Foundation; either version 2 of the License, or
-'any later version.
-'
-'This program is distributed in the hope that it will be useful,
-'but WITHOUT ANY WARRANTY; without even the implied warranty of
-'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-'GNU General Public License for more details.
-'
-'You should have received a copy of the GNU General Public License
-'along with this program; if not, write to the Free Software
-'Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-'
-'Argentum Online is based on Baronsoft's VB6 Online RPG
-'You can contact the original creator of ORE at aaron@baronsoft.com
-'for more information about ORE please visit http://www.baronsoft.com/
-'
-'
-'You can contact me at:
-'morgolock@speedy.com.ar
-'www.geocities.com/gmorgolock
-'Calle 3 número 983 piso 7 dto A
-'La Plata - Pcia, Buenos Aires - Republica Argentina
-'Código Postal 1900
-'Pablo Ignacio Márquez
-
-
 'Modulo para optimizar la lectura de Archivos en
 'formato INI
 '
@@ -77,12 +46,12 @@ Case MODO_API
 End Select
 End Sub
 
-Public Function DarValor(ByVal Secc As String, ByVal Clave As String) As String
+Public Function DarValor(ByVal Secc As String, ByVal clave As String) As String
 Select Case mModo
 Case MODO_CACHEAR
-    DarValor = DarValorCacheado(Secc, Clave)
+    DarValor = DarValorCacheado(Secc, clave)
 Case MODO_API
-    DarValor = DarValorAPI(Secc, Clave)
+    DarValor = DarValorAPI(Secc, clave)
 End Select
 
 End Function
@@ -147,17 +116,17 @@ hayerror:
 
 End Sub
 
-Private Function DarValorCacheado(ByVal Secc As String, ByVal Clave As String) As String
+Private Function DarValorCacheado(ByVal Secc As String, ByVal clave As String) As String
 Dim Ret As String
 
 DarValorCacheado = ""
 On Local Error Resume Next
-DarValorCacheado = mSecciones(UCase(Secc)).Item(UCase(Clave))
+DarValorCacheado = mSecciones(UCase$(Secc)).Item(UCase$(clave))
 On Local Error GoTo 0
 
 End Function
 
-Private Function DarValorAPI(ByVal Secc As String, ByVal Clave As String) As String
+Private Function DarValorAPI(ByVal Secc As String, ByVal clave As String) As String
 
 Dim sSpaces As String ' This will hold the input that the program will retrieve
 Dim szReturn As String ' This will be the defaul value if the string is not found
@@ -166,7 +135,7 @@ szReturn = ""
   
 sSpaces = Space(5000) ' This tells the computer how long the longest string can be
 
-GetPrivateProfileString Secc, Clave, szReturn, sSpaces, Len(sSpaces), mArch
+GetPrivateProfileString Secc, clave, szReturn, sSpaces, Len(sSpaces), mArch
   
 sSpaces = RTrim(sSpaces)
 DarValorAPI = Left$(sSpaces, Len(sSpaces) - 1)

@@ -1,2 +1,17 @@
 [INIT]
-NroGuilds= 0
+NroGuilds=1
+[GUILD1]
+Founder=el coso
+GuildName=apestosos
+Date=18/02/2006
+Antifaccion=0
+Alineacion=Neutro
+Codex1=a
+Codex2=a
+Codex3=a
+Codex4=a
+Codex5=a
+Desc=a
+GuildNews=Clan creado con alineación : Neutro
+Leader=el coso
+URL=a

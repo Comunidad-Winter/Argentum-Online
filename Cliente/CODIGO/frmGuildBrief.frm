@@ -33,7 +33,7 @@ Begin VB.Form frmGuildBrief
       Width           =   1335
    End
    Begin VB.CommandButton aliado 
-      Caption         =   "Declarar Aliado"
+      Caption         =   "Ofrecer Alianza"
       Height          =   375
       Left            =   3120
       MouseIcon       =   "frmGuildBrief.frx":0152
@@ -113,7 +113,7 @@ Begin VB.Form frmGuildBrief
       Height          =   2415
       Left            =   120
       TabIndex        =   9
-      Top             =   2880
+      Top             =   2970
       Width           =   7215
       Begin VB.Label Codex 
          Height          =   255
@@ -166,7 +166,7 @@ Begin VB.Form frmGuildBrief
       Begin VB.Label Codex 
          Height          =   255
          Index           =   1
-         Left            =   240
+         Left            =   210
          TabIndex        =   11
          Top             =   600
          Width           =   6735
@@ -191,11 +191,19 @@ Begin VB.Form frmGuildBrief
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Height          =   2775
+      Height          =   2940
       Left            =   120
       TabIndex        =   0
-      Top             =   120
+      Top             =   -15
       Width           =   7215
+      Begin VB.Label antifaccion 
+         Caption         =   "Puntos Antifaccion:"
+         Height          =   255
+         Left            =   120
+         TabIndex        =   27
+         Top             =   2640
+         Width           =   6975
+      End
       Begin VB.Label Aliados 
          Caption         =   "Clanes Aliados:"
          Height          =   255
@@ -212,8 +220,8 @@ Begin VB.Form frmGuildBrief
          Top             =   2160
          Width           =   6975
       End
-      Begin VB.Label Oro 
-         Caption         =   "Oro:"
+      Begin VB.Label lblAlineacion 
+         Caption         =   "Alineacion:"
          Height          =   255
          Left            =   120
          TabIndex        =   8
@@ -221,7 +229,7 @@ Begin VB.Form frmGuildBrief
          Width           =   6975
       End
       Begin VB.Label eleccion 
-         Caption         =   "Dias para proxima eleccion de lider:"
+         Caption         =   "Elecciones:"
          Height          =   255
          Left            =   120
          TabIndex        =   7
@@ -286,6 +294,10 @@ Attribute VB_Exposed = False
 'Argentum Online 0.9.0.9
 '
 'Copyright (C) 2002 Márquez Pablo Ignacio
+'Copyright (C) 2002 Otto Perez
+'Copyright (C) 2002 Aaron Perkins
+'Copyright (C) 2002 Matías Fernando Pequeño
+'
 'This program is free software; you can redistribute it and/or modify
 'it under the terms of the GNU General Public License as published by
 'the Free Software Foundation; either version 2 of the License, or
@@ -312,6 +324,9 @@ Attribute VB_Exposed = False
 'La Plata - Pcia, Buenos Aires - Republica Argentina
 'Código Postal 1900
 'Pablo Ignacio Márquez
+
+Option Explicit
+
 Public EsLeader As Boolean
 
 
@@ -334,31 +349,35 @@ lider.Caption = "Lider:" & ReadField(4, Buffer, Asc("¬"))
 web.Caption = "Web site:" & ReadField(5, Buffer, Asc("¬"))
 Miembros.Caption = "Miembros:" & ReadField(6, Buffer, Asc("¬"))
 eleccion.Caption = "Dias para proxima eleccion de lider:" & ReadField(7, Buffer, Asc("¬"))
-Oro.Caption = "Oro:" & ReadField(8, Buffer, Asc("¬"))
+'Oro.Caption = "Oro:" & ReadField(8, Buffer, Asc("¬"))
+lblAlineacion.Caption = "Alineación: " & ReadField(8, Buffer, Asc("¬"))
 Enemigos.Caption = "Clanes enemigos:" & ReadField(9, Buffer, Asc("¬"))
 aliados.Caption = "Clanes aliados:" & ReadField(10, Buffer, Asc("¬"))
+antifaccion.Caption = "Puntos Antifaccion: " & ReadField(11, Buffer, Asc("¬"))
 
-Dim T%, k%
-k% = Val(ReadField(11, Buffer, Asc("¬")))
+Dim T As Long
 
-For T% = 1 To k%
-    Codex(T% - 1).Caption = ReadField(11 + T%, Buffer, Asc("¬"))
-Next T%
+For T = 1 To 8
+    Codex(T - 1).Caption = ReadField(11 + T, Buffer, Asc("¬"))
+Next T
 
+Dim des As String
 
-Dim des$
+des = ReadField(20, Buffer, Asc("¬"))
+desc.Text = Replace(des, "º", vbCrLf)
 
-des$ = ReadField(11 + T%, Buffer, Asc("¬"))
-
-desc = Replace(des$, "º", vbCrLf)
-
-Me.Show vbModeless, frmMain
+Me.Show vbModal, frmMain
 
 End Sub
 
 Private Sub aliado_Click()
-Call SendData("DECALIAD" & Right(Nombre, Len(Nombre) - 7))
-Unload Me
+frmCommet.Nombre = Right(Nombre.Caption, Len(Nombre.Caption) - 7)
+frmCommet.T = ALIANZA
+frmCommet.Caption = "Ingrese propuesta de alianza"
+Call frmCommet.Show(vbModal, frmGuildBrief)
+
+'Call SendData("OFRECALI" & Right(Nombre, Len(Nombre) - 7))
+'Unload Me
 End Sub
 
 Private Sub Command1_Click()
@@ -368,16 +387,19 @@ End Sub
 Private Sub Command2_Click()
 
 Call frmGuildSol.RecieveSolicitud(Right$(Nombre, Len(Nombre) - 7))
-Call frmGuildSol.Show(vbModeless, frmGuildBrief)
+Call frmGuildSol.Show(vbModal, frmGuildBrief)
 'Unload Me
 
 End Sub
 
 Private Sub Command3_Click()
 frmCommet.Nombre = Right(Nombre.Caption, Len(Nombre.Caption) - 7)
-Call frmCommet.Show(vbModeless, frmGuildBrief)
+frmCommet.T = PAZ
+frmCommet.Caption = "Ingrese propuesta de paz"
+Call frmCommet.Show(vbModal, frmGuildBrief)
 'Unload Me
 End Sub
+
 
 Private Sub Guerra_Click()
 Call SendData("DECGUERR" & Right(Nombre.Caption, Len(Nombre.Caption) - 7))

@@ -259,35 +259,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-'Argentum Online 0.9.0.9
-'
-'Copyright (C) 2002 Márquez Pablo Ignacio
-'This program is free software; you can redistribute it and/or modify
-'it under the terms of the GNU General Public License as published by
-'the Free Software Foundation; either version 2 of the License, or
-'any later version.
-'
-'This program is distributed in the hope that it will be useful,
-'but WITHOUT ANY WARRANTY; without even the implied warranty of
-'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-'GNU General Public License for more details.
-'
-'You should have received a copy of the GNU General Public License
-'along with this program; if not, write to the Free Software
-'Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-'
-'Argentum Online is based on Baronsoft's VB6 Online RPG
-'You can contact the original creator of ORE at aaron@baronsoft.com
-'for more information about ORE please visit http://www.baronsoft.com/
-'
-'
-'You can contact me at:
-'morgolock@speedy.com.ar
-'www.geocities.com/gmorgolock
-'Calle 3 número 983 piso 7 dto A
-'La Plata - Pcia, Buenos Aires - Republica Argentina
-'Código Postal 1900
-'Pablo Ignacio Márquez
+Option Explicit
 
 Private Sub cmdAceptar_Click()
 Call SendData("COMUSUOK")
@@ -296,8 +268,8 @@ End Sub
 Private Sub cmdOfrecer_Click()
 
 If optQue(0).value = True Then
-    If List1.ListIndex < 0 Then Exit Sub
-    If List1.ItemData(List1.ListIndex) <= 0 Then Exit Sub
+    If List1.listIndex < 0 Then Exit Sub
+    If List1.ItemData(List1.listIndex) <= 0 Then Exit Sub
     
 '    If Val(txtCant.Text) > List1.ItemData(List1.ListIndex) Or _
 '        Val(txtCant.Text) <= 0 Then Exit Sub
@@ -308,7 +280,7 @@ ElseIf optQue(1).value = True Then
 End If
 
 If optQue(0).value = True Then
-    Call SendData("OFRECER" & List1.ListIndex + 1 & "," & Trim(Val(txtCant.Text)))
+    Call SendData("OFRECER" & List1.listIndex + 1 & "," & Trim(Val(txtCant.Text)))
 ElseIf optQue(1).value = True Then
     Call SendData("OFRECER" & FLAGORO & "," & Trim(Val(txtCant.Text)))
 Else
@@ -348,7 +320,7 @@ Picture1.SetFocus
 End Sub
 
 Private Sub list1_Click()
-DibujaGrh UserInventory(List1.ListIndex + 1).GrhIndex
+DibujaGrh Inventario.GrhIndex(List1.listIndex + 1)
 
 End Sub
 
@@ -370,9 +342,9 @@ Call DrawGrhtoHdc(Picture1.hWnd, Picture1.Hdc, Grh, SR, DR)
 End Sub
 
 Private Sub List2_Click()
-If List2.ListIndex >= 0 Then
-    DibujaGrh OtroInventario(List2.ListIndex + 1).GrhIndex
-    Label3.Caption = "Cantidad: " & List2.ItemData(List2.ListIndex)
+If List2.listIndex >= 0 Then
+    DibujaGrh OtroInventario(List2.listIndex + 1).GrhIndex
+    Label3.Caption = "Cantidad: " & List2.ItemData(List2.listIndex)
     cmdAceptar.Enabled = True
     cmdRechazar.Enabled = True
 Else
@@ -382,14 +354,18 @@ End If
 
 End Sub
 
-Private Sub optQue_Click(Index As Integer)
-Select Case Index
+Private Sub optQue_Click(index As Integer)
+Select Case index
 Case 0
     List1.Enabled = True
 Case 1
     List1.Enabled = False
 End Select
 
+End Sub
+
+Private Sub txtCant_Change()
+    If Val(txtCant.Text) < 1 Then txtCant.Text = "1"
 End Sub
 
 Private Sub txtCant_KeyDown(KeyCode As Integer, Shift As Integer)

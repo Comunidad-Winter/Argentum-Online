@@ -1,6 +1,5 @@
 Attribute VB_Name = "Queue"
-
-'Argentum Online 0.11.20
+'Argentum Online 0.9.0.2
 'Copyright (C) 2002 Márquez Pablo Ignacio
 '
 'This program is free software; you can redistribute it and/or modify
@@ -30,12 +29,14 @@ Attribute VB_Name = "Queue"
 'Código Postal 1900
 'Pablo Ignacio Márquez
 
+Option Explicit
+
 Public Type tVertice
     X As Integer
     Y As Integer
 End Type
 
-Private Const MAXELEM = 1000
+Private Const MAXELEM As Integer = 1000
 
 Private m_array() As tVertice
 Private m_lastelem As Integer

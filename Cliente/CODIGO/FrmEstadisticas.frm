@@ -902,6 +902,10 @@ Attribute VB_Exposed = False
 'Argentum Online 0.9.0.9
 '
 'Copyright (C) 2002 Márquez Pablo Ignacio
+'Copyright (C) 2002 Otto Perez
+'Copyright (C) 2002 Aaron Perkins
+'Copyright (C) 2002 Matías Fernando Pequeño
+'
 'This program is free software; you can redistribute it and/or modify
 'it under the terms of the GNU General Public License as published by
 'the Free Software Foundation; either version 2 of the License, or
@@ -935,25 +939,14 @@ Private Sub Command1_Click()
 Unload Me
 End Sub
 
-Private Sub Form_Deactivate()
-'Me.Visible = False
-End Sub
-
-Private Sub Form_Load()
-'Dim i As Integer
-'For i = 1 To NUMATRIBUTOS
-'    Atri(i).Caption = AtributosNames(i - 1)
-'Next
-End Sub
-
 Public Sub Iniciar_Labels()
 'Iniciamos los labels con los valores de los atributos y los skills
-Dim I As Integer
-For I = 1 To NUMATRIBUTOS
-    Atri(I).Caption = AtributosNames(I) & ": " & UserAtributos(I)
+Dim i As Integer
+For i = 1 To NUMATRIBUTOS
+    Atri(i).Caption = AtributosNames(i) & ": " & UserAtributos(i)
 Next
-For I = 1 To NUMSKILLS
-    Skills(I).Caption = SkillsNames(I) & ": " & UserSkills(I)
+For i = 1 To NUMSKILLS
+    Skills(i).Caption = SkillsNames(i) & ": " & UserSkills(i)
 Next
 
 

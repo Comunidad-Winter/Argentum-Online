@@ -89,7 +89,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-'Argentum Online 0.11.20
+'Argentum Online 0.9.0.2
 'Copyright (C) 2002 Márquez Pablo Ignacio
 '
 'This program is free software; you can redistribute it and/or modify
@@ -119,14 +119,9 @@ Attribute VB_Exposed = False
 'Código Postal 1900
 'Pablo Ignacio Márquez
 
-
+Option Explicit
 
 Private Sub Form_Load()
 'Label1(1).Caption = Label1(1).Caption & " V." & App.Major & "." & App.Minor & "." & App.Revision
 Picture1.Picture = LoadPicture(App.Path & "\logo.jpg")
 End Sub
-
-Private Sub Frame1_DragDrop(Source As Control, X As Single, Y As Single)
-
-End Sub
-

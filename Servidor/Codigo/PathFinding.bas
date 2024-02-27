@@ -1,5 +1,5 @@
 Attribute VB_Name = "PathFinding"
-'Argentum Online 0.11.20
+'Argentum Online 0.9.0.2
 'Copyright (C) 2002 Márquez Pablo Ignacio
 '
 'This program is free software; you can redistribute it and/or modify
@@ -28,8 +28,6 @@ Attribute VB_Name = "PathFinding"
 'La Plata - Pcia, Buenos Aires - Republica Argentina
 'Código Postal 1900
 'Pablo Ignacio Márquez
-
-
 
 '#######################################################
 'PathFinding Module
@@ -83,10 +81,10 @@ Attribute VB_Name = "PathFinding"
 
 Option Explicit
 
-Private Const ROWS = 100
-Private Const COLUMS = 100
-Private Const MAXINT = 1000
-Private Const Walkable = 0
+Private Const ROWS As Integer = 100
+Private Const COLUMS As Integer = 100
+Private Const MAXINT As Integer = 1000
+Private Const Walkable As Integer = 0
 
 Private Type tIntermidiateWork
     Known As Boolean

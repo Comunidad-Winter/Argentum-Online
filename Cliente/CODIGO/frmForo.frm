@@ -174,6 +174,10 @@ Attribute VB_Exposed = False
 'Argentum Online 0.9.0.9
 '
 'Copyright (C) 2002 Márquez Pablo Ignacio
+'Copyright (C) 2002 Otto Perez
+'Copyright (C) 2002 Aaron Perkins
+'Copyright (C) 2002 Matías Fernando Pequeño
+'
 'This program is free software; you can redistribute it and/or modify
 'it under the terms of the GNU General Public License as published by
 'the Free Software Foundation; either version 2 of the License, or
@@ -207,9 +211,9 @@ Option Explicit
 
 Public ForoIndex As Integer
 Private Sub Command1_Click()
-Dim I
-For Each I In Text
-    I.Visible = False
+Dim i
+For Each i In Text
+    i.Visible = False
 Next
 
 If Not MiMensaje(0).Visible Then
@@ -221,7 +225,7 @@ If Not MiMensaje(0).Visible Then
     Label1.Visible = True
     Label2.Visible = True
 Else
-    Call SendData("DEMSG" & MiMensaje(0).Text & Chr(176) & MiMensaje(1).Text)
+    Call SendData("DEMSG" & MiMensaje(0).Text & Chr(176) & Left(MiMensaje(1).Text, 450))
     List.AddItem MiMensaje(0).Text
     Load Text(List.ListCount)
     Text(List.ListCount - 1).Text = MiMensaje(1).Text
@@ -246,9 +250,9 @@ MiMensaje(1).Visible = False
 Command1.Enabled = True
 Label1.Visible = False
 Label2.Visible = False
-Dim I
-For Each I In Text
-    I.Visible = False
+Dim i
+For Each i In Text
+    i.Visible = False
 Next
 List.Visible = True
 End Sub

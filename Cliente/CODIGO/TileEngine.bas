@@ -1,7 +1,11 @@
 Attribute VB_Name = "Mod_TileEngine"
-'Argentum Online 0.11.2
+'Argentum Online 0.9.0.9
 '
 'Copyright (C) 2002 Márquez Pablo Ignacio
+'Copyright (C) 2002 Otto Perez
+'Copyright (C) 2002 Aaron Perkins
+'Copyright (C) 2002 Matías Fernando Pequeño
+'
 'This program is free software; you can redistribute it and/or modify
 'it under the terms of the GNU General Public License as published by
 'the Free Software Foundation; either version 2 of the License, or
@@ -28,6 +32,7 @@ Attribute VB_Name = "Mod_TileEngine"
 'La Plata - Pcia, Buenos Aires - Republica Argentina
 'Código Postal 1900
 'Pablo Ignacio Márquez
+
 
 
 Option Explicit
@@ -150,7 +155,7 @@ End Type
 'Apariencia del personaje
 Public Type Char
     Active As Byte
-    Heading As Byte
+    Heading As Byte ' As E_Heading ?
     Pos As Position
     
     iHead As Integer
@@ -311,9 +316,6 @@ Public MapInfo As MapInfo ' Info acerca del mapa en uso
 '¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿API?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?
 'Blt
 Public Declare Function BitBlt Lib "gdi32" (ByVal hDestDC As Long, ByVal X As Long, ByVal Y As Long, ByVal nWidth As Long, ByVal nHeight As Long, ByVal hSrcDC As Long, ByVal xSrc As Long, ByVal ySrc As Long, ByVal dwRop As Long) As Long
-'Sonido
-Declare Function mciSendString Lib "winmm.dll" Alias "mciSendStringA" (ByVal lpstrCommand As String, ByVal lpstrReturnString As String, ByVal uRetrunLength As Long, ByVal hwndCallback As Long) As Long
-Declare Function sndPlaySound Lib "winmm.dll" Alias "sndPlaySoundA" (ByVal lpszSoundName As String, ByVal uFlags As Long) As Long
 '¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?
 
 
@@ -321,10 +323,8 @@ Declare Function sndPlaySound Lib "winmm.dll" Alias "sndPlaySoundA" (ByVal lpszS
 '       [CODE 000]: MatuX
 '
 Public bRain        As Boolean 'está raineando?
-Public bRainST      As Boolean
 Public bTecho       As Boolean 'hay techo?
 Public brstTick     As Long
-Public bNoche       As Boolean 'es de noche?
 
 Private RLluvia(7)  As RECT  'RECT de la lluvia
 Private iFrameIndex As Byte  'Frame actual de la LL
@@ -333,7 +333,12 @@ Private LTLluvia(4) As Integer
 
 Public charlist(1 To 10000) As Char
 
+#If SeguridadAlkon Then
 
+Public MI(1 To 1233) As clsManagerInvisibles
+Public CualMI As Integer
+
+#End If
 
 'estados internos del surface (read only)
 Public Enum TextureStatus
@@ -343,29 +348,30 @@ Public Enum TextureStatus
 End Enum
 
 '[CODE 001]:MatuX
-    Public Enum PlayLoop
-        plNone = 0
-        plLluviain = 1
-        plLluviaout = 2
-        plFogata = 3
-    End Enum
+Public Enum PlayLoop
+    plNone = 0
+    plLluviain = 1
+    plLluviaout = 2
+End Enum
 '[END]'
 '
 '       [END]
 '¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?
 
-''int VBABDX_API
-''BltAlphaFast( int lpDDSDest, int lpDDSSource, int iWidth, int iHeight,
-''             int pitchSrc, int pitchDst, DWORD dwMode )
+#If ConAlfaB Then
 
 Private Declare Function BltAlphaFast Lib "vbabdx" (ByRef lpDDSDest As Any, ByRef lpDDSSource As Any, ByVal iWidth As Long, ByVal iHeight As Long, _
         ByVal pitchSrc As Long, ByVal pitchDst As Long, ByVal dwMode As Long) As Long
 Private Declare Function BltEfectoNoche Lib "vbabdx" (ByRef lpDDSDest As Any, ByVal iWidth As Long, ByVal iHeight As Long, _
         ByVal pitchDst As Long, ByVal dwMode As Long) As Long
 
+#End If
+
+Private Declare Function GetWindowRect Lib "User32" (ByVal hWnd As Long, lpRect As RECT) As Long
+
 Sub CargarCabezas()
 On Error Resume Next
-Dim N As Integer, I As Integer, Numheads As Integer, Index As Integer
+Dim N As Integer, i As Integer, Numheads As Integer, index As Integer
 
 Dim Miscabezas() As tIndiceCabeza
 
@@ -382,13 +388,13 @@ Get #N, , Numheads
 ReDim HeadData(0 To Numheads + 1) As HeadData
 ReDim Miscabezas(0 To Numheads + 1) As tIndiceCabeza
 
-For I = 1 To Numheads
-    Get #N, , Miscabezas(I)
-    InitGrh HeadData(I).Head(1), Miscabezas(I).Head(1), 0
-    InitGrh HeadData(I).Head(2), Miscabezas(I).Head(2), 0
-    InitGrh HeadData(I).Head(3), Miscabezas(I).Head(3), 0
-    InitGrh HeadData(I).Head(4), Miscabezas(I).Head(4), 0
-Next I
+For i = 1 To Numheads
+    Get #N, , Miscabezas(i)
+    InitGrh HeadData(i).Head(1), Miscabezas(i).Head(1), 0
+    InitGrh HeadData(i).Head(2), Miscabezas(i).Head(2), 0
+    InitGrh HeadData(i).Head(3), Miscabezas(i).Head(3), 0
+    InitGrh HeadData(i).Head(4), Miscabezas(i).Head(4), 0
+Next i
 
 Close #N
 
@@ -396,7 +402,7 @@ End Sub
 
 Sub CargarCascos()
 On Error Resume Next
-Dim N As Integer, I As Integer, NumCascos As Integer, Index As Integer
+Dim N As Integer, i As Integer, NumCascos As Integer, index As Integer
 
 Dim Miscabezas() As tIndiceCabeza
 
@@ -413,13 +419,13 @@ Get #N, , NumCascos
 ReDim CascoAnimData(0 To NumCascos + 1) As HeadData
 ReDim Miscabezas(0 To NumCascos + 1) As tIndiceCabeza
 
-For I = 1 To NumCascos
-    Get #N, , Miscabezas(I)
-    InitGrh CascoAnimData(I).Head(1), Miscabezas(I).Head(1), 0
-    InitGrh CascoAnimData(I).Head(2), Miscabezas(I).Head(2), 0
-    InitGrh CascoAnimData(I).Head(3), Miscabezas(I).Head(3), 0
-    InitGrh CascoAnimData(I).Head(4), Miscabezas(I).Head(4), 0
-Next I
+For i = 1 To NumCascos
+    Get #N, , Miscabezas(i)
+    InitGrh CascoAnimData(i).Head(1), Miscabezas(i).Head(1), 0
+    InitGrh CascoAnimData(i).Head(2), Miscabezas(i).Head(2), 0
+    InitGrh CascoAnimData(i).Head(3), Miscabezas(i).Head(3), 0
+    InitGrh CascoAnimData(i).Head(4), Miscabezas(i).Head(4), 0
+Next i
 
 Close #N
 
@@ -427,7 +433,7 @@ End Sub
 
 Sub CargarCuerpos()
 On Error Resume Next
-Dim N As Integer, I As Integer
+Dim N As Integer, i As Integer
 Dim NumCuerpos As Integer
 Dim MisCuerpos() As tIndiceCuerpo
 
@@ -444,22 +450,22 @@ Get #N, , NumCuerpos
 ReDim BodyData(0 To NumCuerpos + 1) As BodyData
 ReDim MisCuerpos(0 To NumCuerpos + 1) As tIndiceCuerpo
 
-For I = 1 To NumCuerpos
-    Get #N, , MisCuerpos(I)
-    InitGrh BodyData(I).Walk(1), MisCuerpos(I).Body(1), 0
-    InitGrh BodyData(I).Walk(2), MisCuerpos(I).Body(2), 0
-    InitGrh BodyData(I).Walk(3), MisCuerpos(I).Body(3), 0
-    InitGrh BodyData(I).Walk(4), MisCuerpos(I).Body(4), 0
-    BodyData(I).HeadOffset.X = MisCuerpos(I).HeadOffsetX
-    BodyData(I).HeadOffset.Y = MisCuerpos(I).HeadOffsetY
-Next I
+For i = 1 To NumCuerpos
+    Get #N, , MisCuerpos(i)
+    InitGrh BodyData(i).Walk(1), MisCuerpos(i).Body(1), 0
+    InitGrh BodyData(i).Walk(2), MisCuerpos(i).Body(2), 0
+    InitGrh BodyData(i).Walk(3), MisCuerpos(i).Body(3), 0
+    InitGrh BodyData(i).Walk(4), MisCuerpos(i).Body(4), 0
+    BodyData(i).HeadOffset.X = MisCuerpos(i).HeadOffsetX
+    BodyData(i).HeadOffset.Y = MisCuerpos(i).HeadOffsetY
+Next i
 
 Close #N
 
 End Sub
 Sub CargarFxs()
 On Error Resume Next
-Dim N As Integer, I As Integer
+Dim N As Integer, i As Integer
 Dim NumFxs As Integer
 Dim MisFxs() As tIndiceFx
 
@@ -476,12 +482,12 @@ Get #N, , NumFxs
 ReDim FxData(0 To NumFxs + 1) As FxData
 ReDim MisFxs(0 To NumFxs + 1) As tIndiceFx
 
-For I = 1 To NumFxs
-    Get #N, , MisFxs(I)
-    Call InitGrh(FxData(I).Fx, MisFxs(I).Animacion, 1)
-    FxData(I).OffsetX = MisFxs(I).OffsetX
-    FxData(I).OffsetY = MisFxs(I).OffsetY
-Next I
+For i = 1 To NumFxs
+    Get #N, , MisFxs(i)
+    Call InitGrh(FxData(i).Fx, MisFxs(i).Animacion, 1)
+    FxData(i).OffsetX = MisFxs(i).OffsetX
+    FxData(i).OffsetY = MisFxs(i).OffsetY
+Next i
 
 Close #N
 
@@ -489,7 +495,7 @@ End Sub
 
 Sub CargarTips()
 On Error Resume Next
-Dim N As Integer, I As Integer
+Dim N As Integer, i As Integer
 Dim NumTips As Integer
 
 N = FreeFile
@@ -504,9 +510,9 @@ Get #N, , NumTips
 'Resize array
 ReDim Tips(1 To NumTips) As String * 255
 
-For I = 1 To NumTips
-    Get #N, , Tips(I)
-Next I
+For i = 1 To NumTips
+    Get #N, , Tips(i)
+Next i
 
 Close #N
 
@@ -514,7 +520,7 @@ End Sub
 
 Sub CargarArrayLluvia()
 On Error Resume Next
-Dim N As Integer, I As Integer
+Dim N As Integer, i As Integer
 Dim Nu As Integer
 
 N = FreeFile
@@ -529,9 +535,9 @@ Get #N, , Nu
 'Resize array
 ReDim bLluvia(1 To Nu) As Byte
 
-For I = 1 To Nu
-    Get #N, , bLluvia(I)
-Next I
+For i = 1 To Nu
+    Get #N, , bLluvia(i)
+Next i
 
 Close #N
 
@@ -630,19 +636,23 @@ End Sub
 
 Sub ResetCharInfo(ByVal CharIndex As Integer)
 
-charlist(CharIndex).Active = 0
-charlist(CharIndex).Criminal = 0
-charlist(CharIndex).Fx = 0
-charlist(CharIndex).FxLoopTimes = 0
-charlist(CharIndex).invisible = False
+    charlist(CharIndex).Active = 0
+    charlist(CharIndex).Criminal = 0
+    charlist(CharIndex).Fx = 0
+    charlist(CharIndex).FxLoopTimes = 0
+    charlist(CharIndex).invisible = False
 
-charlist(CharIndex).Moving = 0
-charlist(CharIndex).muerto = False
-charlist(CharIndex).Nombre = ""
-charlist(CharIndex).pie = False
-charlist(CharIndex).Pos.X = 0
-charlist(CharIndex).Pos.Y = 0
-charlist(CharIndex).UsandoArma = False
+#If SeguridadAlkon Then
+    Call MI(CualMI).ResetInvisible(CharIndex)
+#End If
+
+    charlist(CharIndex).Moving = 0
+    charlist(CharIndex).muerto = False
+    charlist(CharIndex).Nombre = ""
+    charlist(CharIndex).pie = False
+    charlist(CharIndex).Pos.X = 0
+    charlist(CharIndex).Pos.Y = 0
+    charlist(CharIndex).UsandoArma = False
 
 End Sub
 
@@ -705,7 +715,7 @@ If Grh.GrhIndex <> 0 Then Grh.SpeedCounter = GrhData(Grh.GrhIndex).Speed
 
 End Sub
 
-Sub MoveCharbyHead(CharIndex As Integer, nHeading As Byte)
+Sub MoveCharbyHead(ByVal CharIndex As Integer, ByVal nHeading As E_Heading)
 '*****************************************************************
 'Starts the movement of a character in nHeading direction
 '*****************************************************************
@@ -722,16 +732,16 @@ Y = charlist(CharIndex).Pos.Y
 'Figure out which way to move
 Select Case nHeading
 
-    Case NORTH
+    Case E_Heading.NORTH
         addY = -1
 
-    Case EAST
+    Case E_Heading.EAST
         addX = 1
 
-    Case SOUTH
+    Case E_Heading.SOUTH
         addY = 1
     
-    Case WEST
+    Case E_Heading.WEST
         addX = -1
         
 End Select
@@ -752,18 +762,25 @@ charlist(CharIndex).Heading = nHeading
 
 If UserEstado <> 1 Then Call DoPasosFx(CharIndex)
 
+'areas viejos
+If (nY < MinLimiteY) Or (nY > MaxLimiteY) Or (nX < MinLimiteX) Or (nX > MaxLimiteX) Then
+    Debug.Print UserCharIndex
+    Call EraseChar(CharIndex)
+End If
 
 End Sub
 
-
 Public Sub DoFogataFx()
-If Fx = 0 Then
+If Sound Then
     If bFogata Then
         bFogata = HayFogata()
-        If Not bFogata Then frmMain.StopSound
+        If Not bFogata Then
+            Call Audio.StopWave(FogataBufferIndex)
+            FogataBufferIndex = 0
+        End If
     Else
         bFogata = HayFogata()
-        If bFogata Then frmMain.Play "fuego.wav", True
+        If bFogata And FogataBufferIndex = 0 Then FogataBufferIndex = Audio.PlayWave("fuego.wav", LoopStyle.Enabled)
     End If
 End If
 End Sub
@@ -791,23 +808,25 @@ End Function
 Sub DoPasosFx(ByVal CharIndex As Integer)
 Static pie As Boolean
 
+If Not Sound Then Exit Sub
+
 If Not UserNavegando Then
-        If Not charlist(CharIndex).muerto And EstaPCarea(CharIndex) Then
-            charlist(CharIndex).pie = Not charlist(CharIndex).pie
-            If charlist(CharIndex).pie Then
-                Call PlayWaveDS(SND_PASOS1)
-            Else
-                Call PlayWaveDS(SND_PASOS2)
-            End If
+    If Not charlist(CharIndex).muerto And EstaPCarea(CharIndex) Then
+        charlist(CharIndex).pie = Not charlist(CharIndex).pie
+        If charlist(CharIndex).pie Then
+            Call Audio.PlayWave(SND_PASOS1)
+        Else
+            Call Audio.PlayWave(SND_PASOS2)
         End If
+    End If
 Else
-        Call PlayWaveDS(SND_NAVEGANDO)
+    Call Audio.PlayWave(SND_NAVEGANDO)
 End If
 
 End Sub
 
 
-Sub MoveCharbyPos(CharIndex As Integer, nX As Integer, nY As Integer)
+Sub MoveCharbyPos(ByVal CharIndex As Integer, ByVal nX As Integer, ByVal nY As Integer)
 
 On Error Resume Next
 
@@ -815,7 +834,7 @@ Dim X As Integer
 Dim Y As Integer
 Dim addX As Integer
 Dim addY As Integer
-Dim nHeading As Byte
+Dim nHeading As E_Heading
 
 
 
@@ -828,19 +847,19 @@ addX = nX - X
 addY = nY - Y
 
 If Sgn(addX) = 1 Then
-    nHeading = EAST
+    nHeading = E_Heading.EAST
 End If
 
 If Sgn(addX) = -1 Then
-    nHeading = WEST
+    nHeading = E_Heading.WEST
 End If
 
 If Sgn(addY) = -1 Then
-    nHeading = NORTH
+    nHeading = E_Heading.NORTH
 End If
 
 If Sgn(addY) = 1 Then
-    nHeading = SOUTH
+    nHeading = E_Heading.SOUTH
 End If
 
 MapData(nX, nY).CharIndex = CharIndex
@@ -855,12 +874,23 @@ charlist(CharIndex).MoveOffset.Y = -1 * (TilePixelHeight * addY)
 charlist(CharIndex).Moving = 1
 charlist(CharIndex).Heading = nHeading
 
+'parche para que no medite cuando camina
+Dim fxCh As Integer
+fxCh = charlist(CharIndex).Fx
+If fxCh = FxMeditar.CHICO Or fxCh = FxMeditar.GRANDE Or fxCh = FxMeditar.MEDIANO Or fxCh = FxMeditar.XGRANDE Then
+    charlist(CharIndex).Fx = 0
+    charlist(CharIndex).FxLoopTimes = 0
+End If
 
+If Not EstaPCarea(CharIndex) Then Dialogos.QuitarDialogo (CharIndex)
 
+If (nY < MinLimiteY) Or (nY > MaxLimiteY) Or (nX < MinLimiteX) Or (nX > MaxLimiteX) Then
+    Call EraseChar(CharIndex)
+End If
 
 End Sub
 
-Sub MoveScreen(Heading As Byte)
+Sub MoveScreen(ByVal nHeading As E_Heading)
 '******************************************
 'Starts the screen moving in a direction
 '******************************************
@@ -870,18 +900,18 @@ Dim tX As Integer
 Dim tY As Integer
 
 'Figure out which way to move
-Select Case Heading
+Select Case nHeading
 
-    Case NORTH
+    Case E_Heading.NORTH
         Y = -1
 
-    Case EAST
+    Case E_Heading.EAST
         X = 1
 
-    Case SOUTH
+    Case E_Heading.SOUTH
         Y = 1
     
-    Case WEST
+    Case E_Heading.WEST
         X = -1
         
 End Select
@@ -1050,7 +1080,7 @@ MsgBox "Error while loading the Grh.dat! Stopped at GRH number: " & Grh
 
 End Sub
 
-Function LegalPos(X As Integer, Y As Integer) As Boolean
+Function LegalPos(ByVal X As Integer, ByVal Y As Integer) As Boolean
 '*****************************************************************
 'Checks to see if a tile position is legal
 '*****************************************************************
@@ -1092,7 +1122,7 @@ End Function
 
 
 
-Function InMapLegalBounds(X As Integer, Y As Integer) As Boolean
+Function InMapLegalBounds(ByVal X As Integer, ByVal Y As Integer) As Boolean
 '*****************************************************************
 'Checks to see if a tile position is in the maps
 'LEGAL/Walkable bounds
@@ -1107,7 +1137,7 @@ InMapLegalBounds = True
 
 End Function
 
-Function InMapBounds(X As Integer, Y As Integer) As Boolean
+Function InMapBounds(ByVal X As Integer, ByVal Y As Integer) As Boolean
 '*****************************************************************
 'Checks to see if a tile position is in the maps bounds
 '*****************************************************************
@@ -1121,7 +1151,7 @@ InMapBounds = True
 
 End Function
 
-Sub DDrawGrhtoSurface(surface As DirectDrawSurface7, Grh As Grh, ByVal X As Integer, ByVal Y As Integer, center As Byte, Animate As Byte)
+Sub DDrawGrhtoSurface(Surface As DirectDrawSurface7, Grh As Grh, ByVal X As Integer, ByVal Y As Integer, center As Byte, Animate As Byte)
 
 Dim CurrentGrh As Grh
 Dim destRect As RECT
@@ -1159,10 +1189,10 @@ With SourceRect
         .Right = .Left + GrhData(CurrentGrh.GrhIndex).pixelWidth
         .Bottom = .Top + GrhData(CurrentGrh.GrhIndex).pixelHeight
 End With
-surface.BltFast X, Y, SurfaceDB(GrhData(CurrentGrh.GrhIndex).FileNum), SourceRect, DDBLTFAST_WAIT
+Surface.BltFast X, Y, SurfaceDB(GrhData(CurrentGrh.GrhIndex).FileNum), SourceRect, DDBLTFAST_WAIT
 End Sub
 
-Sub DDrawTransGrhIndextoSurface(surface As DirectDrawSurface7, Grh As Integer, ByVal X As Integer, ByVal Y As Integer, center As Byte, Animate As Byte)
+Sub DDrawTransGrhIndextoSurface(Surface As DirectDrawSurface7, Grh As Integer, ByVal X As Integer, ByVal Y As Integer, center As Byte, Animate As Byte)
 Dim CurrentGrh As Grh
 Dim destRect As RECT
 Dim SourceRect As RECT
@@ -1175,7 +1205,7 @@ With destRect
     .Bottom = .Top + GrhData(Grh).pixelHeight
 End With
 
-surface.GetSurfaceDesc SurfaceDesc
+Surface.GetSurfaceDesc SurfaceDesc
 
 'Draw
 If destRect.Left >= 0 And destRect.Top >= 0 And destRect.Right <= SurfaceDesc.lWidth And destRect.Bottom <= SurfaceDesc.lHeight Then
@@ -1186,14 +1216,14 @@ If destRect.Left >= 0 And destRect.Top >= 0 And destRect.Right <= SurfaceDesc.lW
         .Bottom = .Top + GrhData(Grh).pixelHeight
     End With
     
-    surface.BltFast destRect.Left, destRect.Top, SurfaceDB.GetBMP(GrhData(Grh).FileNum), SourceRect, DDBLTFAST_SRCCOLORKEY Or DDBLTFAST_WAIT
+    Surface.BltFast destRect.Left, destRect.Top, SurfaceDB.Surface(GrhData(Grh).FileNum), SourceRect, DDBLTFAST_SRCCOLORKEY Or DDBLTFAST_WAIT
 End If
 
 End Sub
 
 'Sub DDrawTransGrhtoSurface(surface As DirectDrawSurface7, Grh As Grh, X As Integer, Y As Integer, Center As Byte, Animate As Byte, Optional ByVal KillAnim As Integer = 0)
 '[CODE 000]:MatuX
-    Sub DDrawTransGrhtoSurface(surface As DirectDrawSurface7, Grh As Grh, ByVal X As Integer, ByVal Y As Integer, center As Byte, Animate As Byte, Optional ByVal KillAnim As Integer = 0)
+    Sub DDrawTransGrhtoSurface(Surface As DirectDrawSurface7, Grh As Grh, ByVal X As Integer, ByVal Y As Integer, center As Byte, Animate As Byte, Optional ByVal KillAnim As Integer = 0)
 '[END]'
 '*****************************************************************
 'Draws a GRH transparently to a X and Y position
@@ -1261,12 +1291,12 @@ With SourceRect
 End With
 
 
-surface.BltFast X, Y, SurfaceDB.GetBMP(GrhData(iGrhIndex).FileNum), SourceRect, DDBLTFAST_SRCCOLORKEY Or DDBLTFAST_WAIT
+Surface.BltFast X, Y, SurfaceDB.Surface(GrhData(iGrhIndex).FileNum), SourceRect, DDBLTFAST_SRCCOLORKEY Or DDBLTFAST_WAIT
 
 End Sub
 
 #If ConAlfaB = 1 Then
-    Sub DDrawTransGrhtoSurfaceAlpha(surface As DirectDrawSurface7, Grh As Grh, ByVal X As Integer, ByVal Y As Integer, center As Byte, Animate As Byte, Optional ByVal KillAnim As Integer = 0)
+    Sub DDrawTransGrhtoSurfaceAlpha(Surface As DirectDrawSurface7, Grh As Grh, ByVal X As Integer, ByVal Y As Integer, center As Byte, Animate As Byte, Optional ByVal KillAnim As Integer = 0)
 '[END]'
 '*****************************************************************
 'Draws a GRH transparently to a X and Y position
@@ -1333,7 +1363,7 @@ With SourceRect
     .Bottom = .Top + GrhData(iGrhIndex).pixelHeight
 End With
 
-'surface.BltFast X, Y, SurfaceDB.GetBMP(GrhData(iGrhIndex).FileNum), SourceRect, DDBLTFAST_SRCCOLORKEY Or DDBLTFAST_WAIT
+'surface.BltFast X, Y, SurfaceDB.surface(GrhData(iGrhIndex).FileNum), SourceRect, DDBLTFAST_SRCCOLORKEY Or DDBLTFAST_WAIT
 
 Dim Src As DirectDrawSurface7
 Dim rDest As RECT
@@ -1341,10 +1371,10 @@ Dim dArray() As Byte, sArray() As Byte
 Dim ddsdSrc As DDSURFACEDESC2, ddsdDest As DDSURFACEDESC2
 Dim Modo As Long
 
-Set Src = SurfaceDB.GetBMP(GrhData(iGrhIndex).FileNum, 0)
+Set Src = SurfaceDB.Surface(GrhData(iGrhIndex).FileNum)
 
 Src.GetSurfaceDesc ddsdSrc
-surface.GetSurfaceDesc ddsdDest
+Surface.GetSurfaceDesc ddsdDest
 
 With rDest
     .Left = X
@@ -1376,7 +1406,7 @@ ElseIf ddsdDest.ddpfPixelFormat.lGBitMask = 65280 And ddsdSrc.ddpfPixelFormat.lG
     Modo = 4
 Else
     'Modo = 2 '16 bits raro ?
-    surface.BltFast X, Y, Src, SourceRect, DDBLTFAST_SRCCOLORKEY Or DDBLTFAST_WAIT
+    Surface.BltFast X, Y, Src, SourceRect, DDBLTFAST_SRCCOLORKEY Or DDBLTFAST_WAIT
     Exit Sub
 End If
 
@@ -1387,15 +1417,15 @@ On Local Error GoTo HayErrorAlpha
 
 Src.Lock SourceRect, ddsdSrc, DDLOCK_WAIT, 0
 SrcLock = True
-surface.Lock rDest, ddsdDest, DDLOCK_WAIT, 0
+Surface.Lock rDest, ddsdDest, DDLOCK_WAIT, 0
 DstLock = True
 
-surface.GetLockedArray dArray()
+Surface.GetLockedArray dArray()
 Src.GetLockedArray sArray()
 
 Call BltAlphaFast(ByVal VarPtr(dArray(X + X, Y)), ByVal VarPtr(sArray(SourceRect.Left * 2, SourceRect.Top)), rDest.Right - rDest.Left, rDest.Bottom - rDest.Top, ddsdSrc.lPitch, ddsdDest.lPitch, Modo)
 
-surface.Unlock rDest
+Surface.Unlock rDest
 DstLock = False
 Src.Unlock SourceRect
 SrcLock = False
@@ -1405,15 +1435,13 @@ Exit Sub
 
 HayErrorAlpha:
 If SrcLock Then Src.Unlock SourceRect
-If DstLock Then surface.Unlock rDest
+If DstLock Then Surface.Unlock rDest
 
 End Sub
 #End If 'ConAlfaB = 1
 
 Sub DrawBackBufferSurface()
-
-PrimarySurface.Blt MainViewRect, BackBufferSurface, MainDestRect, DDBLT_WAIT
-
+    PrimarySurface.Blt MainViewRect, BackBufferSurface, MainDestRect, DDBLT_WAIT
 End Sub
 
 Function GetBitmapDimensions(BmpFile As String, ByRef bmWidth As Long, ByRef bmHeight As Long)
@@ -1431,29 +1459,16 @@ bmWidth = BINFOHeader.biWidth
 bmHeight = BINFOHeader.biHeight
 End Function
 
-
-
 Sub DrawGrhtoHdc(hWnd As Long, Hdc As Long, Grh As Integer, SourceRect As RECT, destRect As RECT)
-If Grh <= 0 Then Exit Sub
-
-SecundaryClipper.SetHWnd hWnd
-SurfaceDB.GetBMP(GrhData(Grh).FileNum).BltToDC Hdc, SourceRect, destRect
+    If Grh <= 0 Then Exit Sub
+    
+    SecundaryClipper.SetHWnd hWnd
+    SurfaceDB.Surface(GrhData(Grh).FileNum).BltToDC Hdc, SourceRect, destRect
 End Sub
 
-
-Sub PlayWaveAPI(File As String)
-'*****************************************************************
-'Plays a Wave using windows APIs
-'*****************************************************************
-Dim rc As Integer
-
-rc = sndPlaySound(File, SND_ASYNC)
-
-End Sub
 Sub RenderScreen(tilex As Integer, tiley As Integer, PixelOffsetX As Integer, PixelOffsetY As Integer)
-
-
 On Error Resume Next
+
 
 If UserCiego Then Exit Sub
 
@@ -1488,10 +1503,10 @@ maxX = (tilex + 17)
 
 
 'Draw floor layer
-ScreenY = 8 + RenderMod.iImageSize
-For Y = (minY + 8) + RenderMod.iImageSize To (maxY - 8) - RenderMod.iImageSize
-    ScreenX = 8 + RenderMod.iImageSize
-    For X = (minX + 8) + RenderMod.iImageSize To (maxX - 8) - RenderMod.iImageSize
+ScreenY = 8
+For Y = (minY + 8) To maxY - 8
+    ScreenX = 8
+    For X = minX + 8 To maxX - 8
         If X > 100 Or Y < 1 Then Exit For
         'Layer 1 **********************************
         With MapData(X, Y).Graphic(1)
@@ -1520,23 +1535,21 @@ For Y = (minY + 8) + RenderMod.iImageSize To (maxY - 8) - RenderMod.iImageSize
         Call BackBufferSurface.BltFast( _
                 ((32 * ScreenX) - 32) + PixelOffsetX, _
                 ((32 * ScreenY) - 32) + PixelOffsetY, _
-                SurfaceDB.GetBMP(GrhData(iGrhIndex).FileNum), _
+                SurfaceDB.Surface(GrhData(iGrhIndex).FileNum), _
                 rSourceRect, _
                 DDBLTFAST_WAIT)
         '******************************************
-        If Not RenderMod.bNoCostas Then
-            'Layer 2 **********************************
-            If MapData(X, Y).Graphic(2).GrhIndex <> 0 Then
-                Call DDrawTransGrhtoSurface( _
-                        BackBufferSurface, _
-                        MapData(X, Y).Graphic(2), _
-                        ((32 * ScreenX) - 32) + PixelOffsetX, _
-                        ((32 * ScreenY) - 32) + PixelOffsetY, _
-                        1, _
-                        1)
-            End If
-            '******************************************
+        'Layer 2 **********************************
+        If MapData(X, Y).Graphic(2).GrhIndex <> 0 Then
+            Call DDrawTransGrhtoSurface( _
+                    BackBufferSurface, _
+                    MapData(X, Y).Graphic(2), _
+                    ((32 * ScreenX) - 32) + PixelOffsetX, _
+                    ((32 * ScreenY) - 32) + PixelOffsetY, _
+                    1, _
+                    1)
         End If
+        '******************************************
         ScreenX = ScreenX + 1
     Next X
     ScreenY = ScreenY + 1
@@ -1549,13 +1562,13 @@ Call ConvertCPtoTP(frmMain.MainViewShp.Left, frmMain.MainViewShp.Top, frmMain.Mo
 
 
 'Draw Transparent Layers  (Layer 2, 3)
-ScreenY = 8 + RenderMod.iImageSize
-For Y = (minY + 8) + RenderMod.iImageSize To (maxY - 1) - RenderMod.iImageSize
-    ScreenX = 5 + RenderMod.iImageSize
-    For X = (minX + 5) + RenderMod.iImageSize To (maxX - 5) - RenderMod.iImageSize
+ScreenY = 8
+For Y = minY + 8 To maxY - 1
+    ScreenX = 5
+    For X = minX + 5 To maxX - 5
         If X > 100 Or X < -3 Then Exit For
-        iPPx = ((32 * ScreenX) - 32) + PixelOffsetX
-        iPPy = ((32 * ScreenY) - 32) + PixelOffsetY
+        iPPx = 32 * ScreenX - 32 + PixelOffsetX
+        iPPy = 32 * ScreenY - 32 + PixelOffsetY
 
         'Object Layer **********************************
         If MapData(X, Y).ObjGrh.GrhIndex <> 0 Then
@@ -1622,43 +1635,21 @@ For Y = (minY + 8) + RenderMod.iImageSize To (maxY - 1) - RenderMod.iImageSize
             iPPy = ((32 * ScreenY) - 32) + PixelOffsetYTemp
             If TempChar.Head.Head(TempChar.Heading).GrhIndex <> 0 Then
                 If Not charlist(MapData(X, Y).CharIndex).invisible Then
-    #If (ConAlfaB = 1) Then
-                        If TempChar.iBody = 8 Or TempChar.iBody = 145 Then
-                            Call DDrawTransGrhtoSurfaceAlpha(BackBufferSurface, TempChar.Body.Walk(TempChar.Heading), _
-                                    (((32 * ScreenX) - 32) + PixelOffsetXTemp), _
-                                    (((32 * ScreenY) - 32) + PixelOffsetYTemp), _
-                                    1, 1)
-                        Else
-    #End If
+#If SeguridadAlkon Then
+                    If Not MI(CualMI).IsInvisible(MapData(X, Y).CharIndex) Then
+#End If
+                        '[CUERPO]'
                             Call DDrawTransGrhtoSurface(BackBufferSurface, TempChar.Body.Walk(TempChar.Heading), _
                                     (((32 * ScreenX) - 32) + PixelOffsetXTemp), _
                                     (((32 * ScreenY) - 32) + PixelOffsetYTemp), _
                                     1, 1)
-    #If ConAlfaB = 1 Then
-                        End If
-    #End If
-                        '[END]'
                         '[CABEZA]'
-    #If ConAlfaB = 1 Then
-                        If TempChar.iHead = 500 Then
-                            Call DDrawTransGrhtoSurfaceAlpha( _
-                                    BackBufferSurface, _
-                                    TempChar.Head.Head(TempChar.Heading), _
-                                    iPPx + TempChar.Body.HeadOffset.X, _
-                                    iPPy + TempChar.Body.HeadOffset.Y, _
-                                    1, 0)
-                        Else
-    #End If
                             Call DDrawTransGrhtoSurface( _
                                     BackBufferSurface, _
                                     TempChar.Head.Head(TempChar.Heading), _
                                     iPPx + TempChar.Body.HeadOffset.X, _
                                     iPPy + TempChar.Body.HeadOffset.Y, _
                                     1, 0)
-    #If ConAlfaB = 1 Then
-                        End If
-    #End If
-                        '[END]'
                         '[Casco]'
                             If TempChar.Casco.Head(TempChar.Heading).GrhIndex <> 0 Then
                                 Call DDrawTransGrhtoSurface( _
@@ -1668,7 +1659,6 @@ For Y = (minY + 8) + RenderMod.iImageSize To (maxY - 1) - RenderMod.iImageSize
                                         iPPy + TempChar.Body.HeadOffset.Y, _
                                         1, 0)
                             End If
-                        '[END]'
                         '[ARMA]'
                             If TempChar.Arma.WeaponWalk(TempChar.Heading).GrhIndex <> 0 Then
                                 Call DDrawTransGrhtoSurface( _
@@ -1676,7 +1666,6 @@ For Y = (minY + 8) + RenderMod.iImageSize To (maxY - 1) - RenderMod.iImageSize
                                         TempChar.Arma.WeaponWalk(TempChar.Heading), _
                                         iPPx, iPPy, 1, 1)
                             End If
-                        '[END]'
                         '[Escudo]'
                             If TempChar.Escudo.ShieldWalk(TempChar.Heading).GrhIndex <> 0 Then
                                 Call DDrawTransGrhtoSurface( _
@@ -1684,7 +1673,65 @@ For Y = (minY + 8) + RenderMod.iImageSize To (maxY - 1) - RenderMod.iImageSize
                                         TempChar.Escudo.ShieldWalk(TempChar.Heading), _
                                         iPPx, iPPy, 1, 1)
                             End If
-                        '[END]'
+                    
+                    
+                             If Nombres And Abs(nX - X) < 2 And (Abs(nY - Y)) < 2 Then
+                                'ya estoy dibujando SOLO si esta visible
+                                'If TempChar.invisible = False And Not MI(CualMI).IsInvisible(MapData(X, Y).CharIndex) Then
+                                    If TempChar.Nombre <> "" Then
+                                        Dim lCenter As Long
+                                        'Call Dialogos.DrawText(iPPx - 30, iPPy + 60, "mi:" & IIf(MI(CualMI).IsInvisible(MapData(X, Y).CharIndex), "1", "0") & " .i:" & IIf(TempChar.invisible, "1", "0") & "  X,Y:" & X & "," & Y, RGB(ColoresPJ(5).r, ColoresPJ(5).G, ColoresPJ(5).B))
+                                        If InStr(TempChar.Nombre, "<") > 0 And InStr(TempChar.Nombre, ">") > 0 Then
+                                            lCenter = (frmMain.TextWidth(Left(TempChar.Nombre, InStr(TempChar.Nombre, "<") - 1)) / 2) - 16
+                                            Dim sClan As String
+                                            sClan = mid(TempChar.Nombre, InStr(TempChar.Nombre, "<"))
+                                            
+                                            Select Case TempChar.priv
+                                            Case 0
+                                                If TempChar.Criminal Then
+                                                    Call Dialogos.DrawText(iPPx - lCenter, iPPy + 30, Left(TempChar.Nombre, InStr(TempChar.Nombre, "<") - 1), RGB(ColoresPJ(50).r, ColoresPJ(50).G, ColoresPJ(50).b))
+                                                    lCenter = (frmMain.TextWidth(sClan) / 2) - 16
+                                                    Call Dialogos.DrawText(iPPx - lCenter, iPPy + 45, sClan, RGB(ColoresPJ(50).r, ColoresPJ(50).G, ColoresPJ(50).b))
+                                                Else
+                                                    Call Dialogos.DrawText(iPPx - lCenter, iPPy + 30, Left(TempChar.Nombre, InStr(TempChar.Nombre, "<") - 1), RGB(ColoresPJ(49).r, ColoresPJ(49).G, ColoresPJ(49).b))
+                                                    lCenter = (frmMain.TextWidth(sClan) / 2) - 16
+                                                    Call Dialogos.DrawText(iPPx - lCenter, iPPy + 45, sClan, RGB(ColoresPJ(49).r, ColoresPJ(49).G, ColoresPJ(49).b))
+                                                End If
+                                            Case 25  'admin
+                                                Call Dialogos.DrawTextBig(iPPx - lCenter, iPPy + 30, Left(TempChar.Nombre, InStr(TempChar.Nombre, "<") - 1), RGB(ColoresPJ(TempChar.priv).r, ColoresPJ(TempChar.priv).G, ColoresPJ(TempChar.priv).b))
+                                                lCenter = (frmMain.TextWidth(sClan) / 2) - 16
+                                                Call Dialogos.DrawTextBig(iPPx - lCenter, iPPy + 45, sClan, RGB(ColoresPJ(TempChar.priv).r, ColoresPJ(TempChar.priv).G, ColoresPJ(TempChar.priv).b))
+                                            Case Else 'el resto
+                                                Call Dialogos.DrawText(iPPx - lCenter, iPPy + 30, Left(TempChar.Nombre, InStr(TempChar.Nombre, "<") - 1), RGB(ColoresPJ(TempChar.priv).r, ColoresPJ(TempChar.priv).G, ColoresPJ(TempChar.priv).b))
+                                                lCenter = (frmMain.TextWidth(sClan) / 2) - 16
+                                                Call Dialogos.DrawText(iPPx - lCenter, iPPy + 45, sClan, RGB(ColoresPJ(TempChar.priv).r, ColoresPJ(TempChar.priv).G, ColoresPJ(TempChar.priv).b))
+                                            End Select
+                                        Else
+                                            lCenter = (frmMain.TextWidth(TempChar.Nombre) / 2) - 16
+                                            Select Case TempChar.priv
+                                            Case 0
+                                                If TempChar.Criminal Then
+                                                    Call Dialogos.DrawText(iPPx - lCenter, iPPy + 30, TempChar.Nombre, RGB(ColoresPJ(50).r, ColoresPJ(50).G, ColoresPJ(50).b))
+                                                Else
+                                                    Call Dialogos.DrawText(iPPx - lCenter, iPPy + 30, TempChar.Nombre, RGB(ColoresPJ(49).r, ColoresPJ(49).G, ColoresPJ(49).b))
+                                                End If
+                                            Case 7
+                                                Call Dialogos.DrawTextBig(iPPx - lCenter, iPPy + 30, TempChar.Nombre, RGB(ColoresPJ(TempChar.priv).r, ColoresPJ(TempChar.priv).G, ColoresPJ(TempChar.priv).b))
+                                            Case Else
+                                                Call Dialogos.DrawText(iPPx - lCenter, iPPy + 30, TempChar.Nombre, RGB(ColoresPJ(TempChar.priv).r, ColoresPJ(TempChar.priv).G, ColoresPJ(TempChar.priv).b))
+                                            End Select
+                                        End If
+                                    End If
+                                'End If  'enidf nI
+                             End If
+#If SeguridadAlkon Then
+                    Else
+                        Do While True
+                            Call MsgBox("WOAAAAA CHEATER!!! Ahora te deben estar matando de lo lindo ;)" & vbNewLine & "Aprieta OK para salir", vbCritical + vbOKOnly, ":D")
+                            Call MsgBox("no, mejor no salimos")
+                        Loop
+                    End If  'end if not mi.isi
+#End If
                 End If  'end if ~in
 
                 If Dialogos.CantidadDialogos > 0 Then
@@ -1694,85 +1741,8 @@ For Y = (minY + 8) + RenderMod.iImageSize To (maxY - 1) - RenderMod.iImageSize
                             MapData(X, Y).CharIndex)
                 End If
                 
-'                If Nombres Then
- '                   If TempChar.invisible = False Then
- '                       If TempChar.Nombre <> "" Then
- '                               Dim lCenter As Long
- '                               lCenter = Len(TempChar.Nombre) \ 2
- '                               If InStr(TempChar.Nombre, "<") > 0 And InStr(TempChar.Nombre, ">") > 0 Then
- '                                   Dim sClan As String: sClan = Mid(TempChar.Nombre, InStr(TempChar.Nombre, "<"))
- '                                   If TempChar.Criminal Then
- '                                       Call Dialogos.DrawText(iPPx - lCenter, iPPy + 30, Left(TempChar.Nombre, InStr(TempChar.Nombre, "<") - 1), RGB(255, 0, 0))
- '                                       lCenter = Len(sClan) \ 2
- '                                       Call Dialogos.DrawText(iPPx - lCenter, iPPy + 45, sClan, RGB(255, 0, 0))
- '                                   Else
- '                                       Call Dialogos.DrawText(iPPx - lCenter, iPPy + 30, Left(TempChar.Nombre, InStr(TempChar.Nombre, "<") - 1), RGB(0, 128, 255))
- '                                       lCenter = Len(sClan) * 2
- '                                       Call Dialogos.DrawText(iPPx - lCenter, iPPy + 45, sClan, RGB(0, 128, 255))
- '                                   End If
- '                               Else
- '                                   If TempChar.Criminal Then
- '                                       Call Dialogos.DrawText(iPPx - lCenter, iPPy + 30, TempChar.Nombre, RGB(255, 0, 0))
- '                                   Else
- '                                       Call Dialogos.DrawText(iPPx - lCenter, iPPy + 30, TempChar.Nombre, RGB(0, 128, 255))
- '                                   End If
- '                               End If
- '                       End If
- '                   End If
- '               End If
-                 
-
-                
-                 If Nombres And Abs(nX - X) < 2 And (Abs(nY - Y)) < 2 Then
-                    If TempChar.invisible = False Then
-                        If TempChar.Nombre <> "" Then
-                            Dim lCenter As Long
-                            If InStr(TempChar.Nombre, "<") > 0 And InStr(TempChar.Nombre, ">") > 0 Then
-                                lCenter = (frmMain.TextWidth(Left(TempChar.Nombre, InStr(TempChar.Nombre, "<") - 1)) / 2) - 16
-                                Dim sClan As String: sClan = Mid(TempChar.Nombre, InStr(TempChar.Nombre, "<"))
-                                
-                                
-                                Select Case TempChar.priv
-                                Case 0
-                                    If TempChar.Criminal Then
-                                        Call Dialogos.DrawText(iPPx - lCenter, iPPy + 30, Left(TempChar.Nombre, InStr(TempChar.Nombre, "<") - 1), RGB(ColoresPJ(50).r, ColoresPJ(50).G, ColoresPJ(50).B))
-                                        lCenter = (frmMain.TextWidth(sClan) / 2) - 16
-                                        Call Dialogos.DrawText(iPPx - lCenter, iPPy + 45, sClan, RGB(ColoresPJ(50).r, ColoresPJ(50).G, ColoresPJ(50).B))
-                                    Else
-                                        Call Dialogos.DrawText(iPPx - lCenter, iPPy + 30, Left(TempChar.Nombre, InStr(TempChar.Nombre, "<") - 1), RGB(ColoresPJ(49).r, ColoresPJ(49).G, ColoresPJ(49).B))
-                                        lCenter = (frmMain.TextWidth(sClan) / 2) - 16
-                                        Call Dialogos.DrawText(iPPx - lCenter, iPPy + 45, sClan, RGB(ColoresPJ(49).r, ColoresPJ(49).G, ColoresPJ(49).B))
-                                    End If
-                                Case 25  'admin
-                                    Call Dialogos.DrawTextBig(iPPx - lCenter, iPPy + 30, Left(TempChar.Nombre, InStr(TempChar.Nombre, "<") - 1), RGB(ColoresPJ(TempChar.priv).r, ColoresPJ(TempChar.priv).G, ColoresPJ(TempChar.priv).B))
-                                    lCenter = (frmMain.TextWidth(sClan) / 2) - 16
-                                    Call Dialogos.DrawTextBig(iPPx - lCenter, iPPy + 45, sClan, RGB(ColoresPJ(TempChar.priv).r, ColoresPJ(TempChar.priv).G, ColoresPJ(TempChar.priv).B))
-                                Case Else 'el resto
-                                    Call Dialogos.DrawText(iPPx - lCenter, iPPy + 30, Left(TempChar.Nombre, InStr(TempChar.Nombre, "<") - 1), RGB(ColoresPJ(TempChar.priv).r, ColoresPJ(TempChar.priv).G, ColoresPJ(TempChar.priv).B))
-                                    lCenter = (frmMain.TextWidth(sClan) / 2) - 16
-                                    Call Dialogos.DrawText(iPPx - lCenter, iPPy + 45, sClan, RGB(ColoresPJ(TempChar.priv).r, ColoresPJ(TempChar.priv).G, ColoresPJ(TempChar.priv).B))
-                                End Select
-                            Else
-                                lCenter = (frmMain.TextWidth(TempChar.Nombre) / 2) - 16
-                                Select Case TempChar.priv
-                                Case 0
-                                    If TempChar.Criminal Then
-                                        Call Dialogos.DrawText(iPPx - lCenter, iPPy + 30, TempChar.Nombre, RGB(ColoresPJ(50).r, ColoresPJ(50).G, ColoresPJ(50).B))
-                                    Else
-                                        Call Dialogos.DrawText(iPPx - lCenter, iPPy + 30, TempChar.Nombre, RGB(ColoresPJ(49).r, ColoresPJ(49).G, ColoresPJ(49).B))
-                                    End If
-                                Case 7
-                                    Call Dialogos.DrawTextBig(iPPx - lCenter, iPPy + 30, TempChar.Nombre, RGB(ColoresPJ(TempChar.priv).r, ColoresPJ(TempChar.priv).G, ColoresPJ(TempChar.priv).B))
-                                Case Else
-                                    Call Dialogos.DrawText(iPPx - lCenter, iPPy + 30, TempChar.Nombre, RGB(ColoresPJ(TempChar.priv).r, ColoresPJ(TempChar.priv).G, ColoresPJ(TempChar.priv).B))
-                                End Select
-                            End If
-                        End If
-                    End If  'enidf nI
-                 End If
                 
             Else '<-> If TempChar.Head.Head(TempChar.Heading).GrhIndex <> 0 Then
-
                 If Dialogos.CantidadDialogos > 0 Then
                     Call Dialogos.Update_Dialog_Pos( _
                             (iPPx + TempChar.Body.HeadOffset.X), _
@@ -1784,7 +1754,6 @@ For Y = (minY + 8) + RenderMod.iImageSize To (maxY - 1) - RenderMod.iImageSize
                         BackBufferSurface, _
                         TempChar.Body.Walk(TempChar.Heading), _
                         iPPx, iPPy, 1, 1)
-                        
             End If '<-> If TempChar.Head.Head(TempChar.Heading).GrhIndex <> 0 Then
 
 
@@ -1794,23 +1763,19 @@ For Y = (minY + 8) + RenderMod.iImageSize To (maxY - 1) - RenderMod.iImageSize
             'BlitFX (TM)
             If charlist(MapData(X, Y).CharIndex).Fx <> 0 Then
 #If (ConAlfaB = 1) Then
-                If RenderMod.bNoAlpha Then
-#End If
-                    Call DDrawTransGrhtoSurface( _
-                            BackBufferSurface, _
-                            FxData(TempChar.Fx).Fx, _
-                            iPPx + FxData(TempChar.Fx).OffsetX, _
-                            iPPy + FxData(TempChar.Fx).OffsetY, _
-                            1, 1, MapData(X, Y).CharIndex)
-#If (ConAlfaB = 1) Then
-                Else
-                    Call DDrawTransGrhtoSurfaceAlpha( _
-                            BackBufferSurface, _
-                            FxData(TempChar.Fx).Fx, _
-                            iPPx + FxData(TempChar.Fx).OffsetX, _
-                            iPPy + FxData(TempChar.Fx).OffsetY, _
-                            1, 1, MapData(X, Y).CharIndex)
-                End If
+                Call DDrawTransGrhtoSurfaceAlpha( _
+                        BackBufferSurface, _
+                        FxData(TempChar.Fx).Fx, _
+                        iPPx + FxData(TempChar.Fx).OffsetX, _
+                        iPPy + FxData(TempChar.Fx).OffsetY, _
+                        1, 1, MapData(X, Y).CharIndex)
+#Else
+                Call DDrawTransGrhtoSurface( _
+                        BackBufferSurface, _
+                        FxData(TempChar.Fx).Fx, _
+                        iPPx + FxData(TempChar.Fx).OffsetX, _
+                        iPPy + FxData(TempChar.Fx).OffsetY, _
+                        1, 1, MapData(X, Y).CharIndex)
 #End If
             End If
         End If '<-> If MapData(X, Y).CharIndex <> 0 Then
@@ -1834,21 +1799,21 @@ Next Y
 
 If Not bTecho Then
     'Draw blocked tiles and grid
-    ScreenY = 5 + RenderMod.iImageSize
-    For Y = (minY + 5) + RenderMod.iImageSize To (maxY - 1) - RenderMod.iImageSize
-        ScreenX = 5 + RenderMod.iImageSize
-        For X = (minX + 5) + RenderMod.iImageSize To (maxX - 0) - RenderMod.iImageSize
+    ScreenY = 5
+    For Y = minY + 5 To maxY - 1
+        ScreenX = 5
+        For X = minX + 5 To maxX
             'Check to see if in bounds
             If X < 101 And X > 0 And Y < 101 And Y > 0 Then
-            If MapData(X, Y).Graphic(4).GrhIndex <> 0 Then
-                'Draw
-                Call DDrawTransGrhtoSurface( _
-                    BackBufferSurface, _
-                    MapData(X, Y).Graphic(4), _
-                    ((32 * ScreenX) - 32) + PixelOffsetX, _
-                    ((32 * ScreenY) - 32) + PixelOffsetY, _
-                    1, 1)
-            End If
+                If MapData(X, Y).Graphic(4).GrhIndex <> 0 Then
+                    'Draw
+                    Call DDrawTransGrhtoSurface( _
+                        BackBufferSurface, _
+                        MapData(X, Y).Graphic(4), _
+                        ((32 * ScreenX) - 32) + PixelOffsetX, _
+                        ((32 * ScreenY) - 32) + PixelOffsetY, _
+                        1, 1)
+                End If
             End If
             ScreenX = ScreenX + 1
         Next X
@@ -1857,7 +1822,7 @@ If Not bTecho Then
 End If
 
 If bLluvia(UserMap) = 1 Then
-    If bRain Or bRainST Then
+    If bRain Then
                 'Figure out what frame to draw
                 If llTick < DirectX.TickCount - 50 Then
                     iFrameIndex = iFrameIndex + 1
@@ -1867,7 +1832,7 @@ If bLluvia(UserMap) = 1 Then
     
                 For Y = 0 To 4
                     For X = 0 To 4
-                        Call BackBufferSurface.BltFast(LTLluvia(Y), LTLluvia(X), SurfaceDB.GetBMP(5556), RLluvia(iFrameIndex), DDBLTFAST_SRCCOLORKEY + DDBLTFAST_WAIT)
+                        Call BackBufferSurface.BltFast(LTLluvia(Y), LTLluvia(X), SurfaceDB.Surface(5556), RLluvia(iFrameIndex), DDBLTFAST_SRCCOLORKEY + DDBLTFAST_WAIT)
                     Next X
                 Next Y
     End If
@@ -1883,7 +1848,7 @@ PP.Top = 0
 PP.Right = WindowTileWidth * TilePixelWidth
 PP.Bottom = WindowTileHeight * TilePixelHeight
 
-'Call BackBufferSurface.BltFast(LTLluvia(0) + TilePixelWidth, LTLluvia(0) + TilePixelHeight, SurfaceDB.GetBMP(10000), PP, DDBLTFAST_SRCCOLORKEY + DDBLTFAST_WAIT)
+'Call BackBufferSurface.BltFast(LTLluvia(0) + TilePixelWidth, LTLluvia(0) + TilePixelHeight, SurfaceDB.surface(10000), PP, DDBLTFAST_SRCCOLORKEY + DDBLTFAST_WAIT)
 
 'EfectoNoche BackBufferSurface
 
@@ -1917,29 +1882,32 @@ PP.Bottom = WindowTileHeight * TilePixelHeight
 '[END]'
 End Sub
 Public Function RenderSounds()
-'[CODE 001]:MatuX'
-    If bLluvia(UserMap) = 1 Then
+'**************************************************************
+'Author: Juan Martín Sotuyo Dodero
+'Last Modify Date: 4/22/2006
+'Actualiza todos los sonidos del mapa.
+'**************************************************************
+    If bLluvia(UserMap) = 1 And Sound Then
         If bRain Then
             If bTecho Then
-                If frmMain.IsPlaying <> plLluviain Then
-                    Call frmMain.StopSound
-                    Call frmMain.Play("lluviain.wav", True)
-                    frmMain.IsPlaying = plLluviain
+                If frmMain.IsPlaying <> PlayLoop.plLluviain Then
+                    If RainBufferIndex Then _
+                        Call Audio.StopWave(RainBufferIndex)
+                    RainBufferIndex = Audio.PlayWave("lluviain.wav", LoopStyle.Enabled)
+                    frmMain.IsPlaying = PlayLoop.plLluviain
                 End If
-                'Call StopSound("lluviaout.MP3")
-                'Call PlaySound("lluviain.MP3", True)
             Else
-                If frmMain.IsPlaying <> plLluviaout Then
-                    Call frmMain.StopSound
-                    Call frmMain.Play("lluviaout.wav", True)
-                    frmMain.IsPlaying = plLluviaout
+                If frmMain.IsPlaying <> PlayLoop.plLluviaout Then
+                    If RainBufferIndex Then _
+                        Call Audio.StopWave(RainBufferIndex)
+                    RainBufferIndex = Audio.PlayWave("lluviaout.wav", LoopStyle.Enabled)
+                    frmMain.IsPlaying = PlayLoop.plLluviaout
                 End If
-                'Call StopSound("lluviain.MP3")
-                'Call PlaySound("lluviaout.MP3", True)
             End If
         End If
     End If
-'[END]'
+    
+    DoFogataFx
 End Function
 
 
@@ -1954,69 +1922,44 @@ If GrhIndex > 0 Then
         And charlist(UserCharIndex).Pos.Y <= Y
         
 End If
-
 End Function
 
-
-
-Function PixelPos(X As Integer) As Integer
+Function PixelPos(ByVal X As Integer) As Integer
 '*****************************************************************
 'Converts a tile position to a screen position
 '*****************************************************************
-
-PixelPos = (TilePixelWidth * X) - TilePixelWidth
-
+    PixelPos = (TilePixelWidth * X) - TilePixelWidth
 End Function
 
-
 Sub LoadGraphics()
-        Dim loopc As Integer
-        Dim SurfaceDesc As DDSURFACEDESC2
-        Dim ddck As DDCOLORKEY
-        Dim ddsd As DDSURFACEDESC2
-        Dim iLoopUpdate As Integer
+'**************************************************************
+'Author: Juan Martín Sotuyo Dodero - complete rewrite
+'Last Modify Date: 11/03/2006
+'Initializes the SurfaceDB and sets up the rain rects
+'**************************************************************
+    'New surface manager :D
+    Call SurfaceDB.Initialize(DirectDraw, ClientSetup.bUseVideo, DirGraficos, ClientSetup.byMemory)
+          
+    'Set up te rain rects
+    RLluvia(0).Top = 0:      RLluvia(1).Top = 0:      RLluvia(2).Top = 0:      RLluvia(3).Top = 0
+    RLluvia(0).Left = 0:     RLluvia(1).Left = 128:   RLluvia(2).Left = 256:   RLluvia(3).Left = 384
+    RLluvia(0).Right = 128:  RLluvia(1).Right = 256:  RLluvia(2).Right = 384:  RLluvia(3).Right = 512
+    RLluvia(0).Bottom = 128: RLluvia(1).Bottom = 128: RLluvia(2).Bottom = 128: RLluvia(3).Bottom = 128
 
-        SurfaceDB.TotalGraficos = Config_Inicio.NumeroDeBMPs + 1
-        SurfaceDB.MaxEntries = 150
-        SurfaceDB.lpDirectDraw7 = DirectDraw
-        SurfaceDB.Path = DirGraficos
-        Call SurfaceDB.Init(IIf(RenderMod.bUseVideo, True, False))
-        
-        If Not SurfaceDB.EsDinamico Then
-            iLoopUpdate = 1
-            For loopc = 1 To Config_Inicio.NumeroDeBMPs + 1
-                SurfaceDB.CargarGrafico loopc
-                
-                If loopc > (iLoopUpdate + (Config_Inicio.NumeroDeBMPs / 80)) Then
-                    AddtoRichTextBox frmCargando.Status, ".", , , , , , True
-                    iLoopUpdate = loopc
-                End If
-            Next loopc
-        End If
-        
-        'Bmp de la lluvia
-        Call GetBitmapDimensions(DirGraficos & "5556.bmp", ddsd.lWidth, ddsd.lHeight)
-              
-        RLluvia(0).Top = 0:      RLluvia(1).Top = 0:      RLluvia(2).Top = 0:      RLluvia(3).Top = 0
-        RLluvia(0).Left = 0:     RLluvia(1).Left = 128:   RLluvia(2).Left = 256:   RLluvia(3).Left = 384
-        RLluvia(0).Right = 128:  RLluvia(1).Right = 256:  RLluvia(2).Right = 384:  RLluvia(3).Right = 512
-        RLluvia(0).Bottom = 128: RLluvia(1).Bottom = 128: RLluvia(2).Bottom = 128: RLluvia(3).Bottom = 128
+    RLluvia(4).Top = 128:    RLluvia(5).Top = 128:    RLluvia(6).Top = 128:    RLluvia(7).Top = 128
+    RLluvia(4).Left = 0:     RLluvia(5).Left = 128:   RLluvia(6).Left = 256:   RLluvia(7).Left = 384
+    RLluvia(4).Right = 128:  RLluvia(5).Right = 256:  RLluvia(6).Right = 384:  RLluvia(7).Right = 512
+    RLluvia(4).Bottom = 256: RLluvia(5).Bottom = 256: RLluvia(6).Bottom = 256: RLluvia(7).Bottom = 256
     
-        RLluvia(4).Top = 128:    RLluvia(5).Top = 128:    RLluvia(6).Top = 128:    RLluvia(7).Top = 128
-        RLluvia(4).Left = 0:     RLluvia(5).Left = 128:   RLluvia(6).Left = 256:   RLluvia(7).Left = 384
-        RLluvia(4).Right = 128:  RLluvia(5).Right = 256:  RLluvia(6).Right = 384:  RLluvia(7).Right = 512
-        RLluvia(4).Bottom = 256: RLluvia(5).Bottom = 256: RLluvia(6).Bottom = 256: RLluvia(7).Bottom = 256
-        AddtoRichTextBox frmCargando.Status, "Hecho.", , , , 1, , False
+    'We are done!
+    AddtoRichTextBox frmCargando.status, "Hecho.", , , , 1, , False
 End Sub
-
 
 '[END]'
 Function InitTileEngine(ByRef setDisplayFormhWnd As Long, setMainViewTop As Integer, setMainViewLeft As Integer, setTilePixelHeight As Integer, setTilePixelWidth As Integer, setWindowTileHeight As Integer, setWindowTileWidth As Integer, setTileBufferSize As Integer) As Boolean
 '*****************************************************************
 'InitEngine
 '*****************************************************************
-
-
 Dim SurfaceDesc As DDSURFACEDESC2
 Dim ddck As DDCOLORKEY
 
@@ -2054,10 +1997,6 @@ ReDim MapData(XMinMapSize To XMaxMapSize, YMinMapSize To YMaxMapSize) As MapBloc
 
 DirectDraw.SetCooperativeLevel DisplayFormhWnd, DDSCL_NORMAL
 
-If Musica = 0 Or Fx = 0 Then
-    DirectSound.SetCooperativeLevel DisplayFormhWnd, DSSCL_PRIORITY
-End If
-
 'Primary Surface
 ' Fill the surface description structure
 With SurfaceDesc
@@ -2076,14 +2015,15 @@ PrimarySurface.SetClipper PrimaryClipper
 Set SecundaryClipper = DirectDraw.CreateClipper(0)
 
 With BackBufferRect
-    .Left = 0 + 32 * RenderMod.iImageSize
-    .Top = 0 + 32 * RenderMod.iImageSize
-    .Right = (TilePixelWidth * (WindowTileWidth + (2 * TileBufferSize))) - 32 * RenderMod.iImageSize
-    .Bottom = (TilePixelHeight * (WindowTileHeight + (2 * TileBufferSize))) - 32 * RenderMod.iImageSize
+    .Left = 0
+    .Top = 0
+    .Right = TilePixelWidth * (WindowTileWidth + 2 * TileBufferSize)
+    .Bottom = TilePixelHeight * (WindowTileHeight + 2 * TileBufferSize)
 End With
+
 With SurfaceDesc
     .lFlags = DDSD_CAPS Or DDSD_HEIGHT Or DDSD_WIDTH
-    If RenderMod.bUseVideo Then
+    If ClientSetup.bUseVideo Then
         .ddsCaps.lCaps = DDSCAPS_OFFSCREENPLAIN
     Else
         .ddsCaps.lCaps = DDSCAPS_OFFSCREENPLAIN Or DDSCAPS_SYSTEMMEMORY
@@ -2113,83 +2053,71 @@ LTLluvia(2) = 480
 LTLluvia(3) = 608
 LTLluvia(4) = 736
 
-AddtoRichTextBox frmCargando.Status, "Cargando Gráficos....", 0, 0, 0, , , True
+AddtoRichTextBox frmCargando.status, "Cargando Gráficos....", 0, 0, 0, , , True
 Call LoadGraphics
 
 InitTileEngine = True
 
 End Function
 
-
-
-
-'Sub ShowNextFrame(DisplayFormTop As Integer, DisplayFormLeft As Integer)
 Sub ShowNextFrame()
-
-'[CODE]:MatuX'
-'
-'  ESTA FUNCIÓN FUE MOVIDA AL LOOP PRINCIPAL EN Mod_General
-'  PARA QUE SEA INLINE. EN OTRAS PALABRAS, LO QUE ESTÁ ACÁ
-'  YA NO ES LLAMADO POR NINGUNA RUTINA.
-'
-'[END]'
-
 '***********************************************
 'Updates and draws next frame to screen
 '***********************************************
     Static OffsetCounterX As Integer
     Static OffsetCounterY As Integer
-
+    
+    '****** Set main view rectangle ******
+    GetWindowRect DisplayFormhWnd, MainViewRect
+    
+    With MainViewRect
+        .Left = .Left + MainViewLeft
+        .Top = .Top + MainViewTop
+        .Right = .Left + MainViewWidth
+        .Bottom = .Top + MainViewHeight
+    End With
+    
     If EngineRun Then
-        '  '****** Move screen Left and Right if needed ******
-            If AddtoUserPos.X <> 0 Then
-                OffsetCounterX = (OffsetCounterX - (8 * Sgn(AddtoUserPos.X)))
-                If Abs(OffsetCounterX) >= Abs(TilePixelWidth * AddtoUserPos.X) Then
-                    OffsetCounterX = 0
-                    AddtoUserPos.X = 0
-                    UserMoving = 0
-                End If
-            'End If
-
-            '****** Move screen Up and Down if needed ******
-            'If AddtoUserPos.Y <> 0 Then
-            ElseIf AddtoUserPos.Y <> 0 Then
-                OffsetCounterY = OffsetCounterY - (8 * Sgn(AddtoUserPos.Y))
-                If Abs(OffsetCounterY) >= Abs(TilePixelHeight * AddtoUserPos.Y) Then
-                    OffsetCounterY = 0
-                    AddtoUserPos.Y = 0
-                    UserMoving = 0
-                End If
+        '****** Move screen Left and Right if needed ******
+        If AddtoUserPos.X <> 0 Then
+            OffsetCounterX = (OffsetCounterX - (8 * Sgn(AddtoUserPos.X)))
+            If Abs(OffsetCounterX) >= Abs(TilePixelWidth * AddtoUserPos.X) Then
+                OffsetCounterX = 0
+                AddtoUserPos.X = 0
+                UserMoving = 0
             End If
+        '****** Move screen Up and Down if needed ******
+        ElseIf AddtoUserPos.Y <> 0 Then
+            OffsetCounterY = OffsetCounterY - (8 * Sgn(AddtoUserPos.Y))
+            If Abs(OffsetCounterY) >= Abs(TilePixelHeight * AddtoUserPos.Y) Then
+                OffsetCounterY = 0
+                AddtoUserPos.Y = 0
+                UserMoving = 0
+            End If
+        End If
 
-            '****** Update screen ******
-            Call RenderScreen(UserPos.X - AddtoUserPos.X, UserPos.Y - AddtoUserPos.Y, OffsetCounterX, OffsetCounterY)
-            'Call DoNightFX
-            'Call DoLightFogata(UserPos.x - AddtoUserPos.x, UserPos.y - AddtoUserPos.y, OffsetCounterX, OffsetCounterY)
-            Call MostrarFlags
-            Call Dialogos.MostrarTexto
-            Call DibujarCartel
-            
-            Call DrawBackBufferSurface
-            
-            'Call DibujarInv(frmMain.picInv.hWnd, 0)
-            FramesPerSecCounter = FramesPerSecCounter + 1
+        '****** Update screen ******
+        Call RenderScreen(UserPos.X - AddtoUserPos.X, UserPos.Y - AddtoUserPos.Y, OffsetCounterX, OffsetCounterY)
+
+        If IScombate Then Call Dialogos.DrawText(260, 260, "MODO COMBATE", vbRed)
+        
+        Call Dialogos.MostrarTexto
+        Call DibujarCartel
+        
+        Call DialogosClanes.Draw(Dialogos)
+        
+        Call DrawBackBufferSurface
+        
+        FramesPerSecCounter = FramesPerSecCounter + 1
     End If
 End Sub
-'[CODE 000]:MatuX
-' La hice inline
-Sub MostrarFlags()
-If IScombate Then
-    Call Dialogos.DrawText(260, 260, "MODO COMBATE", vbRed)
-End If
-'[END]'
-End Sub
-Sub CrearGrh(GrhIndex As Integer, Index As Integer)
-ReDim Preserve Grh(1 To Index) As Grh
-Grh(Index).FrameCounter = 1
-Grh(Index).GrhIndex = GrhIndex
-Grh(Index).SpeedCounter = GrhData(GrhIndex).Speed
-Grh(Index).Started = 1
+
+Sub CrearGrh(GrhIndex As Integer, index As Integer)
+ReDim Preserve Grh(1 To index) As Grh
+Grh(index).FrameCounter = 1
+Grh(index).GrhIndex = GrhIndex
+Grh(index).SpeedCounter = GrhData(GrhIndex).Speed
+Grh(index).Started = 1
 End Sub
 
 Sub CargarAnimsExtra()
@@ -2201,47 +2129,50 @@ Function ControlVelocidad(ByVal LastTime As Long) As Boolean
 ControlVelocidad = (GetTickCount - LastTime > 20)
 End Function
 
-Public Sub EfectoNoche(ByRef surface As DirectDrawSurface7)
-Dim dArray() As Byte, sArray() As Byte
-Dim ddsdDest As DDSURFACEDESC2
-Dim Modo As Long
-Dim rRect As RECT
 
-surface.GetSurfaceDesc ddsdDest
+#If ConAlfaB Then
 
-With rRect
-.Left = 0
-.Top = 0
-.Right = ddsdDest.lWidth
-.Bottom = ddsdDest.lHeight
-End With
-
-If ddsdDest.ddpfPixelFormat.lGBitMask = &H3E0 Then
-    Modo = 0
-ElseIf ddsdDest.ddpfPixelFormat.lGBitMask = &H7E0 Then
-    Modo = 1
-Else
-    Modo = 2
-End If
-
-Dim DstLock As Boolean
-DstLock = False
-
-On Local Error GoTo HayErrorAlpha
-
-surface.Lock rRect, ddsdDest, DDLOCK_WAIT, 0
-DstLock = True
-
-surface.GetLockedArray dArray()
-Call BltEfectoNoche(ByVal VarPtr(dArray(0, 0)), _
-    ddsdDest.lWidth, ddsdDest.lHeight, ddsdDest.lPitch, _
-    Modo)
+Public Sub EfectoNoche(ByRef Surface As DirectDrawSurface7)
+    Dim dArray() As Byte, sArray() As Byte
+    Dim ddsdDest As DDSURFACEDESC2
+    Dim Modo As Long
+    Dim rRect As RECT
+    
+    Surface.GetSurfaceDesc ddsdDest
+    
+    With rRect
+        .Left = 0
+        .Top = 0
+        .Right = ddsdDest.lWidth
+        .Bottom = ddsdDest.lHeight
+    End With
+    
+    If ddsdDest.ddpfPixelFormat.lGBitMask = &H3E0 Then
+        Modo = 0
+    ElseIf ddsdDest.ddpfPixelFormat.lGBitMask = &H7E0 Then
+        Modo = 1
+    Else
+        Modo = 2
+    End If
+    
+    Dim DstLock As Boolean
+    DstLock = False
+    
+    On Local Error GoTo HayErrorAlpha
+    
+    Surface.Lock rRect, ddsdDest, DDLOCK_WAIT, 0
+    DstLock = True
+    
+    Surface.GetLockedArray dArray()
+    Call BltEfectoNoche(ByVal VarPtr(dArray(0, 0)), _
+        ddsdDest.lWidth, ddsdDest.lHeight, ddsdDest.lPitch, _
+        Modo)
     
 HayErrorAlpha:
-
-If DstLock = True Then
-    surface.Unlock rRect
-    DstLock = False
-End If
-
+    If DstLock = True Then
+        Surface.Unlock rRect
+        DstLock = False
+    End If
 End Sub
+
+#End If

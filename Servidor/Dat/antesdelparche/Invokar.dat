@@ -1,0 +1,20 @@
+'#################### LISTA DE SPAWN #############################
+'este dat es viejo y no se usa, la lista de spawn esta en npcs.dat [npc60]
+[INIT]
+NumNPCs=5
+
+[LIST]
+NI1=566
+NN1=Murciélago
+
+NI2=545
+NN2=Lobo
+
+NI3=565
+NN3=Serpiente
+
+NI4=564
+NN4=Escorpión
+
+NI5=516
+NN5=Goblin

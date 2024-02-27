@@ -264,43 +264,15 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-'Argentum Online 0.11.2
-'
-'Copyright (C) 2002 Márquez Pablo Ignacio
-'This program is free software; you can redistribute it and/or modify
-'it under the terms of the GNU General Public License as published by
-'the Free Software Foundation; either version 2 of the License, or
-'any later version.
-'
-'This program is distributed in the hope that it will be useful,
-'but WITHOUT ANY WARRANTY; without even the implied warranty of
-'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-'GNU General Public License for more details.
-'
-'You should have received a copy of the GNU General Public License
-'along with this program; if not, write to the Free Software
-'Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-'
-'Argentum Online is based on Baronsoft's VB6 Online RPG
-'You can contact the original creator of ORE at aaron@baronsoft.com
-'for more information about ORE please visit http://www.baronsoft.com/
-'
-'
-'You can contact me at:
-'morgolock@speedy.com.ar
-'www.geocities.com/gmorgolock
-'Calle 3 número 983 piso 7 dto A
-'La Plata - Pcia, Buenos Aires - Republica Argentina
-'Código Postal 1900
-'Pablo Ignacio Márquez
+Option Explicit
 
-Private Sub cmdAccion_Click(Index As Integer)
+Private Sub cmdAccion_Click(index As Integer)
 Dim Ok As Boolean, Tmp As String, Tmp2 As String
 Dim Nick As String
 
 Nick = cboListaUsus.Text
 
-Select Case Index
+Select Case index
 Case 0 '/ECHAR nick
     Call SendData("/ECHAR " & Nick)
 Case 1 '/ban motivo@nick
@@ -345,8 +317,10 @@ Case 14 '/ip2nick ip
 Case 15 '/penas
     Call SendData("/PENAS " & cboListaUsus.Text)
 Case 16 'Ban X ip
+    Tmp = InputBox("Ingrese el motivo del ban", "Ban X IP")
     If MsgBox("Esta seguro que desea banear el (ip o personaje) " & Nick & "Por IP?", vbYesNo) = vbYes Then
-    Call SendData("/BANIP " & Nick)
+        Nick = Replace(Nick, " ", "+")
+        Call SendData("/BANIP " & Nick & Tmp)
     End If
 Case 17 ' MUESTA BOBEDA
     Call SendData("/BOV " & Nick)
@@ -369,9 +343,7 @@ Unload Me
 End Sub
 
 Private Sub Form_Load()
-Me.Show
-Call cmdActualiza_Click
-
+    Call cmdActualiza_Click
 End Sub
 
 Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)

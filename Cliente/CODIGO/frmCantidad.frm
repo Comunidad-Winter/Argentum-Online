@@ -95,9 +95,12 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-'Argentum Online 0.11.2
+'Argentum Online 0.9.0.9
 '
 'Copyright (C) 2002 Márquez Pablo Ignacio
+'Copyright (C) 2002 Otto Perez
+'Copyright (C) 2002 Aaron Perkins
+'Copyright (C) 2002 Matías Fernando Pequeño
 '
 'This program is free software; you can redistribute it and/or modify
 'it under the terms of the GNU General Public License as published by
@@ -126,10 +129,11 @@ Attribute VB_Exposed = False
 'Código Postal 1900
 'Pablo Ignacio Márquez
 
+Option Explicit
 
 Private Sub Command1_Click()
 frmCantidad.Visible = False
-SendData "TI" & ItemElegido & "," & frmCantidad.Text1.Text
+SendData "TI" & Inventario.SelectedItem & "," & frmCantidad.Text1.Text
 frmCantidad.Text1.Text = "0"
 End Sub
 
@@ -138,10 +142,10 @@ Private Sub Command2_Click()
 
 
 frmCantidad.Visible = False
-If ItemElegido <> FLAGORO Then
-    SendData "TI" & ItemElegido & "," & UserInventory(ItemElegido).Amount
+If Inventario.SelectedItem <> FLAGORO Then
+    SendData "TI" & Inventario.SelectedItem & "," & Inventario.Amount(Inventario.SelectedItem)
 Else
-    SendData "TI" & ItemElegido & "," & UserGLD
+    SendData "TI" & Inventario.SelectedItem & "," & UserGLD
 End If
 
 frmCantidad.Text1.Text = "0"
@@ -153,21 +157,28 @@ Private Sub Form_Deactivate()
 End Sub
 
 Private Sub text1_Change()
-
-If Val(Text1.Text) < 0 Then
-    Text1.Text = MAX_INVENTORY_OBJS
-End If
-
-If Val(Text1.Text) > MAX_INVENTORY_OBJS And ItemElegido <> FLAGORO Then
-    Text1.Text = 1
-End If
-
+On Error GoTo errHandler
+    If Val(Text1.Text) < 0 Then
+        Text1.Text = MAX_INVENTORY_OBJS
+    End If
+    
+    If Val(Text1.Text) > MAX_INVENTORY_OBJS Then
+        If Inventario.SelectedItem <> FLAGORO Or Val(Text1.Text) > UserGLD Then
+            Text1.Text = "1"
+        End If
+    End If
+    
+    Exit Sub
+    
+errHandler:
+    'If we got here the user may have pasted (Shift + Insert) a REALLY large number, causing an overflow, so we set amount back to 1
+    Text1.Text = "1"
 End Sub
 
 
 Private Sub Text1_KeyPress(KeyAscii As Integer)
 If (KeyAscii <> 8) Then
-    If (Index <> 6) And (KeyAscii < 48 Or KeyAscii > 57) Then
+    If (KeyAscii < 48 Or KeyAscii > 57) Then
         KeyAscii = 0
     End If
 End If

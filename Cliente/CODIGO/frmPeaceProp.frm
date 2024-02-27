@@ -96,9 +96,13 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-'Argentum Online 0.11.2
+'Argentum Online 0.9.0.9
 '
 'Copyright (C) 2002 Márquez Pablo Ignacio
+'Copyright (C) 2002 Otto Perez
+'Copyright (C) 2002 Aaron Perkins
+'Copyright (C) 2002 Matías Fernando Pequeño
+'
 'This program is free software; you can redistribute it and/or modify
 'it under the terms of the GNU General Public License as published by
 'the Free Software Foundation; either version 2 of the License, or
@@ -126,6 +130,13 @@ Attribute VB_Exposed = False
 'Código Postal 1900
 'Pablo Ignacio Márquez
 
+Option Explicit
+
+Private tipoprop As TIPO_PROPUESTA
+Private Enum TIPO_PROPUESTA
+    ALIANZA = 1
+    PAZ = 2
+End Enum
 
 
 
@@ -143,18 +154,54 @@ For r% = 1 To T%
     Call lista.AddItem(ReadField(r% + 1, s, 44))
 Next r%
 
+
+tipoprop = PAZ
+
+Me.Show vbModeless, frmMain
+
+End Sub
+
+Public Sub ParseAllieOffers(ByVal s As String)
+
+Dim T%, r%
+
+T% = Val(ReadField(1, s, 44))
+
+For r% = 1 To T%
+    Call lista.AddItem(ReadField(r% + 1, s, 44))
+Next r%
+
+tipoprop = ALIANZA
 Me.Show vbModeless, frmMain
 
 End Sub
 
 Private Sub Command2_Click()
 'Me.Visible = False
-Call SendData("PEACEDET" & lista.List(lista.ListIndex))
+If tipoprop = PAZ Then
+    Call SendData("PEACEDET" & lista.List(lista.ListIndex))
+Else
+    Call SendData("ALLIEDET" & lista.List(lista.ListIndex))
+End If
 End Sub
 
 Private Sub Command3_Click()
 'Me.Visible = False
-Call SendData("ACEPPEAT" & lista.List(lista.ListIndex))
+If tipoprop = PAZ Then
+    Call SendData("ACEPPEAT" & lista.List(lista.ListIndex))
+Else
+    Call SendData("ACEPALIA" & lista.List(lista.ListIndex))
+End If
+Me.Hide
 Unload Me
 End Sub
 
+Private Sub Command4_Click()
+If tipoprop = PAZ Then
+    Call SendData("RECPPEAT" & lista.List(lista.ListIndex))
+Else
+    Call SendData("RECPALIA" & lista.List(lista.ListIndex))
+End If
+Me.Hide
+Unload Me
+End Sub

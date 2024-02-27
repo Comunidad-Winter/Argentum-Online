@@ -21,42 +21,16 @@ Begin VB.Form frmConnect
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Visible         =   0   'False
-   Begin VB.CommandButton Command2 
-      BackColor       =   &H00C0E0FF&
-      Caption         =   "Actualizar servidores desde la web"
-      BeginProperty Font 
-         Name            =   "MS Sans Serif"
-         Size            =   8.25
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      Height          =   735
-      Left            =   8760
-      Style           =   1  'Graphical
-      TabIndex        =   5
-      Top             =   3120
-      Width           =   1335
-   End
-   Begin VB.CommandButton Command1 
-      Caption         =   "Este Server ->"
-      Height          =   375
-      Left            =   1530
-      TabIndex        =   4
-      Top             =   2430
-      Width           =   1185
-   End
    Begin VB.ListBox lst_servers 
       BackColor       =   &H00000000&
       ForeColor       =   &H0000FF00&
       Height          =   5130
       ItemData        =   "frmConnect.frx":000C
-      Left            =   3150
+      Left            =   -1755
       List            =   "frmConnect.frx":0013
       TabIndex        =   3
-      Top             =   3060
+      Top             =   2790
+      Visible         =   0   'False
       Width           =   5415
    End
    Begin VB.TextBox PortTxt 
@@ -105,16 +79,18 @@ Begin VB.Form frmConnect
    End
    Begin VB.Image imgServEspana 
       Height          =   435
-      Left            =   4560
+      Left            =   225
       MousePointer    =   99  'Custom
-      Top             =   5220
+      Top             =   6495
+      Visible         =   0   'False
       Width           =   2475
    End
    Begin VB.Image imgServArgentina 
       Height          =   795
-      Left            =   4500
+      Left            =   -195
       MousePointer    =   99  'Custom
-      Top             =   3720
+      Top             =   6765
+      Visible         =   0   'False
       Width           =   2595
    End
    Begin VB.Image imgGetPass 
@@ -183,6 +159,10 @@ Attribute VB_Exposed = False
 'Argentum Online 0.9.0.9
 '
 'Copyright (C) 2002 Márquez Pablo Ignacio
+'Copyright (C) 2002 Otto Perez
+'Copyright (C) 2002 Aaron Perkins
+'Copyright (C) 2002 Matías Fernando Pequeño
+'
 'This program is free software; you can redistribute it and/or modify
 'it under the terms of the GNU General Public License as published by
 'the Free Software Foundation; either version 2 of the License, or
@@ -209,24 +189,31 @@ Attribute VB_Exposed = False
 'La Plata - Pcia, Buenos Aires - Republica Argentina
 'Código Postal 1900
 'Pablo Ignacio Márquez
+'
+'Matías Fernando Pequeño
+'matux@fibertel.com.ar
+'www.noland-studios.com.ar
+'Acoyte 678 Piso 17 Dto B
+'Capital Federal, Buenos Aires - Republica Argentina
+'Código Postal 1405
 
 Option Explicit
 
 Public Sub CargarLst()
 
-Dim I As Integer
+Dim i As Integer
 
 lst_servers.Clear
 
 If ServersRecibidos Then
     Call WriteVar(App.Path & "\init\sinfo.dat", "INIT", "Cant", UBound(ServersLst))
-    For I = 1 To UBound(ServersLst)
-        Call WriteVar(App.Path & "\init\sinfo.dat", "S" & I, "Desc", ServersLst(I).desc)
-        Call WriteVar(App.Path & "\init\sinfo.dat", "S" & I, "IP", ServersLst(I).Ip)
-        Call WriteVar(App.Path & "\init\sinfo.dat", "S" & I, "PJ", Str(ServersLst(I).Puerto))
-        Call WriteVar(App.Path & "\init\sinfo.dat", "S" & I, "P2", Str(ServersLst(I).PassRecPort))
-        lst_servers.AddItem ServersLst(I).Ip & ":" & ServersLst(I).Puerto & " - Desc:" & ServersLst(I).desc
-    Next I
+    For i = 1 To UBound(ServersLst)
+        Call WriteVar(App.Path & "\init\sinfo.dat", "S" & i, "Desc", ServersLst(i).desc)
+        Call WriteVar(App.Path & "\init\sinfo.dat", "S" & i, "IP", ServersLst(i).Ip)
+        Call WriteVar(App.Path & "\init\sinfo.dat", "S" & i, "PJ", str(ServersLst(i).Puerto))
+        Call WriteVar(App.Path & "\init\sinfo.dat", "S" & i, "P2", str(ServersLst(i).PassRecPort))
+        lst_servers.AddItem ServersLst(i).Ip & ":" & ServersLst(i).Puerto & " - Desc:" & ServersLst(i).desc
+    Next i
 End If
 
 End Sub
@@ -258,13 +245,14 @@ Call CargarLst
 
 End Sub
 
+
 Private Sub Form_Activate()
 'On Error Resume Next
 
 If ServersRecibidos Then
     If CurServer <> 0 Then
-        IPTxt = ServersLst(CurServer).Ip
-        PortTxt = ServersLst(CurServer).Puerto
+        IPTxt = ServersLst(1).Ip
+        PortTxt = ServersLst(1).Puerto
     Else
         IPTxt = IPdelServidor
         PortTxt = PuertoDelServidor
@@ -282,18 +270,18 @@ Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
 If KeyCode = 27 Then
         frmCargando.Show
         frmCargando.Refresh
-        AddtoRichTextBox frmCargando.Status, "Cerrando Argentum Online.", 0, 0, 0, 1, 0, 1
+        AddtoRichTextBox frmCargando.status, "Cerrando Argentum Online.", 0, 0, 0, 1, 0, 1
         
         Call SaveGameini
         frmConnect.MousePointer = 1
         frmMain.MousePointer = 1
         prgRun = False
         
-        AddtoRichTextBox frmCargando.Status, "Liberando recursos..."
+        AddtoRichTextBox frmCargando.status, "Liberando recursos..."
         frmCargando.Refresh
         LiberarObjetosDX
-        AddtoRichTextBox frmCargando.Status, "Hecho", 0, 0, 0, 1, 0, 1
-        AddtoRichTextBox frmCargando.Status, "¡¡Gracias por jugar Argentum Online!!", 0, 0, 0, 1, 0, 1
+        AddtoRichTextBox frmCargando.status, "Hecho", 0, 0, 0, 1, 0, 1
+        AddtoRichTextBox frmCargando.status, "¡¡Gracias por jugar Argentum Online!!", 0, 0, 0, 1, 0, 1
         frmCargando.Refresh
         Call UnloadAllForms
 End If
@@ -339,14 +327,14 @@ Private Sub Form_Load()
  '  El código para mostrar la versión se genera acá para
  ' evitar que por X razones luego desaparezca, como suele
  ' pasar a veces :)
-    Version.Caption = "v" & App.Major & "." & App.Minor & " Build: " & App.Revision
+    version.Caption = "v" & App.Major & "." & App.Minor & " Build: " & App.Revision
  '[END]'
 
 End Sub
 
 
 
-Private Sub Image1_Click(Index As Integer)
+Private Sub Image1_Click(index As Integer)
 
 
 If ServersRecibidos Then
@@ -368,16 +356,13 @@ IPdelServidor = IPTxt
 PuertoDelServidor = PortTxt
 
 
-Call PlayWaveDS(SND_CLICK)
+Call Audio.PlayWave(SND_CLICK)
 
-Select Case Index
+Select Case index
     Case 0
         
-        If Musica = 0 Then
-            CurMidi = DirMidi & "7.mid"
-            LoopMidi = 1
-            Call CargarMIDI(CurMidi)
-            Call Play_Midi
+        If Musica Then
+            Call Audio.PlayMIDI("7.mid")
         End If
         
         
@@ -406,25 +391,35 @@ Select Case Index
         frmOldPersonaje.Show vbModal
         
     Case 2
-
-        frmBorrar.Show vbModal
+        On Error GoTo errH
+        Call Shell(App.Path & "\RECUPERAR.EXE", vbNormalFocus)
 
 End Select
+Exit Sub
+
+errH:
+    Call MsgBox("No se encuentra el programa recuperar.exe", vbCritical, "Argentum Online")
 End Sub
 
 Private Sub imgGetPass_Click()
-    Call PlayWaveDS(SND_CLICK)
-    Call frmRecuperar.Show(vbModal, frmConnect)
+On Error GoTo errH
+
+    Call Audio.PlayWave(SND_CLICK)
+    Call Shell(App.Path & "\RECUPERAR.EXE", vbNormalFocus)
+    'Call frmRecuperar.Show(vbModal, frmConnect)
+    Exit Sub
+errH:
+    Call MsgBox("No se encuentra el programa recuperar.exe", vbCritical, "Argentum Online")
 End Sub
 
 Private Sub imgServArgentina_Click()
-    Call PlayWaveDS(SND_CLICK)
+    Call Audio.PlayWave(SND_CLICK)
     IPTxt.Text = IPdelServidor
     PortTxt.Text = PuertoDelServidor
 End Sub
 
 Private Sub imgServEspana_Click()
-    Call PlayWaveDS(SND_CLICK)
+    Call Audio.PlayWave(SND_CLICK)
     IPTxt.Text = "62.42.193.233"
     PortTxt.Text = "7666"
 End Sub
@@ -433,7 +428,7 @@ End Sub
 
 Private Sub lst_servers_Click()
 If ServersRecibidos Then
-    CurServer = lst_servers.ListIndex + 1
+    CurServer = lst_servers.listIndex + 1
     IPTxt = ServersLst(CurServer).Ip
     PortTxt = ServersLst(CurServer).Puerto
 End If

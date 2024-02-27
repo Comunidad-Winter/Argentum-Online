@@ -1,42 +1,12 @@
 Attribute VB_Name = "mdlCOmercioConUsuario"
-'Argentum Online 0.11.20
-'Copyright (C) 2002 Márquez Pablo Ignacio
-'
-'This program is free software; you can redistribute it and/or modify
-'it under the terms of the GNU General Public License as published by
-'the Free Software Foundation; either version 2 of the License, or
-'any later version.
-'
-'This program is distributed in the hope that it will be useful,
-'but WITHOUT ANY WARRANTY; without even the implied warranty of
-'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-'GNU General Public License for more details.
-'
-'You should have received a copy of the GNU General Public License
-'along with this program; if not, write to the Free Software
-'Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-'
-'Argentum Online is based on Baronsoft's VB6 Online RPG
-'You can contact the original creator of ORE at aaron@baronsoft.com
-'for more information about ORE please visit http://www.baronsoft.com/
-'
-'
-'You can contact me at:
-'morgolock@speedy.com.ar
-'www.geocities.com/gmorgolock
-'Calle 3 número 983 piso 7 dto A
-'La Plata - Pcia, Buenos Aires - Republica Argentina
-'Código Postal 1900
-'Pablo Ignacio Márquez
-
-
 'Modulo para comerciar con otro usuario
 'Por Alejo (Alejandro Santos)
 '
 '
 '[Alejo]
-Private Const MAX_ORO_LOGUEABLE = 90000
 Option Explicit
+
+Private Const MAX_ORO_LOGUEABLE As Long = 90000
 
 Public Type tCOmercioUsuario
     DestUsu As Integer 'El otro Usuario
@@ -62,19 +32,19 @@ If UserList(Origen).ComUsu.DestUsu = Destino And _
     'Actualiza el inventario del usuario
     Call UpdateUserInv(True, Origen, 0)
     'Decirle al origen que abra la ventanita.
-    Call SendData(ToIndex, Origen, 0, "INITCOMUSU")
+    Call SendData(SendTarget.ToIndex, Origen, 0, "INITCOMUSU")
     UserList(Origen).flags.Comerciando = True
 
     'Actualiza el inventario del usuario
     Call UpdateUserInv(True, Destino, 0)
     'Decirle al origen que abra la ventanita.
-    Call SendData(ToIndex, Destino, 0, "INITCOMUSU")
+    Call SendData(SendTarget.ToIndex, Destino, 0, "INITCOMUSU")
     UserList(Destino).flags.Comerciando = True
 
     'Call EnviarObjetoTransaccion(Origen)
 Else
     'Es el primero que comercia ?
-    Call SendData(ToIndex, Destino, 0, "||" & UserList(Origen).Name & " desea comerciar. Si deseas aceptar, Escribe /COMERCIAR." & FONTTYPE_TALK)
+    Call SendData(SendTarget.ToIndex, Destino, 0, "||" & UserList(Origen).name & " desea comerciar. Si deseas aceptar, Escribe /COMERCIAR." & FONTTYPE_TALK)
     UserList(Destino).flags.TargetUser = Origen
     
 End If
@@ -86,7 +56,6 @@ End Sub
 
 'envia a AQuien el objeto del otro
 Public Sub EnviarObjetoTransaccion(ByVal AQuien As Integer)
-'Dim Object As UserOBJ
 Dim ObjInd As Integer
 Dim ObjCant As Long
 
@@ -94,29 +63,18 @@ Dim ObjCant As Long
 '         de no poder comerciar con mas de 32k de oro.
 '         Ahora si funciona!!!
 
-'Object.Amount = UserList(UserList(AQuien).ComUsu.DestUsu).ComUsu.Cant
 ObjCant = UserList(UserList(AQuien).ComUsu.DestUsu).ComUsu.Cant
 If UserList(UserList(AQuien).ComUsu.DestUsu).ComUsu.Objeto = FLAGORO Then
-    'Object.ObjIndex = iORO
     ObjInd = iORO
 Else
-    'Object.ObjIndex = UserList(UserList(AQuien).ComUsu.DestUsu).Invent.Object(UserList(UserList(AQuien).ComUsu.DestUsu).ComUsu.Objeto).ObjIndex
     ObjInd = UserList(UserList(AQuien).ComUsu.DestUsu).Invent.Object(UserList(UserList(AQuien).ComUsu.DestUsu).ComUsu.Objeto).ObjIndex
 End If
 
 If ObjCant <= 0 Or ObjInd <= 0 Then Exit Sub
 
-'If Object.ObjIndex > 0 And Object.Amount > 0 Then
-'    Call SendData(ToIndex, AQuien, 0, "COMUSUINV" & 1 & "," & Object.ObjIndex & "," & ObjData(Object.ObjIndex).Name & "," & Object.Amount & "," & Object.Equipped & "," & ObjData(Object.ObjIndex).GrhIndex & "," _
-'    & ObjData(Object.ObjIndex).ObjType & "," _
-'    & ObjData(Object.ObjIndex).MaxHIT & "," _
-'    & ObjData(Object.ObjIndex).MinHIT & "," _
-'    & ObjData(Object.ObjIndex).MaxDef & "," _
-'    & ObjData(Object.ObjIndex).Valor \ 3)
-'End If
 If ObjInd > 0 And ObjCant > 0 Then
-    Call SendData(ToIndex, AQuien, 0, "COMUSUINV" & 1 & "," & ObjInd & "," & ObjData(ObjInd).Name & "," & ObjCant & "," & 0 & "," & ObjData(ObjInd).GrhIndex & "," _
-    & ObjData(ObjInd).ObjType & "," _
+    Call SendData(SendTarget.ToIndex, AQuien, 0, "COMUSUINV" & 1 & "," & ObjInd & "," & ObjData(ObjInd).name & "," & ObjCant & "," & 0 & "," & ObjData(ObjInd).GrhIndex & "," _
+    & ObjData(ObjInd).OBJType & "," _
     & ObjData(ObjInd).MaxHIT & "," _
     & ObjData(ObjInd).MinHIT & "," _
     & ObjData(ObjInd).MaxDef & "," _
@@ -128,7 +86,7 @@ End Sub
 Public Sub FinComerciarUsu(ByVal UserIndex As Integer)
 With UserList(UserIndex)
     If .ComUsu.DestUsu > 0 Then
-        Call SendData(ToIndex, UserIndex, 0, "FINCOMUSUOK")
+        Call SendData(SendTarget.ToIndex, UserIndex, 0, "FINCOMUSUOK")
     End If
     
     .ComUsu.Acepto = False
@@ -161,10 +119,10 @@ End If
 If UserList(OtroUserIndex).ComUsu.DestUsu <> UserIndex Then
     TerminarAhora = True
 End If
-If UserList(OtroUserIndex).Name <> UserList(UserIndex).ComUsu.DestNick Then
+If UserList(OtroUserIndex).name <> UserList(UserIndex).ComUsu.DestNick Then
     TerminarAhora = True
 End If
-If UserList(UserIndex).Name <> UserList(OtroUserIndex).ComUsu.DestNick Then
+If UserList(UserIndex).name <> UserList(OtroUserIndex).ComUsu.DestNick Then
     TerminarAhora = True
 End If
 
@@ -178,45 +136,35 @@ UserList(UserIndex).ComUsu.Acepto = True
 TerminarAhora = False
 
 If UserList(UserList(UserIndex).ComUsu.DestUsu).ComUsu.Acepto = False Then
-    Call SendData(ToIndex, UserIndex, 0, "||El otro usuario aun no ha aceptado tu oferta." & FONTTYPE_TALK)
+    Call SendData(SendTarget.ToIndex, UserIndex, 0, "||El otro usuario aun no ha aceptado tu oferta." & FONTTYPE_TALK)
     Exit Sub
 End If
 
-'[Alejo]: Creo haber podido erradicar el bug de
-'         no poder comerciar con mas de 32k de oro.
-'         Las lineas comentadas en los siguientes
-'         2 grandes bloques IF (4 lineas) son las
-'         que originaban el problema.
-
 If UserList(UserIndex).ComUsu.Objeto = FLAGORO Then
-    'Obj1.Amount = UserList(UserIndex).ComUsu.Cant
     Obj1.ObjIndex = iORO
-    'If Obj1.Amount > UserList(UserIndex).Stats.GLD Then
     If UserList(UserIndex).ComUsu.Cant > UserList(UserIndex).Stats.GLD Then
-        Call SendData(ToIndex, UserIndex, 0, "||No tienes esa cantidad." & FONTTYPE_TALK)
+        Call SendData(SendTarget.ToIndex, UserIndex, 0, "||No tienes esa cantidad." & FONTTYPE_TALK)
         TerminarAhora = True
     End If
 Else
     Obj1.Amount = UserList(UserIndex).ComUsu.Cant
     Obj1.ObjIndex = UserList(UserIndex).Invent.Object(UserList(UserIndex).ComUsu.Objeto).ObjIndex
     If Obj1.Amount > UserList(UserIndex).Invent.Object(UserList(UserIndex).ComUsu.Objeto).Amount Then
-        Call SendData(ToIndex, UserIndex, 0, "||No tienes esa cantidad." & FONTTYPE_TALK)
+        Call SendData(SendTarget.ToIndex, UserIndex, 0, "||No tienes esa cantidad." & FONTTYPE_TALK)
         TerminarAhora = True
     End If
 End If
 If UserList(OtroUserIndex).ComUsu.Objeto = FLAGORO Then
-    'Obj2.Amount = UserList(OtroUserIndex).ComUsu.Cant
     Obj2.ObjIndex = iORO
-    'If Obj2.Amount > UserList(OtroUserIndex).Stats.GLD Then
     If UserList(OtroUserIndex).ComUsu.Cant > UserList(OtroUserIndex).Stats.GLD Then
-        Call SendData(ToIndex, OtroUserIndex, 0, "||No tienes esa cantidad." & FONTTYPE_TALK)
+        Call SendData(SendTarget.ToIndex, OtroUserIndex, 0, "||No tienes esa cantidad." & FONTTYPE_TALK)
         TerminarAhora = True
     End If
 Else
     Obj2.Amount = UserList(OtroUserIndex).ComUsu.Cant
     Obj2.ObjIndex = UserList(OtroUserIndex).Invent.Object(UserList(OtroUserIndex).ComUsu.Objeto).ObjIndex
     If Obj2.Amount > UserList(OtroUserIndex).Invent.Object(UserList(OtroUserIndex).ComUsu.Objeto).Amount Then
-        Call SendData(ToIndex, OtroUserIndex, 0, "||No tienes esa cantidad." & FONTTYPE_TALK)
+        Call SendData(SendTarget.ToIndex, OtroUserIndex, 0, "||No tienes esa cantidad." & FONTTYPE_TALK)
         TerminarAhora = True
     End If
 End If
@@ -236,11 +184,11 @@ End If
 If UserList(OtroUserIndex).ComUsu.Objeto = FLAGORO Then
     'quito la cantidad de oro ofrecida
     UserList(OtroUserIndex).Stats.GLD = UserList(OtroUserIndex).Stats.GLD - UserList(OtroUserIndex).ComUsu.Cant
-    If UserList(OtroUserIndex).ComUsu.Cant > MAX_ORO_LOGUEABLE Then Call LogDesarrollo(Date & " " & UserList(OtroUserIndex).Name & " solto oro en comercio seguro con " & UserList(UserIndex).Name & ". Cantidad: " & UserList(OtroUserIndex).ComUsu.Cant)
+    If UserList(OtroUserIndex).ComUsu.Cant > MAX_ORO_LOGUEABLE Then Call LogDesarrollo(Date & " " & UserList(OtroUserIndex).name & " solto oro en comercio seguro con " & UserList(UserIndex).name & ". Cantidad: " & UserList(OtroUserIndex).ComUsu.Cant)
     Call SendUserStatsBox(OtroUserIndex)
     'y se la doy al otro
     UserList(UserIndex).Stats.GLD = UserList(UserIndex).Stats.GLD + UserList(OtroUserIndex).ComUsu.Cant
-    If UserList(OtroUserIndex).ComUsu.Cant > MAX_ORO_LOGUEABLE Then Call LogDesarrollo(Date & " " & UserList(UserIndex).Name & " recibio oro en comercio seguro con " & UserList(OtroUserIndex).Name & ". Cantidad: " & UserList(OtroUserIndex).ComUsu.Cant)
+    If UserList(OtroUserIndex).ComUsu.Cant > MAX_ORO_LOGUEABLE Then Call LogDesarrollo(Date & " " & UserList(UserIndex).name & " recibio oro en comercio seguro con " & UserList(OtroUserIndex).name & ". Cantidad: " & UserList(OtroUserIndex).ComUsu.Cant)
     Call SendUserStatsBox(UserIndex)
 Else
     'Quita el objeto y se lo da al otro
@@ -254,11 +202,11 @@ End If
 If UserList(UserIndex).ComUsu.Objeto = FLAGORO Then
     'quito la cantidad de oro ofrecida
     UserList(UserIndex).Stats.GLD = UserList(UserIndex).Stats.GLD - UserList(UserIndex).ComUsu.Cant
-    If UserList(UserIndex).ComUsu.Cant > MAX_ORO_LOGUEABLE Then Call LogDesarrollo(Date & " " & UserList(UserIndex).Name & " solto oro en comercio seguro con " & UserList(OtroUserIndex).Name & ". Cantidad: " & UserList(UserIndex).ComUsu.Cant)
+    If UserList(UserIndex).ComUsu.Cant > MAX_ORO_LOGUEABLE Then Call LogDesarrollo(Date & " " & UserList(UserIndex).name & " solto oro en comercio seguro con " & UserList(OtroUserIndex).name & ". Cantidad: " & UserList(UserIndex).ComUsu.Cant)
     Call SendUserStatsBox(UserIndex)
     'y se la doy al otro
     UserList(OtroUserIndex).Stats.GLD = UserList(OtroUserIndex).Stats.GLD + UserList(UserIndex).ComUsu.Cant
-    If UserList(UserIndex).ComUsu.Cant > MAX_ORO_LOGUEABLE Then Call LogDesarrollo(Date & " " & UserList(OtroUserIndex).Name & " recibio oro en comercio seguro con " & UserList(UserIndex).Name & ". Cantidad: " & UserList(UserIndex).ComUsu.Cant)
+    If UserList(UserIndex).ComUsu.Cant > MAX_ORO_LOGUEABLE Then Call LogDesarrollo(Date & " " & UserList(OtroUserIndex).name & " recibio oro en comercio seguro con " & UserList(UserIndex).name & ". Cantidad: " & UserList(UserIndex).ComUsu.Cant)
     Call SendUserStatsBox(OtroUserIndex)
 Else
     'Quita el objeto y se lo da al otro

@@ -148,7 +148,6 @@ Begin VB.Form frmMain
       EndProperty
       Height          =   8145
       Left            =   8235
-      Picture         =   "frmMain.frx":030A
       ScaleHeight     =   543
       ScaleMode       =   3  'Pixel
       ScaleWidth      =   239
@@ -169,7 +168,7 @@ Begin VB.Form frmMain
          Height          =   240
          Index           =   1
          Left            =   540
-         MouseIcon       =   "frmMain.frx":1C77B
+         MouseIcon       =   "frmMain.frx":030A
          MousePointer    =   99  'Custom
          TabIndex        =   10
          Top             =   4800
@@ -190,7 +189,7 @@ Begin VB.Form frmMain
          Height          =   240
          Index           =   0
          Left            =   540
-         MouseIcon       =   "frmMain.frx":1C8CD
+         MouseIcon       =   "frmMain.frx":045C
          MousePointer    =   99  'Custom
          TabIndex        =   9
          Top             =   2160
@@ -218,10 +217,10 @@ Begin VB.Form frmMain
          Left            =   555
          ScaleHeight     =   160
          ScaleMode       =   3  'Pixel
-         ScaleWidth      =   161
+         ScaleWidth      =   160
          TabIndex        =   8
          Top             =   2400
-         Width           =   2415
+         Width           =   2400
       End
       Begin VB.ListBox hlst 
          BackColor       =   &H00000000&
@@ -249,7 +248,7 @@ Begin VB.Form frmMain
          Height          =   375
          Index           =   0
          Left            =   2940
-         MouseIcon       =   "frmMain.frx":1CA1F
+         MouseIcon       =   "frmMain.frx":05AE
          MousePointer    =   99  'Custom
          Top             =   2100
          Visible         =   0   'False
@@ -259,7 +258,7 @@ Begin VB.Form frmMain
          Height          =   375
          Index           =   1
          Left            =   2940
-         MouseIcon       =   "frmMain.frx":1CB71
+         MouseIcon       =   "frmMain.frx":0700
          MousePointer    =   99  'Custom
          Top             =   2520
          Visible         =   0   'False
@@ -268,7 +267,7 @@ Begin VB.Form frmMain
       Begin VB.Image cmdInfo 
          Height          =   405
          Left            =   2310
-         MouseIcon       =   "frmMain.frx":1CCC3
+         MouseIcon       =   "frmMain.frx":0852
          MousePointer    =   99  'Custom
          Top             =   4830
          Visible         =   0   'False
@@ -277,7 +276,7 @@ Begin VB.Form frmMain
       Begin VB.Image CmdLanzar 
          Height          =   405
          Left            =   450
-         MouseIcon       =   "frmMain.frx":1CE15
+         MouseIcon       =   "frmMain.frx":09A4
          MousePointer    =   99  'Custom
          Top             =   4830
          Visible         =   0   'False
@@ -360,7 +359,7 @@ Begin VB.Form frmMain
          Height          =   300
          Index           =   2
          Left            =   1905
-         MouseIcon       =   "frmMain.frx":1CF67
+         MouseIcon       =   "frmMain.frx":0AF6
          MousePointer    =   99  'Custom
          Top             =   7575
          Width           =   1410
@@ -369,7 +368,7 @@ Begin VB.Form frmMain
          Height          =   300
          Index           =   1
          Left            =   1905
-         MouseIcon       =   "frmMain.frx":1D0B9
+         MouseIcon       =   "frmMain.frx":0C48
          MousePointer    =   99  'Custom
          Top             =   7200
          Width           =   1410
@@ -378,7 +377,7 @@ Begin VB.Form frmMain
          Height          =   300
          Index           =   0
          Left            =   1920
-         MouseIcon       =   "frmMain.frx":1D20B
+         MouseIcon       =   "frmMain.frx":0D9A
          MousePointer    =   99  'Custom
          Top             =   6840
          Width           =   1410
@@ -463,7 +462,7 @@ Begin VB.Form frmMain
          EndProperty
          Height          =   450
          Left            =   1800
-         MouseIcon       =   "frmMain.frx":1D35D
+         MouseIcon       =   "frmMain.frx":0EEC
          MousePointer    =   99  'Custom
          TabIndex        =   7
          Top             =   1290
@@ -482,7 +481,7 @@ Begin VB.Form frmMain
          EndProperty
          Height          =   435
          Left            =   150
-         MouseIcon       =   "frmMain.frx":1D4AF
+         MouseIcon       =   "frmMain.frx":103E
          MousePointer    =   99  'Custom
          TabIndex        =   6
          Top             =   1305
@@ -491,7 +490,6 @@ Begin VB.Form frmMain
       Begin VB.Image InvEqu 
          Height          =   4395
          Left            =   120
-         Picture         =   "frmMain.frx":1D601
          Top             =   1320
          Width           =   3240
       End
@@ -565,6 +563,7 @@ Begin VB.Form frmMain
       Width           =   8160
    End
    Begin RichTextLib.RichTextBox RecTxt 
+      CausesValidation=   0   'False
       Height          =   1500
       Left            =   45
       TabIndex        =   1
@@ -580,7 +579,7 @@ Begin VB.Form frmMain
       ReadOnly        =   -1  'True
       ScrollBars      =   2
       DisableNoScroll =   -1  'True
-      TextRTF         =   $"frmMain.frx":2CF54
+      TextRTF         =   $"frmMain.frx":1190
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Tahoma"
          Size            =   8.25
@@ -595,7 +594,7 @@ Begin VB.Form frmMain
       BorderStyle     =   1  'Fixed Single
       Height          =   510
       Left            =   9300
-      Picture         =   "frmMain.frx":2CFD1
+      Picture         =   "frmMain.frx":120E
       Stretch         =   -1  'True
       Top             =   8100
       Visible         =   0   'False
@@ -605,7 +604,7 @@ Begin VB.Form frmMain
       BorderStyle     =   1  'Fixed Single
       Height          =   510
       Left            =   8790
-      Picture         =   "frmMain.frx":2E243
+      Picture         =   "frmMain.frx":2480
       Stretch         =   -1  'True
       Top             =   8100
       Visible         =   0   'False
@@ -628,7 +627,7 @@ Begin VB.Form frmMain
       BorderStyle     =   1  'Fixed Single
       Height          =   510
       Left            =   8280
-      Picture         =   "frmMain.frx":2F055
+      Picture         =   "frmMain.frx":3292
       Stretch         =   -1  'True
       Top             =   8100
       Width           =   510
@@ -649,22 +648,18 @@ Begin VB.Form frmMain
       Begin VB.Menu mnuUsar 
          Caption         =   "Usar"
       End
-      Begin VB.Menu mnuDescripcion 
-         Caption         =   "Descripcion"
+      Begin VB.Menu mnuEquipar 
+         Caption         =   "Equipar"
       End
    End
    Begin VB.Menu mnuNpc 
       Caption         =   "NPC"
       Visible         =   0   'False
       Begin VB.Menu mnuNpcDesc 
-         Caption         =   "(Desc)"
+         Caption         =   "Descripcion"
       End
-      Begin VB.Menu sep1 
-         Caption         =   "-"
-      End
-      Begin VB.Menu mnuNpcElem 
-         Caption         =   "jj"
-         Index           =   0
+      Begin VB.Menu mnuNpcComerciar 
+         Caption         =   "Comerciar"
          Visible         =   0   'False
       End
    End
@@ -674,9 +669,13 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-'Argentum Online 0.11.2
+'Argentum Online 0.9.0.9
 '
 'Copyright (C) 2002 Márquez Pablo Ignacio
+'Copyright (C) 2002 Otto Perez
+'Copyright (C) 2002 Aaron Perkins
+'Copyright (C) 2002 Matías Fernando Pequeño
+'
 'This program is free software; you can redistribute it and/or modify
 'it under the terms of the GNU General Public License as published by
 'the Free Software Foundation; either version 2 of the License, or
@@ -728,28 +727,26 @@ Dim PuedeMacrear As Boolean
 
 Implements DirectXEvent
 
+Private Sub cmdMoverHechi_Click(index As Integer)
+If hlst.listIndex = -1 Then Exit Sub
 
-Private Sub cmdMoverHechi_Click(Index As Integer)
-If hlst.ListIndex = -1 Then Exit Sub
-
-Select Case Index
+Select Case index
 Case 0 'subir
-    If hlst.ListIndex = 0 Then Exit Sub
+    If hlst.listIndex = 0 Then Exit Sub
 Case 1 'bajar
-    If hlst.ListIndex = hlst.ListCount - 1 Then Exit Sub
+    If hlst.listIndex = hlst.ListCount - 1 Then Exit Sub
 End Select
 
-Call SendData("DESPHE" & Index + 1 & "," & hlst.ListIndex + 1)
+Call SendData("DESPHE" & index + 1 & "," & hlst.listIndex + 1)
 
-Select Case Index
+Select Case index
 Case 0 'subir
-    hlst.ListIndex = hlst.ListIndex - 1
+    hlst.listIndex = hlst.listIndex - 1
 Case 1 'bajar
-    hlst.ListIndex = hlst.ListIndex + 1
+    hlst.listIndex = hlst.listIndex + 1
 End Select
 
 End Sub
-
 
 Private Sub DirectXEvent_DXCallback(ByVal eventid As Long)
 
@@ -758,29 +755,6 @@ End Sub
 Private Sub CreateEvent()
      endEvent = DirectX.CreateEvent(Me)
 End Sub
-
-
-Private Function LoadSoundBufferFromFile(sFile As String) As Integer
-    On Error GoTo err_out
-        With gD
-            .lFlags = DSBCAPS_CTRLVOLUME Or DSBCAPS_CTRLPAN Or DSBCAPS_CTRLFREQUENCY Or DSBCAPS_CTRLPOSITIONNOTIFY
-            .lReserved = 0
-        End With
-        Set gDSB = DirectSound.CreateSoundBufferFromFile(DirSound & sFile, gD, gW)
-        With Pos(0)
-            .hEventNotify = endEvent
-            .lOffset = -1
-        End With
-        DirectX.SetEvent endEvent
-        'gDSB.SetNotificationPositions 1, POS()
-    Exit Function
-
-err_out:
-    MsgBox "Error creating sound buffer", vbApplicationModal
-    LoadSoundBufferFromFile = 1
-
-
-End Function
 
 Public Sub ActivarMacroHechizos()
     If Not hlst.Visible Then
@@ -818,23 +792,9 @@ End Sub
 Public Sub DibujarSatelite()
 PicAU.Visible = True
 End Sub
+
 Public Sub DesDibujarSatelite()
 PicAU.Visible = False
-End Sub
-
-
-
-
-Public Sub Play(ByVal Nombre As String, Optional ByVal LoopSound As Boolean = False)
-    If Fx = 1 Then Exit Sub
-    Call LoadSoundBufferFromFile(Nombre)
-
-    If LoopSound Then
-        gDSB.Play DSBPLAY_LOOPING
-    Else
-        gDSB.Play DSBPLAY_DEFAULT
-    End If
-
 End Sub
 
 Private Sub Form_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
@@ -857,14 +817,6 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
     End If
 End Sub
 
-Public Sub StopSound()
-    On Local Error Resume Next
-    If Not gDSB Is Nothing Then
-            gDSB.Stop
-            gDSB.SetCurrentPosition 0
-    End If
-End Sub
-
 Private Sub FPS_Timer()
 
 If logged And Not frmMain.Visible Then
@@ -877,6 +829,27 @@ End Sub
 
 Private Sub Macro_Timer()
     PuedeMacrear = True
+End Sub
+
+Private Sub mnuEquipar_Click()
+    Call EquiparItem
+End Sub
+
+Private Sub mnuNPCComerciar_Click()
+    SendData "LC" & tX & "," & tY
+    SendData "/COMERCIAR"
+End Sub
+
+Private Sub mnuNpcDesc_Click()
+    SendData "LC" & tX & "," & tY
+End Sub
+
+Private Sub mnuTirar_Click()
+    Call TirarItem
+End Sub
+
+Private Sub mnuUsar_Click()
+    Call UsarItem
 End Sub
 
 Private Sub PicAU_Click()
@@ -915,10 +888,11 @@ If IPdelServidor <> ((IPMMSB - 15) & "." & (IPMSB - 15) & "." & (IPLSB - 15) _
 End Sub
 
 Private Sub Second_Timer()
-    ActualSecond = Mid(time, 7, 2)
+    ActualSecond = mid(Time, 7, 2)
     ActualSecond = ActualSecond + 1
     If ActualSecond = LastSecond Then End
     LastSecond = ActualSecond
+    If Not DialogosClanes Is Nothing Then DialogosClanes.PassTimer
 End Sub
 
 '[END]'
@@ -940,34 +914,29 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''
 
 Private Sub TirarItem()
-    If (ItemElegido > 0 And ItemElegido < MAX_INVENTORY_SLOTS + 1) Or (ItemElegido = FLAGORO) Then
-        If UserInventory(ItemElegido).Amount = 1 Then
-            SendData "TI" & ItemElegido & "," & 1
+    If (Inventario.SelectedItem > 0 And Inventario.SelectedItem < MAX_INVENTORY_SLOTS + 1) Or (Inventario.SelectedItem = FLAGORO) Then
+        If Inventario.Amount(Inventario.SelectedItem) = 1 Then
+            SendData "TI" & Inventario.SelectedItem & "," & 1
         Else
-           If UserInventory(ItemElegido).Amount > 1 Then
+           If Inventario.Amount(Inventario.SelectedItem) > 1 Then
             frmCantidad.Show , frmMain
            End If
         End If
     End If
-
-    bInvMod = True
 End Sub
 
 Private Sub AgarrarItem()
     SendData "AG"
-    bInvMod = True
 End Sub
 
 Private Sub UsarItem()
     If TrainingMacro.Enabled Then DesactivarMacroHechizos
-    If (ItemElegido > 0) And (ItemElegido < MAX_INVENTORY_SLOTS + 1) Then SendData "USA" & ItemElegido
-    bInvMod = True
+    If (Inventario.SelectedItem > 0) And (Inventario.SelectedItem < MAX_INVENTORY_SLOTS + 1) Then SendData "USA" & Inventario.SelectedItem
 End Sub
 
 Private Sub EquiparItem()
-    If (ItemElegido > 0) And (ItemElegido < MAX_INVENTORY_SLOTS + 1) Then _
-        SendData "EQUI" & ItemElegido
-    bInvMod = True
+    If (Inventario.SelectedItem > 0) And (Inventario.SelectedItem < MAX_INVENTORY_SLOTS + 1) Then _
+        SendData "EQUI" & Inventario.SelectedItem
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''
@@ -982,8 +951,8 @@ Private Sub TrainingMacro_Timer()
     If Comerciando Then Exit Sub
     Select Case SecuenciaMacroHechizos
         Case 0
-            If hlst.List(hlst.ListIndex) <> "(None)" And UserCanAttack = 1 Then
-                Call SendData("LH" & hlst.ListIndex + 1)
+            If hlst.List(hlst.listIndex) <> "(None)" And UserCanAttack = 1 Then
+                Call SendData("LH" & hlst.listIndex + 1)
                 Call SendData("UK" & Magia)
                 'UserCanAttack = 0
             End If
@@ -1003,8 +972,8 @@ End Sub
 
 
 Private Sub cmdLanzar_Click()
-    If hlst.List(hlst.ListIndex) <> "(None)" And UserCanAttack = 1 Then
-        Call SendData("LH" & hlst.ListIndex + 1)
+    If hlst.List(hlst.listIndex) <> "(None)" And UserCanAttack = 1 Then
+        Call SendData("LH" & hlst.listIndex + 1)
         Call SendData("UK" & Magia)
         UsaMacro = True
         'UserCanAttack = 0
@@ -1018,35 +987,24 @@ End Sub
 
 
 Private Sub CmdInfo_Click()
-    Call SendData("INFS" & hlst.ListIndex + 1)
+    Call SendData("INFS" & hlst.listIndex + 1)
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''
 '     OTROS                          '
 ''''''''''''''''''''''''''''''''''''''
 
-Private Sub DespInv_Click(Index As Integer)
-    Select Case Index
-        Case 0:
-            If OffsetDelInv > 0 Then
-                OffsetDelInv = OffsetDelInv - XCantItems
-                my = my + 1
-
-            End If
-        Case 1:
-            If OffsetDelInv < MAX_INVENTORY_SLOTS Then
-                OffsetDelInv = OffsetDelInv + XCantItems
-                my = my - 1
-            End If
-    End Select
-    bInvMod = True
+Private Sub DespInv_Click(index As Integer)
+    Inventario.ScrollInventory (index = 0)
 End Sub
 
 Private Sub Form_Click()
 
     If Cartel Then Cartel = False
 
-    
+#If SeguridadAlkon Then
+    If LOGGING Then Call CheatingDeath.StoreKey(MouseBoton, True)
+#End If
 
     If Not Comerciando Then
         Call ConvertCPtoTP(MainViewShp.Left, MainViewShp.Top, MouseX, MouseY, tX, tY)
@@ -1093,21 +1051,23 @@ End Sub
 
 Private Sub Form_KeyUp(KeyCode As Integer, Shift As Integer)
 On Error Resume Next
-    
 
-    
-If (Not SendTxt.Visible) And (Not SendCMSTXT.Visible) And _
-   ((KeyCode >= 65 And KeyCode <= 90) Or _
-   (KeyCode >= 48 And KeyCode <= 57)) Then
+#If SeguridadAlkon Then
+    If LOGGING Then Call CheatingDeath.StoreKey(KeyCode, False)
+#End If
+        
+    If (Not SendTxt.Visible) And (Not SendCMSTXT.Visible) And _
+       ((KeyCode >= 65 And KeyCode <= 90) Or _
+       (KeyCode >= 48 And KeyCode <= 57)) Then
         
             Select Case KeyCode
                 Case vbKeyM:
-                    If Not IsPlayingCheck Then
-                        Musica = 0
-                        Play_Midi
+                    If Not Audio.PlayingMusic Then
+                        Musica = True
+                        Audio.PlayMIDI CStr(currentMidi) & ".mid"
                     Else
-                        Musica = 1
-                        Stop_Midi
+                        Musica = False
+                        Audio.StopMidi
                     End If
                 Case vbKeyA:
                     Call AgarrarItem
@@ -1226,10 +1186,10 @@ Private Sub hlst_KeyUp(KeyCode As Integer, Shift As Integer)
         KeyCode = 0
 End Sub
 
-Private Sub Image1_Click(Index As Integer)
-    Call PlayWaveDS(SND_CLICK)
+Private Sub Image1_Click(index As Integer)
+    Call Audio.PlayWave(SND_CLICK)
 
-    Select Case Index
+    Select Case index
         Case 0
             '[MatuX] : 01 de Abril del 2002
                 Call frmOpciones.Show(vbModeless, frmMain)
@@ -1256,10 +1216,10 @@ Private Sub Image1_Click(Index As Integer)
     End Select
 End Sub
 
-Private Sub Image3_Click(Index As Integer)
-    Select Case Index
+Private Sub Image3_Click(index As Integer)
+    Select Case index
         Case 0
-            ItemElegido = FLAGORO
+            Inventario.SelectGold
             If UserGLD > 0 Then
                 frmCantidad.Show , frmMain
             End If
@@ -1267,17 +1227,17 @@ Private Sub Image3_Click(Index As Integer)
 End Sub
 
 Private Sub Label1_Click()
-    Dim I As Integer
-    For I = 1 To NUMSKILLS
-        frmSkills3.Text1(I).Caption = UserSkills(I)
-    Next I
+    Dim i As Integer
+    For i = 1 To NUMSKILLS
+        frmSkills3.Text1(i).Caption = UserSkills(i)
+    Next i
     Alocados = SkillPoints
     frmSkills3.Puntos.Caption = "Puntos:" & SkillPoints
     frmSkills3.Show , frmMain
 End Sub
 
 Private Sub Label4_Click()
-    Call PlayWaveDS(SND_CLICK)
+    Call Audio.PlayWave(SND_CLICK)
 
     InvEqu.Picture = LoadPicture(App.Path & "\Graficos\Centronuevoinventario.jpg")
 
@@ -1294,7 +1254,7 @@ Private Sub Label4_Click()
 End Sub
 
 Private Sub Label7_Click()
-    Call PlayWaveDS(SND_CLICK)
+    Call Audio.PlayWave(SND_CLICK)
 
     InvEqu.Picture = LoadPicture(App.Path & "\Graficos\Centronuevohechizos.jpg")
     '%%%%%%OCULTAMOS EL INV&&&&&&&&&&&&
@@ -1312,49 +1272,11 @@ End Sub
 Private Sub picInv_DblClick()
     If frmCarp.Visible Or frmHerrero.Visible Then Exit Sub
     
-    If ItemElegido <> 0 Then SendData "USA" & ItemElegido
-End Sub
-
-Private Sub picInv_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    Dim mx As Integer
-    Dim my As Integer
-    Dim aux As Integer
-    UsaMacro = False
-    mx = X \ 32 + 1
-    my = Y \ 32 + 1
-    aux = (mx + (my - 1) * 5) + OffsetDelInv
-    If aux > 0 And aux < MAX_INVENTORY_SLOTS Then _
-        picInv.ToolTipText = UserInventory(aux).Name
+    Call UsarItem
 End Sub
 
 Private Sub picInv_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    Call PlayWaveDS(SND_CLICK)
-    
-    Call ItemClick(CInt(X), CInt(Y), picInv)
-    
-#If (ConMenuseConextuales = 1) Then
-    If (Button = vbRightButton) And (ClicEnItemElegido(CInt(X), CInt(Y), picInv)) Then
-        If ItemElegido >= LBound(UserInventory) And ItemElegido <= UBound(UserInventory) Then
-            Dim I As Long
-            Dim m As New frmMenuseFashion
-            
-            Load m
-            m.SetCallback Me
-            m.SetMenuId 0
-            m.ListaInit 4, False
-            
-            m.ListaSetItem 0, UserInventory(ItemElegido).Name, True
-'            m.ListaSetItem 1, " "
-            m.ListaSetItem 1, "Tirar"
-            m.ListaSetItem 2, "Usar"
-            m.ListaSetItem 3, "Equipar"
-            
-            m.ListaFin
-            m.Show , Me
-        End If
-    End If
-#End If
-
+    Call Audio.PlayWave(SND_CLICK)
 End Sub
 
 Private Sub RecTxt_Change()
@@ -1386,13 +1308,34 @@ Private Sub RecTxt_KeyDown(KeyCode As Integer, Shift As Integer)
 End Sub
 
 Private Sub SendTxt_Change()
+'**************************************************************
+'Author: Unknown
+'Last Modify Date: 3/06/2006
+'3/06/2006: Maraxus - impedí se inserten caractéres no imprimibles
+'**************************************************************
     If Len(SendTxt.Text) > 160 Then
         stxtbuffer = "Soy un cheater, avisenle a un gm"
     Else
+        'Make sure only valid chars are inserted (with Shift + Insert they can paste illegal chars)
+        Dim i As Long
+        Dim tempstr As String
+        Dim CharAscii As Integer
+        
+        For i = 1 To Len(SendTxt.Text)
+            CharAscii = Asc(mid$(SendTxt.Text, i, 1))
+            If CharAscii >= vbKeySpace And CharAscii <= 250 Then
+                tempstr = tempstr & Chr$(CharAscii)
+            End If
+        Next i
+        
+        If tempstr <> SendTxt.Text Then
+            'We only set it if it's different, otherwise the event will be raised
+            'constantly and the client will crush
+            SendTxt.Text = tempstr
+        End If
+        
         stxtbuffer = SendTxt.Text
     End If
-    
-    
 End Sub
 
 Private Sub SendTxt_KeyPress(KeyAscii As Integer)
@@ -1406,9 +1349,22 @@ Private Sub SendTxt_KeyUp(KeyCode As Integer, Shift As Integer)
     If KeyCode = vbKeyReturn Then
         If Left$(stxtbuffer, 1) = "/" Then
             If UCase(Left$(stxtbuffer, 8)) = "/PASSWD " Then
-                    Dim j$
-                    j$ = MD5String(Right$(stxtbuffer, Len(stxtbuffer) - 8))
-                    stxtbuffer = "/PASSWD " & j$
+                    Dim j As String
+#If SeguridadAlkon Then
+                    j = md5.GetMD5String(Right$(stxtbuffer, Len(stxtbuffer) - 8))
+                    Call md5.MD5Reset
+#Else
+                    j = Right$(stxtbuffer, Len(stxtbuffer) - 8)
+#End If
+                    stxtbuffer = "/PASSWD " & j
+            ElseIf UCase$(stxtbuffer) = "/FUNDARCLAN" Then
+                frmEligeAlineacion.Show vbModeless, Me
+                stxtbuffer = ""
+                SendTxt.Text = ""
+                KeyCode = 0
+                SendTxt.Visible = False
+                
+                Exit Sub
             End If
             Call SendData(stxtbuffer)
     
@@ -1479,36 +1435,45 @@ Private Sub Socket1_Connect()
     
     ServerIp = Socket1.PeerAddress
     Temporal = InStr(1, ServerIp, ".")
-    Temporal1 = ((Mid(ServerIp, 1, Temporal - 1) Xor &H65) And &H7F) * 16777216
-    ServerIp = Mid(ServerIp, Temporal + 1, Len(ServerIp))
+    Temporal1 = ((mid$(ServerIp, 1, Temporal - 1) Xor &H65) And &H7F) * 16777216
+    ServerIp = mid$(ServerIp, Temporal + 1, Len(ServerIp))
     Temporal = InStr(1, ServerIp, ".")
-    Temporal1 = Temporal1 + (Mid(ServerIp, 1, Temporal - 1) Xor &HF6) * 65536
-    ServerIp = Mid(ServerIp, Temporal + 1, Len(ServerIp))
+    Temporal1 = Temporal1 + (mid$(ServerIp, 1, Temporal - 1) Xor &HF6) * 65536
+    ServerIp = mid$(ServerIp, Temporal + 1, Len(ServerIp))
     Temporal = InStr(1, ServerIp, ".")
-    Temporal1 = Temporal1 + (Mid(ServerIp, 1, Temporal - 1) Xor &H4B) * 256
-    ServerIp = Mid(ServerIp, Temporal + 1, Len(ServerIp)) Xor &H42
+    Temporal1 = Temporal1 + (mid$(ServerIp, 1, Temporal - 1) Xor &H4B) * 256
+    ServerIp = mid$(ServerIp, Temporal + 1, Len(ServerIp)) Xor &H42
     MixedKey = (Temporal1 + ServerIp)
     
     Second.Enabled = True
     
     'If frmCrearPersonaje.Visible Then
-    If EstadoLogin = CrearNuevoPj Then
+    If EstadoLogin = E_MODO.CrearNuevoPj Then
         Call SendData("gIvEmEvAlcOde")
+#If SegudidadAlkon Then
+        Call MI(CualMI).Inicializar(RandomNumber(1, 1000), 10000)
+#End If
     'ElseIf Not frmRecuperar.Visible Then
-    ElseIf EstadoLogin = Normal Then
+    ElseIf EstadoLogin = E_MODO.Normal Then
         Call SendData("gIvEmEvAlcOde")
-    ElseIf EstadoLogin = Dados Then
+#If SegudidadAlkon Then
+        Call MI(CualMI).Inicializar(RandomNumber(1, 1000), 10000)
+#End If
+    ElseIf EstadoLogin = E_MODO.Dados Then
         Call SendData("gIvEmEvAlcOde")
+#If SegudidadAlkon Then
+        Call MI(CualMI).Inicializar(RandomNumber(1, 1000), 10000)
+#End If
     'Else
-    ElseIf EstadoLogin = RecuperarPass Then
-        Dim cmd$
-        cmd$ = "PASSRECO" & frmRecuperar.txtNombre.Text & "~" & frmRecuperar.Txtcorreo
-        frmMain.Socket1.Write cmd$, Len(cmd$)
+    ElseIf EstadoLogin = E_MODO.RecuperarPass Then
+        Dim cmd As String
+        cmd = "PASSRECO" & frmRecuperar.txtNombre.Text & "~" & frmRecuperar.txtCorreo
+        frmMain.Socket1.Write cmd, Len(cmd)
     End If
 End Sub
 
 Private Sub Socket1_Disconnect()
-    Dim I As Long
+    Dim i As Long
     
     LastSecond = 0
     Second.Enabled = False
@@ -1519,17 +1484,16 @@ Private Sub Socket1_Disconnect()
     
     frmConnect.MousePointer = vbNormal
     
-    If frmPasswd.Visible = True Then frmPasswd.Visible = False
     If frmPasswdSinPadrinos.Visible = True Then frmPasswdSinPadrinos.Visible = False
     frmCrearPersonaje.Visible = False
     frmConnect.Visible = True
     
     On Local Error Resume Next
-    For I = 0 To Forms.Count - 1
-        If Forms(I).Name <> Me.Name And Forms(I).Name <> frmConnect.Name Then
-            Unload Forms(I)
+    For i = 0 To Forms.Count - 1
+        If Forms(i).Name <> Me.Name And Forms(i).Name <> frmConnect.Name Then
+            Unload Forms(i)
         End If
-    Next I
+    Next i
     On Local Error GoTo 0
     
     frmMain.Visible = False
@@ -1537,20 +1501,26 @@ Private Sub Socket1_Disconnect()
     pausa = False
     UserMeditar = False
     
+#If SegudidadAlkon Then
+    LOGGING = False
+    LOGSTRING = False
+    LastPressed = 0
+    LastMouse = False
+    LastAmount = 0
+#End If
 
     UserClase = ""
     UserSexo = ""
     UserRaza = ""
     UserEmail = ""
-    bO = 100
     
-    For I = 1 To NUMSKILLS
-        UserSkills(I) = 0
-    Next I
+    For i = 1 To NUMSKILLS
+        UserSkills(i) = 0
+    Next i
 
-    For I = 1 To NUMATRIBUTOS
-        UserAtributos(I) = 0
-    Next I
+    For i = 1 To NUMATRIBUTOS
+        UserAtributos(i) = 0
+    Next i
 
     SkillPoints = 0
     Alocados = 0
@@ -1602,7 +1572,7 @@ Private Sub Socket1_Read(DataLength As Integer, IsUrgent As Integer)
     Dim Echar As Integer
     Dim aux$
     Dim nfile As Integer
-
+    
     Socket1.Read RD, DataLength
     
     'Check for previous broken data and add to current data
@@ -1615,12 +1585,12 @@ Private Sub Socket1_Read(DataLength As Integer, IsUrgent As Integer)
     sChar = 1
     For loopc = 1 To Len(RD)
 
-        tChar = Mid$(RD, loopc, 1)
+        tChar = mid$(RD, loopc, 1)
 
         If tChar = ENDC Then
             CR = CR + 1
             Echar = loopc - sChar
-            rBuffer(CR) = Mid$(RD, sChar, Echar)
+            rBuffer(CR) = mid$(RD, sChar, Echar)
             sChar = loopc + 1
         End If
 
@@ -1628,14 +1598,16 @@ Private Sub Socket1_Read(DataLength As Integer, IsUrgent As Integer)
 
     'Check for broken line and save for next time
     If Len(RD) - (sChar - 1) <> 0 Then
-        TempString = Mid$(RD, sChar, Len(RD))
+        TempString = mid$(RD, sChar, Len(RD))
     End If
 
     'Send buffer to Handle data
     For loopc = 1 To CR
+        'Call LogCustom("HandleData: " & rBuffer(loopc))
         Call HandleData(rBuffer(loopc))
     Next loopc
 End Sub
+
 
 #End If
 
@@ -1647,7 +1619,7 @@ If tX >= MinXBorder And tY >= MinYBorder And _
     If MapData(tX, tY).CharIndex > 0 Then
         If charlist(MapData(tX, tY).CharIndex).invisible = False Then
         
-            Dim I As Long
+            Dim i As Long
             Dim m As New frmMenuseFashion
             
             Load m
@@ -1711,7 +1683,7 @@ End Sub
 #If UsarWrench <> 1 Then
 
 Private Sub Winsock1_Close()
-    Dim I As Long
+    Dim i As Long
     
     Debug.Print "WInsock Close"
     
@@ -1725,17 +1697,16 @@ Private Sub Winsock1_Close()
     
     frmConnect.MousePointer = vbNormal
     
-    If frmPasswd.Visible = True Then frmPasswd.Visible = False
     If frmPasswdSinPadrinos.Visible = True Then frmPasswdSinPadrinos.Visible = False
     frmCrearPersonaje.Visible = False
     frmConnect.Visible = True
     
     On Local Error Resume Next
-    For I = 0 To Forms.Count - 1
-        If Forms(I).Name <> Me.Name And Forms(I).Name <> frmConnect.Name Then
-            Unload Forms(I)
+    For i = 0 To Forms.Count - 1
+        If Forms(i).Name <> Me.Name And Forms(i).Name <> frmConnect.Name Then
+            Unload Forms(i)
         End If
-    Next I
+    Next i
     On Local Error GoTo 0
     
     frmMain.Visible = False
@@ -1747,15 +1718,14 @@ Private Sub Winsock1_Close()
     UserSexo = ""
     UserRaza = ""
     UserEmail = ""
-    bO = 100
     
-    For I = 1 To NUMSKILLS
-        UserSkills(I) = 0
-    Next I
+    For i = 1 To NUMSKILLS
+        UserSkills(i) = 0
+    Next i
 
-    For I = 1 To NUMATRIBUTOS
-        UserAtributos(I) = 0
-    Next I
+    For i = 1 To NUMATRIBUTOS
+        UserAtributos(i) = 0
+    Next i
 
     SkillPoints = 0
     Alocados = 0
@@ -1773,30 +1743,30 @@ Private Sub Winsock1_Connect()
     
     ServerIp = Winsock1.RemoteHostIP
     Temporal = InStr(1, ServerIp, ".")
-    Temporal1 = ((Mid(ServerIp, 1, Temporal - 1) Xor &H65) And &H7F) * 16777216
-    ServerIp = Mid(ServerIp, Temporal + 1, Len(ServerIp))
+    Temporal1 = ((mid$(ServerIp, 1, Temporal - 1) Xor &H65) And &H7F) * 16777216
+    ServerIp = mid$(ServerIp, Temporal + 1, Len(ServerIp))
     Temporal = InStr(1, ServerIp, ".")
-    Temporal1 = Temporal1 + (Mid(ServerIp, 1, Temporal - 1) Xor &HF6) * 65536
-    ServerIp = Mid(ServerIp, Temporal + 1, Len(ServerIp))
+    Temporal1 = Temporal1 + (mid$(ServerIp, 1, Temporal - 1) Xor &HF6) * 65536
+    ServerIp = mid$(ServerIp, Temporal + 1, Len(ServerIp))
     Temporal = InStr(1, ServerIp, ".")
-    Temporal1 = Temporal1 + (Mid(ServerIp, 1, Temporal - 1) Xor &H4B) * 256
-    ServerIp = Mid(ServerIp, Temporal + 1, Len(ServerIp)) Xor &H42
+    Temporal1 = Temporal1 + (mid$(ServerIp, 1, Temporal - 1) Xor &H4B) * 256
+    ServerIp = mid$(ServerIp, Temporal + 1, Len(ServerIp)) Xor &H42
     MixedKey = (Temporal1 + ServerIp)
     
     Second.Enabled = True
     
     'If frmCrearPersonaje.Visible Then
-    If EstadoLogin = CrearNuevoPj Then
+    If EstadoLogin = E_MODO.CrearNuevoPj Then
         Call SendData("gIvEmEvAlcOde")
     'ElseIf Not frmRecuperar.Visible Then
-    ElseIf EstadoLogin = Normal Then
+    ElseIf EstadoLogin = E_MODO.Normal Then
         Call SendData("gIvEmEvAlcOde")
-    ElseIf EstadoLogin = Dados Then
+    ElseIf EstadoLogin = E_MODO.Dados Then
         Call SendData("gIvEmEvAlcOde")
     'Else
-    ElseIf EstadoLogin = RecuperarPass Then
-        Dim cmd$
-        cmd$ = "PASSRECO" & frmRecuperar.txtNombre.Text & "~" & frmRecuperar.Txtcorreo
+    ElseIf EstadoLogin = E_MODO.RecuperarPass Then
+        Dim cmd As String
+        cmd = "PASSRECO" & frmRecuperar.txtNombre.Text & "~" & frmRecuperar.txtCorreo
         'frmMain.Socket1.Write cmd$, Len(cmd$)
         'Call SendData(cmd$)
     End If
@@ -1831,12 +1801,12 @@ Private Sub Winsock1_DataArrival(ByVal bytesTotal As Long)
     sChar = 1
     For loopc = 1 To Len(RD)
 
-        tChar = Mid$(RD, loopc, 1)
+        tChar = mid$(RD, loopc, 1)
 
         If tChar = ENDC Then
             CR = CR + 1
             Echar = loopc - sChar
-            rBuffer(CR) = Mid$(RD, sChar, Echar)
+            rBuffer(CR) = mid$(RD, sChar, Echar)
             sChar = loopc + 1
         End If
 
@@ -1844,7 +1814,7 @@ Private Sub Winsock1_DataArrival(ByVal bytesTotal As Long)
 
     'Check for broken line and save for next time
     If Len(RD) - (sChar - 1) <> 0 Then
-        TempString = Mid$(RD, sChar, Len(RD))
+        TempString = mid$(RD, sChar, Len(RD))
     End If
 
     'Send buffer to Handle data
@@ -1853,20 +1823,13 @@ Private Sub Winsock1_DataArrival(ByVal bytesTotal As Long)
     Next loopc
 End Sub
 
-Private Sub Winsock1_Error(ByVal Number As Integer, Description As String, ByVal Scode As Long, ByVal Source As String, ByVal HelpFile As String, ByVal HelpContext As Long, CancelDisplay As Boolean)
+Private Sub Winsock1_Error(ByVal Number As Integer, Description As String, ByVal Scode As Long, ByVal source As String, ByVal HelpFile As String, ByVal HelpContext As Long, CancelDisplay As Boolean)
     '*********************************************
     'Handle socket errors
     '*********************************************
-'    If ErrorCode = 24036 Then
-'        Call MsgBox("Por favor espere, intentando completar conexion.", vbApplicationModal + vbInformation + vbOKOnly + vbDefaultButton1, "Error")
-'        Exit Sub
-'    End If
-    
-    Debug.Print "Winsock Error"
     
     Call MsgBox(Description, vbApplicationModal + vbInformation + vbOKOnly + vbDefaultButton1, "Error")
     frmConnect.MousePointer = 1
-    'Response = 0
     LastSecond = 0
     Second.Enabled = False
 

@@ -864,6 +864,10 @@ Attribute VB_Exposed = False
 'Argentum Online 0.9.0.9
 '
 'Copyright (C) 2002 Márquez Pablo Ignacio
+'Copyright (C) 2002 Otto Perez
+'Copyright (C) 2002 Aaron Perkins
+'Copyright (C) 2002 Matías Fernando Pequeño
+'
 'This program is free software; you can redistribute it and/or modify
 'it under the terms of the GNU General Public License as published by
 'the Free Software Foundation; either version 2 of the License, or
@@ -890,6 +894,7 @@ Attribute VB_Exposed = False
 'La Plata - Pcia, Buenos Aires - Republica Argentina
 'Código Postal 1900
 'Pablo Ignacio Márquez
+
 Option Explicit
 
 Public SkillPoints As Byte
@@ -910,11 +915,6 @@ If UserClase = "" Then
     Exit Function
 End If
 
-If UserClase = "" Then
-    MsgBox "Seleccione la clase del personaje."
-    Exit Function
-End If
-
 If UserHogar = "" Then
     MsgBox "Seleccione el hogar del personaje."
     Exit Function
@@ -925,13 +925,13 @@ If SkillPoints > 0 Then
     Exit Function
 End If
 
-Dim I As Integer
-For I = 1 To NUMATRIBUTOS
-    If UserAtributos(I) = 0 Then
+Dim i As Integer
+For i = 1 To NUMATRIBUTOS
+    If UserAtributos(i) = 0 Then
         MsgBox "Los atributos del personaje son invalidos."
         Exit Function
     End If
-Next I
+Next i
 
 CheckData = True
 
@@ -940,29 +940,29 @@ End Function
 
 Private Sub boton_Click(Index As Integer)
 
-Call PlayWaveDS(SND_CLICK)
+Call Audio.PlayWave(SND_CLICK)
 
 Select Case Index
     Case 0
         
-        Dim I As Integer
+        Dim i As Integer
         Dim k As Object
-        I = 1
+        i = 1
         For Each k In Skill
-            UserSkills(I) = k.Caption
-            I = I + 1
+            UserSkills(i) = k.Caption
+            i = i + 1
         Next
         
         UserName = txtNombre.Text
         
-        If Right(UserName, 1) = " " Then
-                UserName = RTrim(UserName)
+        If Right$(UserName, 1) = " " Then
+                UserName = RTrim$(UserName)
                 MsgBox "Nombre invalido, se han removido los espacios al final del nombre"
         End If
         
-        UserRaza = lstRaza.List(lstRaza.ListIndex)
-        UserSexo = lstGenero.List(lstGenero.ListIndex)
-        UserClase = lstProfesion.List(lstProfesion.ListIndex)
+        UserRaza = lstRaza.List(lstRaza.listIndex)
+        UserSexo = lstGenero.List(lstGenero.listIndex)
+        UserClase = lstProfesion.List(lstProfesion.listIndex)
         
         UserAtributos(1) = Val(lbFuerza.Caption)
         UserAtributos(2) = Val(lbInteligencia.Caption)
@@ -970,21 +970,16 @@ Select Case Index
         UserAtributos(4) = Val(lbCarisma.Caption)
         UserAtributos(5) = Val(lbConstitucion.Caption)
         
-        UserHogar = lstHogar.List(lstHogar.ListIndex)
+        UserHogar = lstHogar.List(lstHogar.listIndex)
         
         'Barrin 3/10/03
-        If CheckData() And UsandoSistemaPadrinos = 1 Then
-            frmPasswd.Show vbModal, Me
-        ElseIf CheckData() And UsandoSistemaPadrinos = 0 Then
+        If CheckData() Then
             frmPasswdSinPadrinos.Show vbModal, Me
         End If
         
     Case 1
-        If Musica = 0 Then
-            CurMidi = DirMidi & "2.mid"
-            LoopMidi = 1
-            Call CargarMIDI(CurMidi)
-            Call Play_Midi
+        If Musica Then
+            Call Audio.PlayMIDI("2.mid")
         End If
         
         frmConnect.FONDO.Picture = LoadPicture(App.Path & "\Graficos\conectar.jpg")
@@ -992,7 +987,7 @@ Select Case Index
         
         
     Case 2
-        Call PlayWaveDS(SND_DICE)
+        Call Audio.PlayWave(SND_DICE)
         Call TirarDados
       
 End Select
@@ -1029,7 +1024,7 @@ Private Sub TirarDados()
 End Sub
 
 Private Sub Command1_Click(Index As Integer)
-Call PlayWaveDS(SND_CLICK)
+Call Audio.PlayWave(SND_CLICK)
 
 Dim indice
 If Index Mod 2 = 0 Then
@@ -1049,27 +1044,26 @@ Else
     End If
 End If
 
-Puntos.Caption = SkillPoints
+puntos.Caption = SkillPoints
 End Sub
 
 Private Sub Form_Load()
 SkillPoints = 10
-Puntos.Caption = SkillPoints
+puntos.Caption = SkillPoints
 Me.Picture = LoadPicture(App.Path & "\graficos\CP-Interface.jpg")
 imgHogar.Picture = LoadPicture(App.Path & "\graficos\CP-Ullathorpe.jpg")
 
-Dim I As Integer
+Dim i As Integer
 lstProfesion.Clear
-For I = LBound(ListaClases) To UBound(ListaClases)
-    lstProfesion.AddItem ListaClases(I)
-Next I
+For i = LBound(ListaClases) To UBound(ListaClases)
+    lstProfesion.AddItem ListaClases(i)
+Next i
 
-lstProfesion.ListIndex = 1
+lstProfesion.listIndex = 1
 
 Image1.Picture = LoadPicture(App.Path & "\graficos\" & lstProfesion.Text & ".jpg")
 Call TirarDados
 End Sub
-
 
 Private Sub lstProfesion_Click()
 On Error Resume Next

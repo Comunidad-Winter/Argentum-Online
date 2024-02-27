@@ -165,9 +165,13 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-'Argentum Online 0.11.2
+'Argentum Online 0.9.0.9
 '
 'Copyright (C) 2002 Márquez Pablo Ignacio
+'Copyright (C) 2002 Otto Perez
+'Copyright (C) 2002 Aaron Perkins
+'Copyright (C) 2002 Matías Fernando Pequeño
+'
 'This program is free software; you can redistribute it and/or modify
 'it under the terms of the GNU General Public License as published by
 'the Free Software Foundation; either version 2 of the License, or
@@ -195,6 +199,7 @@ Attribute VB_Exposed = False
 'Código Postal 1900
 'Pablo Ignacio Márquez
 
+
 Option Explicit
 
 Function CheckDatos() As Boolean
@@ -210,8 +215,13 @@ End Function
 Private Sub Command1_Click()
 
 If CheckDatos() Then
-    UserPassword = MD5String(txtPasswd.Text)
-    UserEmail = Txtcorreo.Text
+#If SeguridadAlkon Then
+    UserPassword = md5.GetMD5String(txtPasswd.Text)
+    Call md5.MD5Reset
+#Else
+    UserPassword = txtPasswd.Text
+#End If
+    UserEmail = txtCorreo.Text
     
     If Not CheckMailString(UserEmail) Then
             MsgBox "Direccion de mail invalida."
@@ -227,12 +237,6 @@ If CheckDatos() Then
     EstadoLogin = CrearNuevoPj
     
     Me.MousePointer = 11
-    
-'    If Not frmMain.Socket1.Connected Then
-'        frmMain.Socket1.Connect
-'    Else
-'        Call SendData("gIvEmEvAlcOde")
-'    End If
 
     EstadoLogin = CrearNuevoPj
 
@@ -245,7 +249,7 @@ If CheckDatos() Then
         Unload Me
         
     Else
-        Call Login(0)
+        Call Login(ValidarLoginMSG(CInt(bRK)))
     End If
 End If
 

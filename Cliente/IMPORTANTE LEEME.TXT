@@ -1,2 +1,0 @@
-Agradecemos a Catalyst (www.catalyst.com) y a Microsoft (www.microsoft.com)
-por sus excelentes productos: Socketwrench y FrameWork DirectX

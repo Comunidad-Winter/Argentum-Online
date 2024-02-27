@@ -1,2 +1,0 @@
-[INFO]
-CantMSG=1

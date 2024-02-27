@@ -89,6 +89,10 @@ Attribute VB_Exposed = False
 'Argentum Online 0.9.0.9
 '
 'Copyright (C) 2002 Márquez Pablo Ignacio
+'Copyright (C) 2002 Otto Perez
+'Copyright (C) 2002 Aaron Perkins
+'Copyright (C) 2002 Matías Fernando Pequeño
+'
 'This program is free software; you can redistribute it and/or modify
 'it under the terms of the GNU General Public License as published by
 'the Free Software Foundation; either version 2 of the License, or
@@ -116,13 +120,15 @@ Attribute VB_Exposed = False
 'Código Postal 1900
 'Pablo Ignacio Márquez
 
+Option Explicit
 
 Private Sub Command1_Click()
 
 'If GuildsList.ListIndex = 0 Then Exit Sub
-Call SendData("CLANDETAILS" & guildslist.List(guildslist.ListIndex))
+Call SendData("CLANDETAILS" & GuildsList.List(GuildsList.listIndex))
 
 End Sub
+
 
 Private Sub Command3_Click()
 Unload Me
@@ -131,14 +137,15 @@ End Sub
 Public Sub ParseGuildList(ByVal Rdata As String)
 
 Dim j As Integer, k As Integer
-
+For j = 0 To GuildsList.ListCount - 1
+    Me.GuildsList.RemoveItem 0
+Next j
 k = CInt(ReadField(1, Rdata, 44))
 
 For j = 1 To k
-    guildslist.AddItem ReadField(1 + j, Rdata, 44)
+    GuildsList.AddItem ReadField(1 + j, Rdata, 44)
 Next j
 
-Me.Show
+Me.Show vbModal, frmMain
 
 End Sub
-

@@ -1,7 +1,11 @@
 Attribute VB_Name = "GameIni"
-'Argentum Online 0.11.2
+'Argentum Online 0.9.0.9
 '
 'Copyright (C) 2002 Márquez Pablo Ignacio
+'Copyright (C) 2002 Otto Perez
+'Copyright (C) 2002 Aaron Perkins
+'Copyright (C) 2002 Matías Fernando Pequeño
+'
 'This program is free software; you can redistribute it and/or modify
 'it under the terms of the GNU General Public License as published by
 'the Free Software Foundation; either version 2 of the License, or
@@ -54,42 +58,36 @@ Public Type tGameIni
     NumeroMapas As Integer
 End Type
 
-'[CODE 005]:MatuX
-    Public Type tRenderMods
-        sName      As String * 7
-        bUseVideo  As Long
-        bNoCostas  As Long
-        bUseMMX    As Long
-        bNoAlpha   As Long
-        bNoTScan   As Long
-        bNoMusic   As Long
-        bNoSound   As Long
-        iImageSize As Long
-    End Type
+Public Type tSetupMods
+    bDinamic    As Boolean
+    byMemory    As Byte
+    bUseVideo   As Boolean
+    bNoMusic    As Boolean
+    bNoSound    As Boolean
+End Type
 
-    Public RenderMod As tRenderMods
-'[END]'
+Public ClientSetup As tSetupMods
 
 Public MiCabecera As tCabecera
 Public Config_Inicio As tGameIni
 
 Public Sub IniciarCabecera(ByRef Cabecera As tCabecera)
-Cabecera.desc = "Argentum Online by Noland Studios. Copyright Noland-Studios 2001, pablomarquez@noland-studios.com.ar"
-Cabecera.CRC = Rnd * 100
-Cabecera.MagicWord = Rnd * 10
+    Cabecera.desc = "Argentum Online by Noland Studios. Copyright Noland-Studios 2001, pablomarquez@noland-studios.com.ar"
+    Cabecera.CRC = Rnd * 100
+    Cabecera.MagicWord = Rnd * 10
 End Sub
 
 Public Function LeerGameIni() As tGameIni
-Dim N As Integer
-Dim GameIni As tGameIni
-N = FreeFile
-Open App.Path & "\init\Inicio.con" For Binary As #N
-Get #N, , MiCabecera
-
-Get #N, , GameIni
-
-Close #N
-LeerGameIni = GameIni
+    Dim N As Integer
+    Dim GameIni As tGameIni
+    N = FreeFile
+    Open App.Path & "\init\Inicio.con" For Binary As #N
+    Get #N, , MiCabecera
+    
+    Get #N, , GameIni
+    
+    Close #N
+    LeerGameIni = GameIni
 End Function
 
 Public Sub EscribirGameIni(ByRef GameIniConfiguration As tGameIni)

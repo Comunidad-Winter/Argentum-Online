@@ -1,9 +1,9 @@
 [Mapa1]
-MusicNum=4-1
-StartPos=1-0-0
 Name=Ullathorpe
-PK=1
+MusicNum=12-1
+StartPos=0-0-0
 Terreno=BOSQUE
-Zona=CAMPO
+Zona=CIUDAD
 Restringir=No
+pk=1
 BackUp=1

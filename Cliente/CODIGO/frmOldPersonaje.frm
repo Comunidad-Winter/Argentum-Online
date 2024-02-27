@@ -1,6 +1,6 @@
 VERSION 5.00
 Begin VB.Form frmOldPersonaje 
-   BackColor       =   &H00000000&
+   BackColor       =   &H00FFFFFF&
    BorderStyle     =   0  'None
    Caption         =   "Argentum"
    ClientHeight    =   3765
@@ -28,7 +28,7 @@ Begin VB.Form frmOldPersonaje
       EndProperty
       ForeColor       =   &H000000FF&
       Height          =   285
-      Left            =   2250
+      Left            =   2265
       TabIndex        =   0
       Top             =   705
       Width           =   4530
@@ -55,22 +55,52 @@ Begin VB.Form frmOldPersonaje
       Top             =   1200
       Width           =   4530
    End
+   Begin VB.Label lblInfo 
+      Alignment       =   2  'Center
+      BackColor       =   &H00404040&
+      BorderStyle     =   1  'Fixed Single
+      BeginProperty Font 
+         Name            =   "MS Serif"
+         Size            =   12
+         Charset         =   0
+         Weight          =   700
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H00FFFFFF&
+      Height          =   960
+      Left            =   510
+      TabIndex        =   2
+      Top             =   1800
+      Visible         =   0   'False
+      Width           =   6120
+   End
+   Begin VB.Image Image1 
+      Height          =   495
+      Index           =   0
+      Left            =   4920
+      MouseIcon       =   "frmOldPersonaje.frx":0000
+      MousePointer    =   99  'Custom
+      Top             =   3090
+      Width           =   960
+   End
    Begin VB.Image Image1 
       Height          =   495
       Index           =   1
-      Left            =   1695
-      MouseIcon       =   "frmOldPersonaje.frx":0000
+      Left            =   1365
+      MouseIcon       =   "frmOldPersonaje.frx":0152
       MousePointer    =   99  'Custom
       Top             =   3105
       Width           =   960
    End
    Begin VB.Image Image1 
       Height          =   495
-      Index           =   0
-      Left            =   4635
-      MouseIcon       =   "frmOldPersonaje.frx":0152
+      Index           =   2
+      Left            =   3120
+      MouseIcon       =   "frmOldPersonaje.frx":02A4
       MousePointer    =   99  'Custom
-      Top             =   3105
+      Top             =   3090
       Width           =   960
    End
 End
@@ -79,9 +109,13 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-'Argentum Online 0.11.2
+'Argentum Online 0.9.0.9
 '
 'Copyright (C) 2002 Márquez Pablo Ignacio
+'Copyright (C) 2002 Otto Perez
+'Copyright (C) 2002 Aaron Perkins
+'Copyright (C) 2002 Matías Fernando Pequeño
+'
 'This program is free software; you can redistribute it and/or modify
 'it under the terms of the GNU General Public License as published by
 'the Free Software Foundation; either version 2 of the License, or
@@ -109,6 +143,11 @@ Attribute VB_Exposed = False
 'Código Postal 1900
 'Pablo Ignacio Márquez
 
+Option Explicit
+
+Private Const textoKeypad = "Utilice el teclado como protección contra keyloggers. Seleccione el password con el mouse y presione <ENTER> al finalizar"
+Private Const textoSeguir = "Conectarse al juego" & vbNewLine & "con el usuario y" & vbNewLine & "clave seleccionadas"
+Private Const textoSalir = "Volver a la pantalla principal" & vbNewLine & "para crear personajes o recuperar" & vbNewLine & "contraseñas"
 
 
 
@@ -121,30 +160,43 @@ Next
 NameTxt.Text = ""
 PasswordTxt.Text = ""
 Me.Picture = LoadPicture(App.Path & "\Graficos\oldcaracter.jpg")
-Image1(1).Picture = LoadPicture(App.Path & "\Graficos\BotónVolver.jpg")
-Image1(0).Picture = LoadPicture(App.Path & "\Graficos\BotónSiguiente.jpg")
+Image1(1).Picture = LoadPicture(App.Path & "\Graficos\bvolver.jpg")
+Image1(0).Picture = LoadPicture(App.Path & "\Graficos\bsiguiente.jpg")
+Image1(2).Picture = LoadPicture(App.Path & "\Graficos\bteclas.jpg")
+
+
 
 End Sub
 
 Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
 If Image1(0).Tag = "1" Then
+            Me.lblInfo.Visible = False
+            Me.lblInfo.Caption = vbNullString
             Image1(0).Tag = "0"
-            Image1(0).Picture = LoadPicture(App.Path & "\Graficos\BotónSiguiente.jpg")
+            Image1(0).Picture = LoadPicture(App.Path & "\Graficos\bsiguiente.jpg")
 End If
 If Image1(1).Tag = "1" Then
+            Me.lblInfo.Visible = False
+            Me.lblInfo.Caption = vbNullString
             Image1(1).Tag = "0"
-            Image1(1).Picture = LoadPicture(App.Path & "\Graficos\BotónVolver.jpg")
+            Image1(1).Picture = LoadPicture(App.Path & "\Graficos\bvolver.jpg")
 End If
+If Image1(2).Tag = "1" Then
+            Me.lblInfo.Visible = False
+            Me.lblInfo.Caption = vbNullString
+            Image1(2).Tag = "0"
+            Image1(2).Picture = LoadPicture(App.Path & "\Graficos\bteclas.jpg")
+End If
+
 End Sub
 
-Private Sub Image1_Click(Index As Integer)
-On Error Resume Next
+Private Sub Image1_Click(index As Integer)
 
-Call PlayWaveDS(SND_CLICK)
-
+Call Audio.PlayWave(SND_CLICK)
 
 
-Select Case Index
+
+Select Case index
     Case 0
        
 #If UsarWrench = 1 Then
@@ -162,13 +214,18 @@ Select Case Index
         UserName = NameTxt.Text
         Dim aux As String
         aux = PasswordTxt.Text
-        UserPassword = MD5String(aux)
+#If SeguridadAlkon Then
+        UserPassword = md5.GetMD5String(aux)
+        Call md5.MD5Reset
+#Else
+        UserPassword = aux
+#End If
         If CheckUserData(False) = True Then
             'SendNewChar = False
             EstadoLogin = Normal
             Me.MousePointer = 11
 #If UsarWrench = 1 Then
-            frmMain.Socket1.HostName = CurServerIp
+            frmMain.Socket1.HostAddress = CurServerIp
             frmMain.Socket1.RemotePort = CurServerPort
             frmMain.Socket1.Connect
 #Else
@@ -180,23 +237,42 @@ Select Case Index
         
     Case 1
         Me.Visible = False
+    Case 2
+        Load frmKeypad
+        frmKeypad.Show vbModal
+        Unload frmKeypad
+        Me.PasswordTxt.SetFocus
+        
 End Select
 End Sub
 
-Private Sub Image1_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
-Select Case Index
+Private Sub Image1_MouseMove(index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Select Case index
     Case 0
         If Image1(0).Tag = "0" Then
+            Me.lblInfo.Visible = True
+            Me.lblInfo.Caption = textoSeguir
             Image1(0).Tag = "1"
-            Call PlayWaveDS(SND_OVER)
-            Image1(0).Picture = LoadPicture(App.Path & "\Graficos\BotónSiguienteApretado.jpg")
+            Call Audio.PlayWave(SND_OVER)
+            Image1(0).Picture = LoadPicture(App.Path & "\Graficos\bsiguientea.jpg")
         End If
     Case 1
         If Image1(1).Tag = "0" Then
+            Me.lblInfo.Visible = True
+            Me.lblInfo.Caption = textoSalir
             Image1(1).Tag = "1"
-            Call PlayWaveDS(SND_OVER)
-            Image1(1).Picture = LoadPicture(App.Path & "\Graficos\BotónVolverApretado.jpg")
+            Call Audio.PlayWave(SND_OVER)
+            Image1(1).Picture = LoadPicture(App.Path & "\Graficos\bvolvera.jpg")
         End If
+    Case 2
+        If Image1(2).Tag = "0" Then
+            Me.lblInfo.Visible = True
+            Me.lblInfo.Caption = textoKeypad
+            Image1(2).Tag = "1"
+            Call Audio.PlayWave(SND_OVER)
+            Image1(2).Picture = LoadPicture(App.Path & "\Graficos\bteclasa.jpg")
+        End If
+        
 End Select
 End Sub
 

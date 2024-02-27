@@ -37,17 +37,18 @@ Begin VB.Form frmCargando
       _ExtentX        =   9102
       _ExtentY        =   4233
       _Version        =   393217
-      BackColor       =   8421376
+      BackColor       =   16512
+      Enabled         =   -1  'True
       ReadOnly        =   -1  'True
       ScrollBars      =   2
       TextRTF         =   $"frmCargando.frx":0000
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-         Name            =   "MS Sans Serif"
+         Name            =   "Verdana"
          Size            =   8.25
          Charset         =   0
-         Weight          =   400
+         Weight          =   700
          Underline       =   0   'False
-         Italic          =   -1  'True
+         Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
    End
@@ -60,7 +61,7 @@ Begin VB.Form frmCargando
       ScaleMode       =   3  'Pixel
       ScaleWidth      =   640
       TabIndex        =   0
-      Top             =   45
+      Top             =   60
       Width           =   9600
    End
 End
@@ -69,9 +70,12 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-'Argentum Online 0.11.2
+'Argentum Online 0.9.0.9
 '
 'Copyright (C) 2002 Márquez Pablo Ignacio
+'Copyright (C) 2002 Otto Perez
+'Copyright (C) 2002 Aaron Perkins
+'Copyright (C) 2002 Matías Fernando Pequeño
 '
 'This program is free software; you can redistribute it and/or modify
 'it under the terms of the GNU General Public License as published by
@@ -100,7 +104,7 @@ Attribute VB_Exposed = False
 'Código Postal 1900
 'Pablo Ignacio Márquez
 
-
+Option Explicit
 
 Private Sub Form_Load()
 LOGO.Picture = LoadPicture(DirGraficos & "cargando.jpg")

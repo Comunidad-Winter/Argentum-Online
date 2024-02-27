@@ -11,52 +11,17 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'Argentum Online 0.11.20
-'Copyright (C) 2002 Márquez Pablo Ignacio
-'
-'This program is free software; you can redistribute it and/or modify
-'it under the terms of the GNU General Public License as published by
-'the Free Software Foundation; either version 2 of the License, or
-'any later version.
-'
-'This program is distributed in the hope that it will be useful,
-'but WITHOUT ANY WARRANTY; without even the implied warranty of
-'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-'GNU General Public License for more details.
-'
-'You should have received a copy of the GNU General Public License
-'along with this program; if not, write to the Free Software
-'Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-'
-'Argentum Online is based on Baronsoft's VB6 Online RPG
-'You can contact the original creator of ORE at aaron@baronsoft.com
-'for more information about ORE please visit http://www.baronsoft.com/
-'
-'
-'You can contact me at:
-'morgolock@speedy.com.ar
-'www.geocities.com/gmorgolock
-'Calle 3 número 983 piso 7 dto A
-'La Plata - Pcia, Buenos Aires - Republica Argentina
-'Código Postal 1900
-'Pablo Ignacio Márquez
-
-
-
-
-
 Option Explicit
 'Modulo de consultas popluares
 'En realidad el modulo inicial guardaba los datos de las votaciones
 'en memoria, pero no le vi el punto, las votaciones son de vez en cuando nomas
 'y el query a un .ini que registra todos los mails q ya votaron, es soportable
 'si cuando uno vota y averiguo que el mail ya voto pero el PJ no, entonces seteo
-'el flag de yavoto en el charfile ese tambien agregando redundancia para velocidad,
+'el flag de yavoto en el charfile ese tambien,
 'por lo que la busqueda secuencial en el .dat que tiene todos los mails q ya votaron
 'se hara .. 1 vez por PJ nomas.
 '
-'Hecha por el oso (ositear@yahoo.com.ar)
-
+'Hecha por el oso
 
 Private Const ARCHIVOMAILS = "\logs\votaron.dat"
 Private Const ARCHIVOCONFIG = "\dat\consultas.dat"
@@ -116,7 +81,7 @@ Dim sufragio As Integer
         Exit Function
     End If
 
-    CharFile = CharPath & UserList(UserIndex).Name & ".chr"
+    CharFile = CharPath & UserList(UserIndex).name & ".chr"
     
     
     
@@ -156,18 +121,18 @@ End Function
 
 Public Function SendInfoEncuesta(ByVal UserIndex As Integer) As String
 Dim i As Integer
-    Call SendData(ToIndex, UserIndex, 0, "||CONSULTA POPULAR NUMERO " & pEncuestaActualNum & FONTTYPE_GUILD)
-    Call SendData(ToIndex, UserIndex, 0, "||" & pEncuestaActualTex & FONTTYPE_GUILD)
-    Call SendData(ToIndex, UserIndex, 0, "|| Opciones de voto: " & FONTTYPE_GUILDMSG)
+    Call SendData(SendTarget.ToIndex, UserIndex, 0, "||CONSULTA POPULAR NUMERO " & pEncuestaActualNum & FONTTYPE_GUILD)
+    Call SendData(SendTarget.ToIndex, UserIndex, 0, "||" & pEncuestaActualTex & FONTTYPE_GUILD)
+    Call SendData(SendTarget.ToIndex, UserIndex, 0, "|| Opciones de voto: " & FONTTYPE_GUILDMSG)
     For i = 1 To UBound(pOpciones)
-        Call SendData(ToIndex, UserIndex, 0, "||(Opcion " & i & "): " & GetVar(App.Path & ARCHIVOCONFIG, "ENCUESTA" & pEncuestaActualNum, "OPCION" & i) & FONTTYPE_GUILDMSG)
+        Call SendData(SendTarget.ToIndex, UserIndex, 0, "||(Opcion " & i & "): " & GetVar(App.Path & ARCHIVOCONFIG, "ENCUESTA" & pEncuestaActualNum, "OPCION" & i) & FONTTYPE_GUILDMSG)
     Next i
-    Call SendData(ToIndex, UserIndex, 0, "|| Para votar una opcion, escribe /encuesta NUMERODEOPCION, por ejemplo para votar la opcion 1, escribe /encuesta 1. Tu voto no podra ser cambiado." & FONTTYPE_VENENO)
+    Call SendData(SendTarget.ToIndex, UserIndex, 0, "|| Para votar una opcion, escribe /encuesta NUMERODEOPCION, por ejemplo para votar la opcion 1, escribe /encuesta 1. Tu voto no podra ser cambiado." & FONTTYPE_VENENO)
 End Function
 
 
 Private Sub MarcarPjComoQueYaVoto(ByVal UserIndex As Integer)
-    Call WriteVar(CharPath & UserList(UserIndex).Name & ".chr", "CONSULTAS", "Voto", str(pEncuestaActualNum))
+    Call WriteVar(CharPath & UserList(UserIndex).name & ".chr", "CONSULTAS", "Voto", str(pEncuestaActualNum))
 End Sub
 
 

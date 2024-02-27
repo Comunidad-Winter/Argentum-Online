@@ -1,0 +1,105 @@
+-------obj.dat-----
+-a este item: Manto de Sacerdote Demoníaco
+le faltaba:
+CP12=CARPINTERO
+CP13=LADRON
+
+-nombres de items correjidos:
+Ropa de Enano (E/G)
+Ropa de Enano (E/G) (Newbie)
+Vestimenta de Mujer (H/E/EO-M)
+
+-chequeado (incluidos los items NO usados en el juego):
+TODOS los item solo-mujer tienen la desc (H/E/EO-M)
+TODOS los item solo-enano unisex tienen desc (E/G)
+TODOS los items solo-enano-mujer tienen desc (E/G-M)
+
+
+----armadurasherrero.dat----
+-rote el casco hierro por el casco hierro completo.
+
+
+---help.dat y motd.ini--------
+
+-el help.dat es todo nuevo, le puse lo que dijimos en un post viejo
+de aoinfo.
+-el motd.ini no se debatio nada, el oso me dijo que borre lo de
+clan sednarg, deje solo la linea que dice bienvenido a ao.
+
+
+-------obj.dat las comidas---------
+
+
+nombre / hambre / precio
+
+Manzana Roja 10 1
+Banana 10 1
+Frutas del Bosque 15 2
+Porción de tarta 15 2
+Pan de Trigo 25 3 <<<<< hambre cambiado a 25 antes tenia 20.
+Pan de Maiz 25 3 <<<<< hambre cambiado a 25 antes tenia 20.
+Sandía 40 5 <<<<< hambre cambiado a 40 antes tenia 25.
+Queso de Cabra 50 6 <<<< precio cambiado a 6 antes tenia 5.
+Pollo 75 7
+Pez 75 8
+Pastel 90 9 <<<< le puse 90 hambre tenia 25. precio cambiado a 9 antes tenia 10.
+Chuleta 100 10 <<<< le puse 100 hambre tenia 50.
+
+
+-----invokar.dat y npcs.dat----------
+
+descubri el error (probando en mi server) de porque no cambiaba nada
+en el juego aunque modificara el invokar.dat, el problema es simple, de
+ahi no lee nada el juego, es un dat viejo se ve que deberia ser eliminado.
+
+pa que veas.. la lista con los npcs a invocar los saca de "npcs.dat":
+
+[NPC60] ' Entrenador de Banderbill
+Name=O'Riley de Banderbill
+NpcType=3
+Desc=¡Hola amigo! Soy el Maestro de armas de la Milicia de Banderbill, si deseas que traiga una criatura sólo debes pedirmelo. (Escribe /ENTRENAR)
+Head=6
+Body=57
+Heading=3
+Movement=1
+NroCriaturas=5
+CI1=500 <<<<<<<<< NUMERO de npc (ej. como en obj [OBJ123])
+CI2=545
+CI3=504
+CI4=529
+CI5=516
+CN1=Murcielago <<<<<<<< nombre que aparece en la ventanita /entrenar
+CN2=Lobo
+CN3=Cobra
+CN4=Escorpion
+CN5=Goblin
+Domable=0
+
+
+bueno en fin, ya lo modifique y lo probe anda todo bien.
+asi quedó:
+
+[NPC60] ' Entrenador de Banderbill
+Name=O'Riley de Banderbill
+Desc=¡Hola amigo! Soy el Maestro de armas de la Milicia de Banderbill, si deseas que traiga una criatura sólo debes pedirmelo. (Escribe /ENTRENAR)
+NpcType=3
+Head=6
+Body=57
+Heading=3
+Movement=1
+Domable=0
+NroCriaturas=5
+CI1=566
+CI2=565
+CI3=564
+CI4=545
+CI5=516
+CN1=Murciélago
+CN2=Serpiente
+CN3=Escorpión
+CN4=Lobo
+CN5=Goblin
+
+
+ah y me olvidaba en el dat inservible de "invokar.dat" le puse una aclaracion:
+'este dat es viejo y no se usa, la lista de spawn esta en npcs.dat [npc60]

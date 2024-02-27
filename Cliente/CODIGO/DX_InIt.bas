@@ -1,7 +1,11 @@
 Attribute VB_Name = "Mod_DX"
-'Argentum Online 0.11.2
+'Argentum Online 0.9.0.9
 '
 'Copyright (C) 2002 Márquez Pablo Ignacio
+'Copyright (C) 2002 Otto Perez
+'Copyright (C) 2002 Aaron Perkins
+'Copyright (C) 2002 Matías Fernando Pequeño
+'
 'This program is free software; you can redistribute it and/or modify
 'it under the terms of the GNU General Public License as published by
 'the Free Software Foundation; either version 2 of the License, or
@@ -29,79 +33,19 @@ Attribute VB_Name = "Mod_DX"
 'Código Postal 1900
 'Pablo Ignacio Márquez
 
-Option Explicit
 
-Public Const NumSoundBuffers = 20
+Option Explicit
 
 Public DirectX As New DirectX7
 Public DirectDraw As DirectDraw7
-Public DirectSound As DirectSound
 
 Public PrimarySurface As DirectDrawSurface7
 Public PrimaryClipper As DirectDrawClipper
 Public SecundaryClipper As DirectDrawClipper
 Public BackBufferSurface As DirectDrawSurface7
 
-'Public SurfaceDB() As DirectDrawSurface7
-
-'### 08/04/03 ###
-#If (UsarDinamico = 1) Then
-    Public SurfaceDB As New CBmpMan
-#Else
-    Public SurfaceDB As New CBmpManNoDyn
-#End If
-
-Public Perf As DirectMusicPerformance
-Public Seg As DirectMusicSegment
-Public SegState As DirectMusicSegmentState
-Public Loader As DirectMusicLoader
-
 Public oldResHeight As Long, oldResWidth As Long
 Public bNoResChange As Boolean
-
-Public LastSoundBufferUsed As Integer
-Public DSBuffers(1 To NumSoundBuffers) As DirectSoundBuffer
-
-Public ddsd2 As DDSURFACEDESC2
-Public ddsd4 As DDSURFACEDESC2
-Public ddsd5 As DDSURFACEDESC2
-Public ddsAlphaPicture As DirectDrawSurface7
-Public ddsSpotLight As DirectDrawSurface7
-
-
-Private Sub IniciarDirectSound()
-Err.Clear
-On Error GoTo fin
-    Set DirectSound = DirectX.DirectSoundCreate("")
-    If Err Then
-        MsgBox "Error iniciando DirectSound"
-        End
-    End If
-    
-    LastSoundBufferUsed = 1
-    '<----------------Direct Music--------------->
-    Set Perf = DirectX.DirectMusicPerformanceCreate()
-    Call Perf.Init(Nothing, 0)
-    Perf.SetPort -1, 80
-    Call Perf.SetMasterAutoDownload(True)
-    '<------------------------------------------->
-    Exit Sub
-fin:
-
-LogError "Error al iniciar IniciarDirectSound, asegurese de tener bien configurada la placa de sonido."
-
-Musica = 1
-Fx = 1
-
-End Sub
-
-Private Sub LiberarDirectSound()
-Dim cloop As Integer
-For cloop = 1 To NumSoundBuffers
-    Set DSBuffers(cloop) = Nothing
-Next cloop
-Set DirectSound = Nothing
-End Sub
 
 Private Sub IniciarDXobject(DX As DirectX7)
 
@@ -134,21 +78,15 @@ Public Sub IniciarObjetosDirectX()
 
 On Error Resume Next
 
-Call AddtoRichTextBox(frmCargando.Status, "Iniciando DirectX....", 0, 0, 0, 0, 0, True)
+Call AddtoRichTextBox(frmCargando.status, "Iniciando DirectX....", 0, 0, 0, 0, 0, True)
 Call IniciarDXobject(DirectX)
-Call AddtoRichTextBox(frmCargando.Status, "Hecho", , , , 1, , False)
+Call AddtoRichTextBox(frmCargando.status, "Hecho", , , , 1, , False)
 
-Call AddtoRichTextBox(frmCargando.Status, "Iniciando DirectDraw....", 0, 0, 0, 0, 0, True)
+Call AddtoRichTextBox(frmCargando.status, "Iniciando DirectDraw....", 0, 0, 0, 0, 0, True)
 Call IniciarDDobject(DirectDraw)
-Call AddtoRichTextBox(frmCargando.Status, "Hecho", , , , 1, , False)
+Call AddtoRichTextBox(frmCargando.status, "Hecho", , , , 1, , False)
 
-If Musica = 0 Or Fx = 0 Then
-    Call AddtoRichTextBox(frmCargando.Status, "Iniciando DirectSound....", 0, 0, 0, 0, 0, True)
-    Call IniciarDirectSound
-    Call AddtoRichTextBox(frmCargando.Status, "Hecho", , , , 1, , False)
-End If
-
-Call AddtoRichTextBox(frmCargando.Status, "Analizando y preparando la placa de video....", 0, 0, 0, 0, 0, True)
+Call AddtoRichTextBox(frmCargando.status, "Analizando y preparando la placa de video....", 0, 0, 0, 0, 0, True)
 
   
     
@@ -182,7 +120,7 @@ Else
       bNoResChange = True
 End If
 
-Call AddtoRichTextBox(frmCargando.Status, "¡DirectX OK!", 0, 251, 0, 1, 0)
+Call AddtoRichTextBox(frmCargando.status, "¡DirectX OK!", 0, 251, 0, 1, 0)
 
 Exit Sub
 
@@ -197,21 +135,7 @@ Set PrimarySurface = Nothing
 Set PrimaryClipper = Nothing
 Set BackBufferSurface = Nothing
 
-LiberarDirectSound
-
-Call SurfaceDB.BorrarTodo
-
 Set DirectDraw = Nothing
-
-For loopc = 1 To NumSoundBuffers
-    Set DSBuffers(loopc) = Nothing
-Next loopc
-
-
-Set Loader = Nothing
-Set Perf = Nothing
-Set Seg = Nothing
-Set DirectSound = Nothing
 
 Set DirectX = Nothing
 Exit Sub

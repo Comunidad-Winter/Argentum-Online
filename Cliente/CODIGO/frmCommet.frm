@@ -1,7 +1,7 @@
 VERSION 5.00
 Begin VB.Form frmCommet 
    BorderStyle     =   1  'Fixed Single
-   Caption         =   "Oferta de paz"
+   Caption         =   "Oferta de paz o alianza"
    ClientHeight    =   2820
    ClientLeft      =   45
    ClientTop       =   330
@@ -60,6 +60,10 @@ Attribute VB_Exposed = False
 'Argentum Online 0.9.0.9
 '
 'Copyright (C) 2002 Márquez Pablo Ignacio
+'Copyright (C) 2002 Otto Perez
+'Copyright (C) 2002 Aaron Perkins
+'Copyright (C) 2002 Matías Fernando Pequeño
+'
 'This program is free software; you can redistribute it and/or modify
 'it under the terms of the GNU General Public License as published by
 'the Free Software Foundation; either version 2 of the License, or
@@ -87,17 +91,62 @@ Attribute VB_Exposed = False
 'Código Postal 1900
 'Pablo Ignacio Márquez
 
+Option Explicit
+
 Public Nombre As String
+Public T As TIPO
+Public Enum TIPO
+    ALIANZA = 1
+    PAZ = 2
+    RECHAZOPJ = 3
+End Enum
+
+Public Sub SetTipo(ByVal T As TIPO)
+    Select Case T
+        Case TIPO.ALIANZA
+            Me.Caption = "Detalle de solicitud de alianza"
+            Me.Text1.MaxLength = 200
+        Case TIPO.PAZ
+            Me.Caption = "Detalle de solicitud de Paz"
+            Me.Text1.MaxLength = 200
+        Case TIPO.RECHAZOPJ
+            Me.Caption = "Detalle de rechazo de membresía"
+            Me.Text1.MaxLength = 50
+    End Select
+End Sub
+
 
 Private Sub Command1_Click()
 
 
 If Text1 = "" Then
-    MsgBox "Debes redactar un mensaje solicitando la paz al lider de " & Nombre
+    If T = PAZ Or T = ALIANZA Then
+        MsgBox "Debes redactar un mensaje solicitando la paz o alianza al líder de " & Nombre
+    Else
+        MsgBox "Debes indicar el motivo por el cual rechazas la membresía de " & Nombre
+    End If
     Exit Sub
 End If
 
-Call SendData("PEACEOFF" & Nombre & "," & Replace(Text1, vbCrLf, "º"))
+If T = PAZ Then
+    Call SendData("PEACEOFF" & Nombre & "," & Replace(Text1, vbCrLf, "º"))
+ElseIf T = ALIANZA Then
+    Call SendData("ALLIEOFF" & Nombre & "," & Replace(Text1, vbCrLf, "º"))
+ElseIf T = RECHAZOPJ Then
+    Call SendData("RECHAZAR" & Nombre & "," & Replace(Replace(Text1.Text, ",", " "), vbCrLf, " "))
+    'Sacamos el char de la lista de aspirantes
+    Dim i As Long
+    For i = 0 To frmGuildLeader.solicitudes.ListCount - 1
+        If frmGuildLeader.solicitudes.List(i) = Nombre Then
+            frmGuildLeader.solicitudes.RemoveItem i
+            Exit For
+        End If
+    Next i
+    
+    Me.Hide
+    Unload frmCharInfo
+    'Call SendData("GLINFO")
+End If
 Unload Me
 
 End Sub

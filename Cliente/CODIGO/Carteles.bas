@@ -1,7 +1,11 @@
 Attribute VB_Name = "Carteles"
-'Argentum Online 0.11.2
+'Argentum Online 0.9.0.9
 '
 'Copyright (C) 2002 Márquez Pablo Ignacio
+'Copyright (C) 2002 Otto Perez
+'Copyright (C) 2002 Aaron Perkins
+'Copyright (C) 2002 Matías Fernando Pequeño
+'
 'This program is free software; you can redistribute it and/or modify
 'it under the terms of the GNU General Public License as published by
 'the Free Software Foundation; either version 2 of the License, or
@@ -30,6 +34,7 @@ Attribute VB_Name = "Carteles"
 'Pablo Ignacio Márquez
 
 Option Explicit
+
 Const XPosCartel = 360
 Const YPosCartel = 335
 Const MAXLONG = 40
@@ -90,7 +95,7 @@ Dim j As Integer, desp As Integer
 
 For j = 0 To UBound(LeyendaFormateada)
 Dialogos.DrawText X, Y + desp, LeyendaFormateada(j), vbWhite
-  desp = desp + (frmMain.Font.Size) + 5
+  desp = desp + (frmMain.font.Size) + 5
 Next
 End Sub
 

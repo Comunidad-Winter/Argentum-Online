@@ -1,5 +1,5 @@
 Attribute VB_Name = "InvNpc"
-'Argentum Online 0.11.20
+'Argentum Online 0.9.0.2
 'Copyright (C) 2002 Márquez Pablo Ignacio
 '
 'This program is free software; you can redistribute it and/or modify
@@ -30,7 +30,6 @@ Attribute VB_Name = "InvNpc"
 'Pablo Ignacio Márquez
 
 
-
 Option Explicit
 '?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿
 '?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿
@@ -49,10 +48,10 @@ On Error GoTo errhandler
     Dim NuevaPos As WorldPos
     NuevaPos.X = 0
     NuevaPos.Y = 0
-    Call Tilelibre(Pos, NuevaPos)
+    Call Tilelibre(Pos, NuevaPos, Obj)
     If NuevaPos.X <> 0 And NuevaPos.Y <> 0 Then
-          Call MakeObj(ToMap, 0, Pos.Map, _
-          Obj, Pos.Map, NuevaPos.X, NuevaPos.Y)
+          Call MakeObj(SendTarget.ToMap, 0, Pos.Map, _
+                Obj, Pos.Map, NuevaPos.X, NuevaPos.Y)
           TirarItemAlPiso = NuevaPos
     End If
 
@@ -106,6 +105,7 @@ On Error Resume Next
 
 Dim ln As String, npcfile As String
 Dim i As Integer
+
 If Npclist(NpcIndex).Numero > 499 Then
     npcfile = DatPath & "NPCs-HOSTILES.dat"
 Else
@@ -121,7 +121,7 @@ For i = 1 To MAX_INVENTORY_SLOTS
 Next
                    
 EncontrarCant = 50
-                   
+
 End Function
 
 Sub ResetNpcInv(ByVal NpcIndex As Integer)
@@ -190,7 +190,6 @@ Sub CargarInvent(ByVal NpcIndex As Integer)
 'Vuelve a cargar el inventario del npc NpcIndex
 Dim LoopC As Integer
 Dim ln As String
-
 Dim npcfile As String
 
 If Npclist(NpcIndex).Numero > 499 Then

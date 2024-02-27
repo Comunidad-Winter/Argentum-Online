@@ -1,5 +1,5 @@
 Attribute VB_Name = "Matematicas"
-'Argentum Online 0.11.20
+'Argentum Online 0.9.0.2
 'Copyright (C) 2002 Márquez Pablo Ignacio
 '
 'This program is free software; you can redistribute it and/or modify
@@ -29,70 +29,31 @@ Attribute VB_Name = "Matematicas"
 'Código Postal 1900
 'Pablo Ignacio Márquez
 
-
 Option Explicit
 
-Sub AddtoVar(ByRef Var As Variant, ByVal Addon As Variant, ByVal max As Variant)
-'Le suma un valor a una variable respetando el maximo valor
-
-If Var >= max Then
-    Var = max
-Else
-    Var = Var + Addon
-    If Var > max Then
-        Var = max
-    End If
-End If
-
-End Sub
-
-
 Public Function Porcentaje(ByVal Total As Long, ByVal Porc As Long) As Long
-Porcentaje = (Total * Porc) / 100
+    Porcentaje = (Total * Porc) / 100
 End Function
 
 Public Function SD(ByVal N As Integer) As Integer
 'Call LogTarea("Function SD n:" & n)
 'Suma digitos
-Dim auxint As Integer
-Dim digit As Integer
-Dim suma As Integer
-
-auxint = N
 
 Do
-    
-    digit = (auxint Mod 10)
-    suma = suma + digit
-    auxint = auxint \ 10
-    
-Loop While (auxint > 0)
-
-SD = suma
+    SD = SD + (N Mod 10)
+    N = N \ 10
+Loop While (N > 0)
 
 End Function
 
 Public Function SDM(ByVal N As Integer) As Integer
 'Call LogTarea("Function SDM n:" & n)
 'Suma digitos cada digito menos dos
-Dim auxint As Integer
-Dim digit As Integer
-Dim suma As Integer
-
-auxint = N
-'If auxint < 0 Then auxint = Abs(auxint)
 
 Do
-    
-    digit = (auxint Mod 10)
-    digit = digit - 1
-    suma = suma + digit
-    auxint = auxint \ 10
-    
-   
-Loop While (auxint > 0)
-
-SDM = suma
+    SDM = SDM + (N Mod 10) - 1
+    N = N \ 10
+Loop While (N > 0)
 
 End Function
 
@@ -107,12 +68,9 @@ End If
 
 End Function
 
-Function Distancia(wp1 As WorldPos, wp2 As WorldPos)
-
-'Encuentra la distancia entre dos WorldPos
-
-Distancia = Abs(wp1.X - wp2.X) + Abs(wp1.Y - wp2.Y) + (Abs(wp1.Map - wp2.Map) * 100)
-
+Function Distancia(ByRef wp1 As WorldPos, ByRef wp2 As WorldPos) As Long
+    'Encuentra la distancia entre dos WorldPos
+    Distancia = Abs(wp1.X - wp2.X) + Abs(wp1.Y - wp2.Y) + (Abs(wp1.Map - wp2.Map) * 100)
 End Function
 
 Function Distance(X1 As Variant, Y1 As Variant, X2 As Variant, Y2 As Variant) As Double
@@ -123,15 +81,13 @@ Distance = Sqr(((Y1 - Y2) ^ 2 + (X1 - X2) ^ 2))
 
 End Function
 
-Function RandomNumber(ByVal LowerBound As Variant, ByVal UpperBound As Variant) As Single
-
-'Lo puse en sub Main()
-'Randomize Timer
-
-'RandomNumber = (UpperBound - LowerBound + 1) * Rnd + LowerBound
-'If RandomNumber > UpperBound Then RandomNumber = UpperBound
-
-RandomNumber = Int(Rnd * (UpperBound - LowerBound + 1)) + LowerBound
-
+Public Function RandomNumber(ByVal LowerBound As Long, ByVal UpperBound As Long) As Long
+'**************************************************************
+'Author: Juan Martín Sotuyo Dodero
+'Last Modify Date: 3/06/2006
+'Generates a random number in the range given - recoded to use longs and work properly with ranges
+'**************************************************************
+    Randomize Timer
+    
+    RandomNumber = Fix(Rnd * (UpperBound - LowerBound + 1)) + LowerBound
 End Function
-

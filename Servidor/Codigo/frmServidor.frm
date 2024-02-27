@@ -510,7 +510,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-'Argentum Online 0.11.20
+'Argentum Online 0.9.0.2
 'Copyright (C) 2002 Márquez Pablo Ignacio
 '
 'This program is free software; you can redistribute it and/or modify
@@ -539,8 +539,6 @@ Attribute VB_Exposed = False
 'La Plata - Pcia, Buenos Aires - Republica Argentina
 'Código Postal 1900
 'Pablo Ignacio Márquez
-
-
 
 Option Explicit
 
@@ -670,11 +668,11 @@ Private Sub Command21_Click()
 
 If EnPausa = False Then
     EnPausa = True
-    Call SendData(ToAll, 0, 0, "BKW")
+    Call SendData(SendTarget.ToAll, 0, 0, "BKW")
     Command21.Caption = "Reanudar el servidor"
 Else
     EnPausa = False
-    Call SendData(ToAll, 0, 0, "BKW")
+    Call SendData(SendTarget.ToAll, 0, 0, "BKW")
     Command21.Caption = "Pausar el servidor"
 End If
 
@@ -700,9 +698,6 @@ If MsgBox("Esta seguro que desea hacer WorldSave, guardar pjs y cerrar ?", vbYes
     'Guardar Pjs
     Call GuardarUsuarios
     
-    'Guilds
-    Call SaveGuildsDB
-
     'Chauuu
     Unload frmMain
 End If
@@ -800,14 +795,14 @@ SockListen = ListenForConnect(Puerto, hWndMsg, "")
 
 #ElseIf UsarQueSocket = 0 Then
 frmMain.Socket1.AddressFamily = AF_INET
-frmMain.Socket1.protocol = IPPROTO_IP
+frmMain.Socket1.Protocol = IPPROTO_IP
 frmMain.Socket1.SocketType = SOCK_STREAM
 frmMain.Socket1.Binary = False
 frmMain.Socket1.Blocking = False
 frmMain.Socket1.BufferSize = 1024
 
 frmMain.Socket2(0).AddressFamily = AF_INET
-frmMain.Socket2(0).protocol = IPPROTO_IP
+frmMain.Socket2(0).Protocol = IPPROTO_IP
 frmMain.Socket2(0).SocketType = SOCK_STREAM
 frmMain.Socket2(0).Blocking = False
 frmMain.Socket2(0).BufferSize = 2048

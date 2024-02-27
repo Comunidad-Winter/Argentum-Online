@@ -22,45 +22,55 @@ Begin VB.Form frmGuildLeader
    ScaleHeight     =   6555
    ScaleWidth      =   5880
    StartUpPosition =   2  'CenterScreen
+   Begin VB.CommandButton Command9 
+      Caption         =   "Propuestas de alianzas"
+      Height          =   495
+      Left            =   3000
+      MouseIcon       =   "frmGuildLeader.frx":0000
+      MousePointer    =   99  'Custom
+      TabIndex        =   17
+      Top             =   5460
+      Width           =   2775
+   End
    Begin VB.CommandButton Command8 
       Cancel          =   -1  'True
       Caption         =   "Cerrar"
       Height          =   495
       Left            =   3000
-      MouseIcon       =   "frmGuildLeader.frx":0000
+      MouseIcon       =   "frmGuildLeader.frx":0152
       MousePointer    =   99  'Custom
       TabIndex        =   15
-      Top             =   5880
+      Top             =   5970
       Width           =   2775
    End
    Begin VB.CommandButton Command7 
       Caption         =   "Propuestas de paz"
       Height          =   495
       Left            =   3000
-      MouseIcon       =   "frmGuildLeader.frx":0152
+      MouseIcon       =   "frmGuildLeader.frx":02A4
       MousePointer    =   99  'Custom
       TabIndex        =   14
-      Top             =   5280
+      Top             =   4950
       Width           =   2775
    End
    Begin VB.CommandButton Command6 
       Caption         =   "Editar URL de la web del clan"
       Height          =   495
       Left            =   3000
-      MouseIcon       =   "frmGuildLeader.frx":02A4
+      MouseIcon       =   "frmGuildLeader.frx":03F6
       MousePointer    =   99  'Custom
       TabIndex        =   13
-      Top             =   4680
+      Top             =   4440
       Width           =   2775
    End
    Begin VB.CommandButton Command5 
       Caption         =   "Editar Codex o Descripcion"
       Height          =   495
       Left            =   3000
-      MouseIcon       =   "frmGuildLeader.frx":03F6
+      MouseIcon       =   "frmGuildLeader.frx":0548
       MousePointer    =   99  'Custom
       TabIndex        =   12
-      Top             =   4080
+      Top             =   3930
       Width           =   2775
    End
    Begin VB.Frame Frame3 
@@ -81,9 +91,9 @@ Begin VB.Form frmGuildLeader
       Width           =   2895
       Begin VB.ListBox guildslist 
          Height          =   1425
-         ItemData        =   "frmGuildLeader.frx":0548
+         ItemData        =   "frmGuildLeader.frx":069A
          Left            =   120
-         List            =   "frmGuildLeader.frx":054A
+         List            =   "frmGuildLeader.frx":069C
          TabIndex        =   11
          Top             =   240
          Width           =   2655
@@ -92,7 +102,7 @@ Begin VB.Form frmGuildLeader
          Caption         =   "Detalles"
          Height          =   375
          Left            =   120
-         MouseIcon       =   "frmGuildLeader.frx":054C
+         MouseIcon       =   "frmGuildLeader.frx":069E
          MousePointer    =   99  'Custom
          TabIndex        =   10
          Top             =   1800
@@ -119,7 +129,7 @@ Begin VB.Form frmGuildLeader
          Caption         =   "Actualizar"
          Height          =   375
          Left            =   120
-         MouseIcon       =   "frmGuildLeader.frx":069E
+         MouseIcon       =   "frmGuildLeader.frx":07F0
          MousePointer    =   99  'Custom
          TabIndex        =   8
          Top             =   1080
@@ -154,7 +164,7 @@ Begin VB.Form frmGuildLeader
          Caption         =   "Detalles"
          Height          =   375
          Left            =   120
-         MouseIcon       =   "frmGuildLeader.frx":07F0
+         MouseIcon       =   "frmGuildLeader.frx":0942
          MousePointer    =   99  'Custom
          TabIndex        =   5
          Top             =   1800
@@ -162,9 +172,9 @@ Begin VB.Form frmGuildLeader
       End
       Begin VB.ListBox members 
          Height          =   1425
-         ItemData        =   "frmGuildLeader.frx":0942
+         ItemData        =   "frmGuildLeader.frx":0A94
          Left            =   120
-         List            =   "frmGuildLeader.frx":0944
+         List            =   "frmGuildLeader.frx":0A96
          TabIndex        =   4
          Top             =   240
          Width           =   2655
@@ -186,21 +196,31 @@ Begin VB.Form frmGuildLeader
       TabIndex        =   0
       Top             =   3960
       Width           =   2895
+      Begin VB.CommandButton cmdElecciones 
+         Caption         =   "Abrir elecciones"
+         Height          =   375
+         Left            =   120
+         MouseIcon       =   "frmGuildLeader.frx":0A98
+         MousePointer    =   99  'Custom
+         TabIndex        =   18
+         Top             =   1935
+         Width           =   2655
+      End
       Begin VB.CommandButton Command1 
          Caption         =   "Detalles"
          Height          =   375
          Left            =   120
-         MouseIcon       =   "frmGuildLeader.frx":0946
+         MouseIcon       =   "frmGuildLeader.frx":0BEA
          MousePointer    =   99  'Custom
          TabIndex        =   2
-         Top             =   1560
+         Top             =   1170
          Width           =   2655
       End
       Begin VB.ListBox solicitudes 
-         Height          =   1230
-         ItemData        =   "frmGuildLeader.frx":0A98
+         Height          =   840
+         ItemData        =   "frmGuildLeader.frx":0D3C
          Left            =   120
-         List            =   "frmGuildLeader.frx":0A9A
+         List            =   "frmGuildLeader.frx":0D3E
          TabIndex        =   1
          Top             =   240
          Width           =   2655
@@ -210,7 +230,7 @@ Begin VB.Form frmGuildLeader
          Height          =   255
          Left            =   120
          TabIndex        =   16
-         Top             =   2040
+         Top             =   1620
          Width           =   2535
       End
    End
@@ -223,6 +243,10 @@ Attribute VB_Exposed = False
 'Argentum Online 0.9.0.9
 '
 'Copyright (C) 2002 Márquez Pablo Ignacio
+'Copyright (C) 2002 Otto Perez
+'Copyright (C) 2002 Aaron Perkins
+'Copyright (C) 2002 Matías Fernando Pequeño
+'
 'This program is free software; you can redistribute it and/or modify
 'it under the terms of the GNU General Public License as published by
 'the Free Software Foundation; either version 2 of the License, or
@@ -249,6 +273,13 @@ Attribute VB_Exposed = False
 'La Plata - Pcia, Buenos Aires - Republica Argentina
 'Código Postal 1900
 'Pablo Ignacio Márquez
+
+Option Explicit
+
+Private Sub cmdElecciones_Click()
+    Call SendData("ABREELEC")
+    Unload Me
+End Sub
 
 Private Sub Command1_Click()
 
@@ -303,6 +334,10 @@ End Sub
 Private Sub Command7_Click()
 Call SendData("ENVPROPP")
 End Sub
+Private Sub Command9_Click()
+Call SendData("ENVALPRO")
+End Sub
+
 
 Private Sub Command8_Click()
 Unload Me
@@ -345,7 +380,7 @@ Me.Show , frmMain
 
 End Sub
 
+
 Private Sub Form_Deactivate()
 'Me.SetFocus
 End Sub
-
