@@ -1,0 +1,23 @@
+autoupdateclient.exe
+--------------------
+Programa para actualizar automáticamente el cliente.
+Este programa debe ser instalado en la carpeta del cliente de Argentum Online, y
+requiere tener registradas las OCX del mismo (RICHTX32.OCX, MSINET.OCX, MSCOMCTL.OCX)
+Adicionalmente registrará MSWINSCK.OCX y COMCTL32.OCX, controles utilizados
+para los sockets y la barra de progreso de descargas.
+Contacto y sugerencias: EL OSO (ositear@yahoo.com.ar)
+
+
+Version 1.1
+-----------
+Chequeo previo de MD5 para no descargar archivos no necesarios.
+Control interno de versiones de autoupdater.
+Incluidos los graficos de las distintas descargas.
+Manejo de errores remotos.
+Display de información remota.
+Pack de distribución.
+
+
+Version 1.0
+-----------
+Versión original

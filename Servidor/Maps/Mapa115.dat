@@ -1,0 +1,14 @@
+[Mapa109]
+Name=Nuevo Mapa
+MusicNum=1
+StartPos=0-0-0
+Restringir=No
+Terreno=NIEVE
+Zona=CAMPO
+[Mapa115]
+MusicNum=15-1
+StartPos=0-0-0
+Terreno=NIEVE
+Zona=CAMPO
+Restringir=No
+Name=Dungeon Marabel
