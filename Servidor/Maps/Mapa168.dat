@@ -1,0 +1,9 @@
+[Mapa168]
+Name=Nuevo Mapa
+MusicNum=7-1
+StartPos=0-0-0
+Terreno=BOSQUE
+Zona=DUNGEON
+Restringir=Si
+PK=0
+BackUp=0

@@ -1,0 +1,40 @@
+[INIT]
+Cant =7
+
+[S1]
+Desc=Primario AOAlkon - Online
+IP=200.49.147.28
+P2= 7667
+PJ= 7666
+[S2]
+Desc=Argentina TDS (OFFLINE)
+IP=200.55.6.171
+PJ= 379
+P2= 7668
+[S3]
+Desc=
+IP=
+PJ= 0
+P2= 0
+[S4]
+Desc=Momentáneamente no se
+IP=
+PJ= 0
+P2= 0
+[S5]
+Desc=actualizará la lista
+IP=
+PJ= 0
+P2= 0
+[S6]
+Desc=de servidores.       Atte, el staff
+IP=
+PJ= 0
+P2= 0
+[S7]
+Desc=
+
+
+IP=
+PJ= 0
+P2= 0

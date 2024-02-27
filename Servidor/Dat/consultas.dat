@@ -1,0 +1,15 @@
+[INIT]
+ConsultaActual= 0
+ConsultaActualTexto= ¿Valkira es gay?
+NivelRequerido= 19
+
+
+[ENCUESTA1]
+CantOpciones=2
+OPCION1=Si.
+OPCION2=También
+
+[RESULTADOS1]
+V1= 0
+V2= 0
+

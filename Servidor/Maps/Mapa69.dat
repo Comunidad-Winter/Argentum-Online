@@ -1,0 +1,9 @@
+[Mapa69]
+Name=Catacumbas de Ullathorpe
+MusicNum=9-1
+StartPos=0-0-0
+Terreno=BOSQUE
+Zona=DUNGEON
+Restringir=No
+PK=0
+BackUp=0

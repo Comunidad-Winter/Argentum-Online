@@ -1,0 +1,5 @@
+recuperar.exe
+--------------------
+Este programita sirve para recuperar contraseñas de personajes del servidor.
+Ingrese el nick del PJ y el mail utilizado para registrar el personaje y el
+password le será enviado al mail.

@@ -1,0 +1,58 @@
+26/07/2004 07:30:41 p.m. ******> Accept. ConnId: 2
+26/07/2004 07:30:41 p.m. Read. ConnId: 2 Midato: 2 Dato: gIvEmEvAlcOde~15375
+26/07/2004 07:30:41 p.m. SendData. ConnId: 2 Datos: VAL9433,21283
+26/07/2004 07:30:41 p.m. Read. ConnId: 2 Midato: 2 Dato: OLOGINB,0cc175b9c0f1b6a831c399e269772661,0.9.9,243™‰³àÀ”ÓZpío},5,0,0,5,0,0,0~28730
+26/07/2004 07:30:41 p.m. SendData. ConnId: 2 Datos: CSI7,192,Hierro,2,0,604,23,0,0,0,1
+26/07/2004 07:30:41 p.m. SendData. ConnId: 2 Datos: CSI8,386,Lingote de hierro,5,0,724,29,0,0,0,8
+26/07/2004 07:30:41 p.m. SendData. ConnId: 2 Datos: CSI10,401,Martillo de guerra,1,1,708,2,8,4,0,450
+26/07/2004 07:30:42 p.m. SendData. ConnId: 2 Datos: ERRServidor en Testing por unos minutos, conectese con PJs de nivel menor a 18. No se conecte con Pjs que puedan resultar importantes por ahora pues pueden arruinarse.
+26/07/2004 07:30:42 p.m. ******> Sub CloseSocket. ConnId: 2 Cerrarlo: Verdadero
+26/07/2004 07:30:49 p.m. ******> Accept. ConnId: 2
+26/07/2004 07:30:49 p.m. Read. ConnId: 2 Midato: 2 Dato: gIvEmEvAlcOde~9736
+26/07/2004 07:30:49 p.m. SendData. ConnId: 2 Datos: VAL71042,28319
+26/07/2004 07:30:49 p.m. Read. ConnId: 2 Midato: 2 Dato: OLOGINc c,0cc175b9c0f1b6a831c399e269772661,0.9.9,205™‰³àÀ”ÓZpío},5,0,0,5,0,0,0~32228
+26/07/2004 07:30:51 p.m. SendData. ConnId: 2 Datos: ERRServidor en Testing por unos minutos, conectese con PJs de nivel menor a 18. No se conecte con Pjs que puedan resultar importantes por ahora pues pueden arruinarse.
+26/07/2004 07:30:51 p.m. ******> Sub CloseSocket. ConnId: 2 Cerrarlo: Verdadero
+26/07/2004 07:31:34 p.m. ******> Accept. ConnId: 2
+26/07/2004 07:31:34 p.m. Read. ConnId: 2 Midato: 2 Dato: gIvEmEvAlcOde~28648
+26/07/2004 07:31:34 p.m. SendData. ConnId: 2 Datos: VAL2646,31817
+26/07/2004 07:31:34 p.m. Read. ConnId: 2 Midato: 2 Dato: OLOGINb,0cc175b9c0f1b6a831c399e269772661,0.9.9,280™‰³àÀ”ÓZpío},5,0,0,5,0,0,0~295
+26/07/2004 07:31:34 p.m. SendData. ConnId: 2 Datos: CSI7,192,Hierro,2,0,604,23,0,0,0,1
+26/07/2004 07:31:34 p.m. SendData. ConnId: 2 Datos: CSI8,386,Lingote de hierro,5,0,724,29,0,0,0,8
+26/07/2004 07:31:34 p.m. SendData. ConnId: 2 Datos: CSI10,401,Martillo de guerra,1,1,708,2,8,4,0,450
+26/07/2004 07:31:35 p.m. SendData. ConnId: 2 Datos: LOGGED
+26/07/2004 07:31:36 p.m. Read. ConnId: 2 Midato: 2 Dato: /TELEP YO 49 50 57~48799
+26/07/2004 07:31:36 p.m. Read. ConnId: 2 Midato: 2 Dato: /TELEP YO 49 50 62~27038
+26/07/2004 07:31:37 p.m. Read. ConnId: 2 Midato: 2 Dato: /TELEP YO 49 48 67~63703
+26/07/2004 07:31:37 p.m. Read. ConnId: 2 Midato: 2 Dato: /TELEP YO 49 45 70~63303
+26/07/2004 07:31:37 p.m. Read. ConnId: 2 Midato: 2 Dato: /TELEP YO 49 44 68~52925
+26/07/2004 07:31:37 p.m. Read. ConnId: 2 Midato: 2 Dato: /TELEP YO 49 45 65~50703
+26/07/2004 07:31:38 p.m. Read. ConnId: 2 Midato: 2 Dato: /TELEP YO 49 47 64~7020
+26/07/2004 07:31:38 p.m. Read. ConnId: 2 Midato: 2 Dato: /TELEP YO 49 50 65~13103
+26/07/2004 07:31:38 p.m. Read. ConnId: 2 Midato: 2 Dato: /TELEP YO 49 53 67~38204
+26/07/2004 07:31:38 p.m. Read. ConnId: 2 Midato: 2 Dato: /TELEP YO 49 57 69~45701
+26/07/2004 07:31:39 p.m. Read. ConnId: 2 Midato: 2 Dato: /TELEP YO 49 61 70~36303
+26/07/2004 07:31:39 p.m. Read. ConnId: 2 Midato: 2 Dato: /TELEP YO 49 60 69~16758
+26/07/2004 07:31:39 p.m. Read. ConnId: 2 Midato: 2 Dato: /TELEP YO 49 58 67~60052
+26/07/2004 07:31:39 p.m. Read. ConnId: 2 Midato: 2 Dato: /TELEP YO 49 55 64~60433
+26/07/2004 07:31:40 p.m. Read. ConnId: 2 Midato: 2 Dato: /TELEP YO 49 52 61~26355
+26/07/2004 07:31:41 p.m. Read. ConnId: 2 Midato: 2 Dato: /TELEP YO 49 47 58~5396
+26/07/2004 07:31:42 p.m. Read. ConnId: 2 Midato: 2 Dato: LC54,57~22030
+26/07/2004 07:31:44 p.m. Read. ConnId: 2 Midato: 2 Dato: LC48,58~10753
+26/07/2004 07:31:45 p.m. Read. ConnId: 2 Midato: 2 Dato: /salir~24531
+26/07/2004 07:31:45 p.m. SendData. ConnId: 2 Datos: ||Cerrando...Se cerrará el juego en 0 segundos...~65~190~156~0~0
+26/07/2004 07:31:46 p.m. SendData. ConnId: 2 Datos: FINOK
+26/07/2004 07:31:46 p.m. ******> Sub CloseSocket. ConnId: 2 Cerrarlo: Verdadero
+26/07/2004 07:31:48 p.m. ******> Accept. ConnId: 2
+26/07/2004 07:31:48 p.m. Read. ConnId: 2 Midato: 2 Dato: gIvEmEvAlcOde~15375
+26/07/2004 07:31:48 p.m. SendData. ConnId: 2 Datos: VAL43836,27405
+26/07/2004 07:31:48 p.m. Read. ConnId: 2 Midato: 2 Dato: OLOGINb,0cc175b9c0f1b6a831c399e269772661,0.9.9,124™‰³àÀ”ÓZpío},5,0,0,5,0,0,0~32490
+26/07/2004 07:31:49 p.m. SendData. ConnId: 2 Datos: CSI7,192,Hierro,2,0,604,23,0,0,0,1
+26/07/2004 07:31:49 p.m. SendData. ConnId: 2 Datos: CSI8,386,Lingote de hierro,5,0,724,29,0,0,0,8
+26/07/2004 07:31:49 p.m. SendData. ConnId: 2 Datos: CSI10,401,Martillo de guerra,1,1,708,2,8,4,0,450
+26/07/2004 07:31:49 p.m. SendData. ConnId: 2 Datos: LOGGED
+26/07/2004 07:31:51 p.m. Read. ConnId: 2 Midato: 2 Dato: /TELEP YO 49 49 55~23441
+26/07/2004 07:32:01 p.m. Read. ConnId: 2 Midato: 2 Dato: /salir~26989
+26/07/2004 07:32:01 p.m. SendData. ConnId: 2 Datos: ||Cerrando...Se cerrará el juego en 0 segundos...~65~190~156~0~0
+26/07/2004 07:32:01 p.m. SendData. ConnId: 2 Datos: FINOK
+26/07/2004 07:32:01 p.m. ******> Sub CloseSocket. ConnId: 2 Cerrarlo: Verdadero

@@ -1,0 +1,12 @@
+Launcher.exe -> Auto disparador del servidor de argentum.
+Cuando comienza el mantenimiento automatico, el servidor de AO se cierra, y se ejecuta
+el Launcher.exe. Una vez que la cuenta regresiva llega a 0, se ejecuta
+el servidor de Argentum nuevamente QUE DEBERA LLAMARSE AO.EXE
+Si no se llama AO.EXE NO SE REINICIARA!
+
+
+Atencion: 
+Los mapas NO SON los del servidor oficial, pueden tener cambios grandes
+producto de diversos testeos realizados localmente por los desarrolladores.
+Los DAT son los del servidor Alkon a la fecha 9 Mar 2005
+
